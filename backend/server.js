@@ -1,17 +1,25 @@
+require("dotenv").config();
 
 const express = require("express");
+const connectDB = require("./config/db");
 
 const app = express();
 
-const PORT = 5050;
+const PORT = process.env.PORT || 5050;
 
-app.get("/health", (req, res) => {
-    res.json({
-        status: "OK",
-        message: "ARPIARES backend is running"
+// Connect to MongoDB first
+connectDB().then(() => {
+
+    app.get("/health", (req, res) => {
+        res.json({
+            status: "OK",
+            message: "ARPIARES backend is running",
+            database: "Connected"
+        });
     });
-});
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
+
 });
