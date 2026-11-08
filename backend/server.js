@@ -1,6 +1,10 @@
 
 require("dotenv").config();
 
+if (!process.env.JWT_SECRET) {
+    console.error("JWT_SECRET is missing in .env file");
+    process.exit(1);
+}
 const express = require("express");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
