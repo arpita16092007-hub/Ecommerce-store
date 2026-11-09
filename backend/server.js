@@ -8,6 +8,7 @@ if (!process.env.JWT_SECRET) {
 const express = require("express");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
+const productRoutes = require("./routes/productRoutes");
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(express.json());
 
 // Connect authentication routes
 app.use("/api/auth", authRoutes);
+app.use("/api/products", productRoutes);
 
 // Connect to MongoDB first
 connectDB().then(() => {
