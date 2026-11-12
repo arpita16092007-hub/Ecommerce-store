@@ -8,7 +8,11 @@ const authMiddleware = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
+// ========================================
 // ADD PRODUCT TO CART
+// POST /api/cart/add
+// ========================================
+
 router.post("/add", authMiddleware, async (req, res) => {
     try {
         const { productId, quantity } = req.body;
@@ -70,6 +74,7 @@ router.post("/add", authMiddleware, async (req, res) => {
             }
 
             existingItem.quantity = newQuantity;
+
         } else {
             cart.items.push({
                 productId,
@@ -77,8 +82,10 @@ router.post("/add", authMiddleware, async (req, res) => {
             });
         }
 
+        // Save cart
         await cart.save();
 
+        // Populate product details
         await cart.populate(
             "items.productId",
             "name price stock imageUrl"
@@ -97,4 +104,68 @@ router.post("/add", authMiddleware, async (req, res) => {
     }
 });
 
+
+// ========================================
+// VIEW USER CART
+// GET /api/cart
+// ========================================
+
+router.get("/", authMiddleware, async (req, res) => {
+    try {
+
+        // Find logged-in user's cart
+        const cart = await Cart.findOne({
+            userId: req.user.userId
+        }).populate(
+            "items.productId",
+            "name price stock imageUrl"
+        );
+
+        // If cart does not exist
+        if (!cart) {
+            return res.status(200).json({
+                message: "Cart fetched successfully",
+                items: [],
+                subtotal: 0
+            });
+        }
+
+        // Calculate item totals
+        const items = cart.items
+            .filter(item => item.productId !== null)
+            .map(item => {
+                const product = item.productId;
+
+                return {
+                    productId: product._id,
+                    productName: product.name,
+                    price: product.price,
+                    quantity: item.quantity,
+                    itemTotal: product.price * item.quantity
+                };
+            });
+
+        // Calculate cart subtotal
+        const subtotal = items.reduce(
+            (total, item) => total + item.itemTotal,
+            0
+        );
+
+        // Return cart with totals
+        return res.status(200).json({
+            message: "Cart fetched successfully",
+            items,
+            subtotal
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "Error fetching cart",
+            error: error.message
+        });
+    }
+});
+
+
+// Export router
 module.exports = router;
