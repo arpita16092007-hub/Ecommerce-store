@@ -1,117 +1,168 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#06251c">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ARPIARES — Shop. Explore. Conquer.</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
-  <script src="js/api.js" defer></script>
-  <script src="js/store.js" defer></script>
+  <link rel="preconnect" href="https://googleapis.com">
+  <link rel="preconnect" href="https://gstatic.com" crossorigin>
+  <link href="https://googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=3">
 </head>
 <body>
   <div class="announcement">A LITTLE LUXURY, EVERY DAY <span>✦</span> DISCOVER ARPIARES</div>
+
   <header class="site-header">
-    <a class="brand" href="index.html"><span class="brand-mark">A</span><span>ARPIARES<small>SHOP · EXPLORE · CONQUER</small></span></a>
-    <form id="search-form" class="search-box"><span>⌕</span><input id="search-input" type="search" placeholder="Search for products..." aria-label="Search products"><button aria-label="Search">Search</button></form>
-    <nav class="header-actions">
-      <button class="icon-button" id="wishlist-shortcut" title="Wishlist">♡</button>
-      <button class="icon-button" id="open-orders" title="My orders">📦</button>
-      <button class="icon-button cart-shortcut" id="open-cart" title="Shopping cart">🛒<span id="cart-count" class="count">0</span></button>
-      <button class="account-button" id="open-auth" title="Account">♙ <span id="account-label">Sign in</span></button>
-    </nav>
+    <a class="brand" href="index.html">
+      <span class="brand-mark">A</span>
+      <span>ARPIARES <small>SHOP · EXPLORE · CONQUER</small></span>
+    </a>
+
+    <form class="search-box" id="search-form" role="search">
+      <span>⌕</span>
+      <input id="search-input" type="search" placeholder="Search handcrafted goods, essentials, gifts…" aria-label="Search products">
+      <button type="submit">Search</button>
+    </form>
+
+    <div class="header-actions">
+      <button class="icon-button" id="wishlist-shortcut" title="Wishlist (visual placeholder)" aria-label="Wishlist">♡</button>
+      <button class="icon-button" id="open-orders" title="Order history" aria-label="Order history">📦</button>
+      <button class="icon-button" id="open-cart" title="Shopping bag" aria-label="Shopping bag">
+        🛒 <span class="count" id="cart-count">0</span>
+      </button>
+      <button class="account-button" id="open-auth">♙ <span id="account-label">Sign in</span></button>
+    </div>
   </header>
 
-  <main class="layout">
+  <div class="layout">
     <aside class="sidebar">
-      <div class="sidebar-heading">EXPLORE</div>
+      <p class="sidebar-heading">EXPLORE</p>
       <button class="category-link active" data-category="">✦ <span>All products</span></button>
-      <div id="category-list"><p class="muted small">Loading categories…</p></div>
-      <div class="sidebar-note"><span>✧</span><p>Find something<br>extraordinary.</p></div>
+      <div id="category-list">
+        <p class="muted small">Loading categories…</p>
+      </div>
+
+      <div class="sidebar-note">
+        <span>✧</span>
+        <p>Find something extraordinary.</p>
+      </div>
       <a class="admin-link" href="admin.html">⚙ Admin dashboard</a>
     </aside>
 
-    <section class="store-content">
+    <main class="store-content">
       <section class="hero">
         <div class="hero-copy">
           <p class="eyebrow">THE ARPIARES COLLECTION</p>
-          <h1>Explore the<br><em>extraordinary.</em></h1>
+          <h1>Explore the <em>extraordinary.</em></h1>
           <p>Thoughtful finds. Timeless style. Everyday wonder.</p>
-          <a href="#products" class="gold-button">SHOP THE COLLECTION <span>→</span></a>
+          <a class="gold-button" href="#catalog">SHOP THE COLLECTION <span>→</span></a>
         </div>
         <div class="hero-art" aria-hidden="true">
-          <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+          <div class="orbit"></div>
+          <div class="orbit orbit-two"></div>
           <div class="hero-product">A</div>
-          <div class="hero-caption">CURATED FOR YOU · EST. 2026</div>
+          <span class="hero-caption">CURATED FOR YOU · EST. 2026</span>
         </div>
       </section>
 
-      <div class="section-heading" id="products">
-        <div><p class="eyebrow">HANDPICKED FOR YOU</p><h2>Discover our collection</h2></div>
-        <select id="sort-select" aria-label="Sort products"><option value="newest">Newest first</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option></select>
-      </div>
-      <div id="notice" class="notice" role="status"></div>
-      <div id="product-grid" class="product-grid"><div class="loading-card">Loading products from your store…</div></div>
+      <section class="catalog-section" id="catalog">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">HANDPICKED FOR YOU</p>
+            <h2>Discover our collection</h2>
+          </div>
+          <select id="sort-select" aria-label="Sort products">
+            <option value="featured">Newest first</option>
+            <option value="price-low">Price: low to high</option>
+            <option value="price-high">Price: high to low</option>
+          </select>
+        </div>
+
+        <p class="notice" id="notice" role="status"></p>
+        <div class="product-grid" id="product-grid">
+          <div class="loading-card">Loading products from your store…</div>
+        </div>
+      </section>
+
       <section class="feature-strip">
         <div><span>✧</span><b>Curated quality</b><small>Selected with care</small></div>
         <div><span>◇</span><b>Secure account</b><small>Your account, your orders</small></div>
         <div><span>↗</span><b>Easy checkout</b><small>A simple shopping journey</small></div>
       </section>
-    </section>
-  </main>
+    </main>
+  </div>
 
-  <footer><a class="brand footer-brand" href="#">ARPIARES</a><span>SHOP · EXPLORE · CONQUER</span><span>© 2026 ARPIARES</span></footer>
+  <footer>
+    <span class="brand footer-brand"><span class="brand-mark">A</span> ARPIARES</span>
+    <span>SHOP · EXPLORE · CONQUER</span>
+    <span>© 2026 ARPIARES</span>
+  </footer>
 
+  <!-- Auth Modal -->
   <div class="overlay" id="auth-modal" aria-hidden="true">
-    <section class="modal auth-modal">
+    <div class="modal auth-modal" role="dialog" aria-labelledby="auth-title">
       <button class="close-button" data-close="auth-modal" aria-label="Close">×</button>
-      <div class="modal-brand">A</div><p class="eyebrow center">WELCOME TO ARPIARES</p><h2 id="auth-title">Welcome back.</h2>
+      <div class="modal-brand">A</div>
+      <p class="eyebrow center">WELCOME TO ARPIARES</p>
+      <h2 id="auth-title">Welcome back.</h2>
       <p class="muted center" id="auth-subtitle">Sign in to continue your journey.</p>
       <form id="auth-form" class="stack-form">
-        <label id="name-field" class="hidden">Full name<input id="auth-name" autocomplete="name" placeholder="Your name"></label>
-        <label>Email address<input id="auth-email" type="email" autocomplete="email" required placeholder="you@example.com"></label>
-        <label>Password<input id="auth-password" type="password" autocomplete="current-password" minlength="8" required placeholder="At least 8 characters"></label>
-        <button class="primary-button" id="auth-submit">LOGIN →</button>
+        <label id="name-field" class="hidden">Full name
+          <input name="name" id="auth-name" autocomplete="name" placeholder="Aarav Sharma">
+        </label>
+        <label>Email address
+          <input name="email" id="auth-email" type="email" autocomplete="email" required placeholder="you@example.com">
+        </label>
+        <label>Password
+          <input name="password" id="auth-password" type="password" autocomplete="current-password" required placeholder="Minimum 6 characters">
+        </label>
+        <button class="primary-button" type="submit" id="auth-submit">LOGIN →</button>
+        <p class="form-message" id="auth-message"></p>
       </form>
       <p class="center small" id="auth-switch-line">Don't have an account? <button class="text-button" id="switch-auth">Create account</button></p>
-      <p id="auth-message" class="form-message" role="status"></p>
-    </section>
+    </div>
   </div>
 
+  <!-- Cart Modal -->
   <div class="overlay" id="cart-modal" aria-hidden="true">
-    <section class="modal cart-modal">
+    <div class="modal cart-modal" role="dialog" aria-labelledby="cart-title">
       <button class="close-button" data-close="cart-modal" aria-label="Close">×</button>
-      <p class="eyebrow">YOUR SELECTION</p><h2>Your shopping bag</h2>
-      <div id="cart-items" class="cart-items"><p class="muted">Sign in to view your cart.</p></div>
-      <div class="cart-total"><span>Subtotal</span><strong id="cart-subtotal">₹0</strong></div>
+      <p class="eyebrow">YOUR SELECTION</p>
+      <h2 id="cart-title">Your shopping bag</h2>
+      <div id="cart-items" class="cart-items"></div>
+      <div class="cart-total">
+        <span>Subtotal</span>
+        <strong id="cart-subtotal">₹0</strong>
+      </div>
       <form id="checkout-form" class="stack-form">
-        <label>Delivery address<textarea id="delivery-address" rows="2" required placeholder="Enter your complete delivery address"></textarea></label>
+        <label>Delivery address
+          <textarea id="delivery-address" rows="2" required placeholder="House number, street, city, PIN code"></textarea>
+        </label>
         <button class="primary-button" type="submit">PLACE ORDER →</button>
+        <p class="form-message" id="cart-message"></p>
       </form>
-      <p id="cart-message" class="form-message" role="status"></p>
-    </section>
+    </div>
   </div>
 
-  <div class="overlay" id="orders-modal" aria-hidden="true">
-    <section class="modal cart-modal">
-      <button class="close-button" data-close="orders-modal" aria-label="Close">×</button>
-      <p class="eyebrow">YOUR HISTORY</p><h2>My orders</h2>
-      <div id="orders-list" class="cart-items"></div>
-    </section>
-  </div>
-
+  <!-- Product Detail Modal -->
   <div class="overlay" id="product-modal" aria-hidden="true">
-    <section class="modal product-modal">
+    <div class="modal product-modal" role="dialog" aria-labelledby="product-modal-title">
       <button class="close-button" data-close="product-modal" aria-label="Close">×</button>
       <div id="product-detail"></div>
-    </section>
+    </div>
   </div>
-  <script>
-    // The frontend talks to your Express backend at localhost:5050.
-    // Change API_BASE in js/api.js if your backend uses another address.
-  </script>
+
+  <!-- Orders Modal -->
+  <div class="overlay" id="orders-modal" aria-hidden="true">
+    <div class="modal cart-modal" role="dialog" aria-labelledby="orders-title">
+      <button class="close-button" data-close="orders-modal" aria-label="Close">×</button>
+      <p class="eyebrow">YOUR HISTORY</p>
+      <h2 id="orders-title">My orders</h2>
+      <div id="orders-list" class="cart-items"></div>
+    </div>
+  </div>
+
+  <script src="js/api.js?v=3" defer></script>
+  <script src="js/store.js?v=3" defer></script>
 </body>
 </html>
