@@ -1,7 +1,8 @@
 // Automatically adapts to localhost, local Wi-Fi IPs (Mac/Android), or production domains
-const API_BASE = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
-  ? "http://localhost:5050"
-  : `http://${window.location.hostname}:5050`;
+const API_BASE =
+  window.location.port === "5500"
+    ? `${window.location.protocol}//${window.location.hostname}:5050`
+    : window.location.origin;
 
 function getToken() {
   return localStorage.getItem("arpiares_token");

@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ARPIARES — Admin Dashboard</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://googleapis.com">
+  <link rel="preconnect" href="https://gstatic.com" crossorigin>
+  <link href="https://googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -24,7 +24,8 @@
   <div class="admin-layout">
     <aside class="admin-sidebar">
       <p class="sidebar-heading">MANAGEMENT</p>
-      <a class="category-link active" href="#product-section">✦ <span>Products</span></a>
+      <a class="category-link active" href="#orders-section">📦 <span>Customer Orders</span></a>
+      <a class="category-link" href="#product-section">✦ <span>Products</span></a>
       <a class="category-link" href="#category-section">◇ <span>Categories</span></a>
     </aside>
 
@@ -38,6 +39,14 @@
         <div class="stat-card"><span>◇</span><small>Categories</small><strong id="stat-categories">0</strong></div>
         <div class="stat-card"><span>📦</span><small>Total Stock Units</small><strong id="stat-stock">0</strong></div>
       </div>
+
+      <section class="admin-panel" id="orders-section">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+          <h2>Customer Orders &amp; Delivery Status</h2>
+          <button type="button" class="add-button" id="refresh-orders-btn">↻ Refresh Orders</button>
+        </div>
+        <div class="admin-product-list" id="admin-orders-list" style="margin-top:14px;"></div>
+      </section>
 
       <section class="admin-panel" id="product-section">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">

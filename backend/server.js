@@ -5,6 +5,7 @@ if (!process.env.JWT_SECRET) {
     process.exit(1);
 }
 
+const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/db");
@@ -17,32 +18,11 @@ const orderRoutes = require("./routes/orderRoutes");
 const app = express();
 const PORT = process.env.PORT || 5050;
 
-// Allow localhost, Live Server, local network IPs (Mac/Android), and deployed CLIENT_URL
-const allowedOrigins = [
-    "http://127.0.0.1:5500",
-    "http://localhost:5500"
-];
-
-if (process.env.CLIENT_URL) {
-    allowedOrigins.push(process.env.CLIENT_URL);
-}
-
-app.use(cors({
-    origin: function (origin, callback) {
-        // Allow requests with no origin (mobile apps, curl, Postman)
-        if (!origin) return callback(null, true);
-        
-        // Allow listed origins or any local network IP (e.g., 192.168.x.x:5500)
-        const isLocalNetwork = /^http:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+)(:\d+)?$/.test(origin);
-        if (allowedOrigins.includes(origin) || isLocalNetwork) {
-            return callback(null, true);
-        }
-        return callback(new Error("Not allowed by CORS"));
-    }
-}));
-
+app.use(cors());
 app.use(express.json({ limit: "15mb" }));
 
+// Serve the frontend folder directly so the whole store runs on one URL
+app.use(express.static(path.join(__dirname, "../frontend")));
 
 // Connect routes
 app.use("/api/auth", authRoutes);
@@ -51,9 +31,7 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 
-// Connect to MongoDB first
 connectDB().then(() => {
-    // Health check API
     app.get("/health", (req, res) => {
         res.json({
             status: "OK",
@@ -62,7 +40,6 @@ connectDB().then(() => {
         });
     });
 
-    // Listen on 0.0.0.0 so Mac and Android devices on the same Wi-Fi can reach it
     app.listen(PORT, "0.0.0.0", () => {
         console.log(`Server is running on port ${PORT}`);
     });

@@ -272,23 +272,51 @@ async function openOrders() {
   openModal("orders-modal");
   const box = byId("orders-list");
   if (!getToken()) {
-    box.innerHTML = "<p class=\"muted\">Please sign in to view your orders.</p>";
+    box.innerHTML = '<p class="muted">Please sign in to track your orders.</p>';
     return;
   }
   try {
     const data = await apiRequest("/api/orders/my-orders");
     const orders = data.orders || [];
+    const steps = ["Pending", "Processing", "Shipped", "Delivered"];
+
     box.innerHTML = orders.length
-      ? orders.map(o =>
-          "<div class=\"cart-row\"><div><b>Order #" + escapeHTML(String(o._id).slice(-6).toUpperCase()) + "</b>" +
-          "<small>" + new Date(o.createdAt).toLocaleDateString("en-IN") + " · " + escapeHTML(o.orderStatus) + "</small></div>" +
-          "<strong style=\"text-align:right;\">" + o.items.map(i => escapeHTML(i.name) + " × " + Number(i.quantity)).join(", ") + "<br>" + money(o.totalAmount) + "</strong></div>"
-        ).join("")
-      : "<p class=\"muted\">You have no orders yet.</p>";
+      ? orders.map(o => {
+          const isCancelled = o.orderStatus === "Cancelled";
+          const currentIdx = steps.indexOf(o.orderStatus);
+          const trackerHTML = isCancelled
+            ? '<div style="margin-top:8px;padding:6px 10px;border-radius:8px;background:#fdecea;color:#a3442f;font-size:11px;font-weight:700;">✕ Order Cancelled</div>'
+            : '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:10px;">' +
+                steps.map((step, idx) => {
+                  const done = idx <= currentIdx;
+                  return '<div style="text-align:center;">' +
+                    '<div style="height:5px;border-radius:4px;background:' + (done ? "#06271d" : "#e7d8c2") + ';margin-bottom:4px;"></div>' +
+                    '<span style="font-size:10px;font-weight:' + (done ? "700" : "500") + ';color:' + (done ? "#06271d" : "#7d8178") + ';">' + step + '</span>' +
+                  '</div>';
+                }).join("") +
+              '</div>';
+
+          const itemsText = o.items.map(i => escapeHTML(i.name) + " × " + Number(i.quantity)).join(", ");
+          const orderCode = escapeHTML(String(o._id).slice(-6).toUpperCase());
+          const orderDate = new Date(o.createdAt).toLocaleDateString("en-IN");
+
+          return '<div class="cart-row" style="display:block;padding:14px 0;">' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">' +
+              '<b>Order #' + orderCode + '</b>' +
+              '<strong>' + money(o.totalAmount) + '</strong>' +
+            '</div>' +
+            '<small>' + orderDate + ' · Status: <b>' + escapeHTML(o.orderStatus) + '</b></small>' +
+            '<small>' + itemsText + '</small>' +
+            '<small>Deliver to: ' + escapeHTML(o.deliveryAddress || "N/A") + '</small>' +
+            trackerHTML +
+          '</div>';
+        }).join("")
+      : '<p class="muted">You have no orders yet.</p>';
   } catch (err) {
     box.textContent = err.message;
   }
 }
+
 
 byId("search-form").addEventListener("submit", e => {
   e.preventDefault();
