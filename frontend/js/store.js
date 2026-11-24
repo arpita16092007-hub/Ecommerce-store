@@ -284,26 +284,34 @@ box.innerHTML = orders.length
 ? orders.map(o => {
 const isCancelled = o.orderStatus === "Cancelled";
 const currentIdx = steps.indexOf(o.orderStatus);
+const statusClass = "status-pill " + String(o.orderStatus || "pending").toLowerCase();
 const trackerHTML = isCancelled
-? '✕ Order Cancelled'
+? '✕ This order was cancelled'
 : '' +
 steps.map((step, idx) => {
 const done = idx <= currentIdx;
-return '' +
-'<div style="height:5px;border-radius:4px;background:' + (done ? "#06271d" : "#e7d8c2") + ';margin-bottom:4px;">' +
-'<span style="font-size:10px;font-weight:' + (done ? "700" : "500") + ';color:' + (done ? "#06271d" : "#7d8178") + ';">' + step + '' +
+return '<div class="tracker-step ' + (done ? "done" : "") + '">' +
+'' +
+'' + step + '' +
 '';
 }).join("") +
 '';
 const itemsText = o.items.map(i => escapeHTML(i.name) + " × " + Number(i.quantity)).join(", ");
 const orderCode = escapeHTML(String(o._id).slice(-6).toUpperCase());
-const orderDate = new Date(o.createdAt).toLocaleDateString("en-IN");
+const orderDate = new Date(o.createdAt).toLocaleDateString("en-IN", {
+day: "numeric",
+month: "short",
+year: "numeric"
+});
 return '' +
 '' +
+'' +
 'Order #' + orderCode + '' +
+'' + escapeHTML(o.orderStatus) + '' +
+'' +
 '' + money(o.totalAmount) + '' +
 '' +
-'' + orderDate + ' · Status: ' + escapeHTML(o.orderStatus) + '' +
+'Placed on ' + orderDate + '' +
 '' + itemsText + '' +
 'Deliver to: ' + escapeHTML(o.deliveryAddress || "N/A") + '' +
 trackerHTML +
