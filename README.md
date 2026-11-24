@@ -2,7 +2,7 @@
 
 A full-stack web-based E-commerce Store for browsing curated products, managing a shopping bag, placing orders, and tracking live delivery statuses—complete with an Admin Control Room for catalogue and order management.
 
-**Live Storefront:** [https://onrender.com](https://onrender.com)
+**Live Storefront:** [https://ecommerce-store-0z5g.onrender.com/](https://onrender.com)
 
 ---
 
