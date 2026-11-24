@@ -4,7 +4,7 @@
 
 **ARPIARES** is a full-stack web-based E-commerce Store built with Node.js, Express, MongoDB, and vanilla HTML/CSS/JavaScript. It allows customers to browse products, inspect multi-angle product galleries, manage their shopping bag, place orders, and track live delivery progress. It also provides a role-protected Admin Control Room to manage products, upload photos, organize categories, and update customer order delivery statuses.
 
-**Live Application:** [https://onrender.com](https://onrender.com)
+**Live Application:** [https://ecommerce-store-0z5g.onrender.com/]
 
 ## 2. Problem Statement
 
