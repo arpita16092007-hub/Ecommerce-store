@@ -270,58 +270,64 @@ if (e.target.closest("#open-orders")) await openOrders();
 if (e.target.closest("#wishlist-shortcut")) showNotice("Wishlist is a visual placeholder; a wishlist API is not yet available.");
 });
 async function openOrders() {
-openModal("orders-modal");
-const box = byId("orders-list");
-if (!getToken()) {
-box.innerHTML = 'Please sign in to track your orders.';
-return;
+  openModal("orders-modal");
+  const box = byId("orders-list");
+  if (!getToken()) {
+    box.innerHTML = "<p class=\"muted\">Please sign in to track your orders.</p>";
+    return;
+  }
+  try {
+    const data = await apiRequest("/api/orders/my-orders");
+    const orders = data.orders || [];
+    const steps = ["Pending", "Confirmed", "Shipped", "Delivered"];
+
+    box.innerHTML = orders.length
+      ? orders.map(o => {
+          const isCancelled = o.orderStatus === "Cancelled";
+          const currentIdx = steps.indexOf(o.orderStatus);
+          const statusClass = "status-pill " + String(o.orderStatus || "pending").toLowerCase();
+
+          const trackerHTML = isCancelled
+            ? "<div class=\"order-cancelled\">✕ This order was cancelled</div>"
+            : "<div class=\"order-tracker\">" +
+                steps.map((step, idx) => {
+                  const done = idx <= currentIdx;
+                  return "<div class=\"tracker-step " + (done ? "done" : "") + "\">" +
+                    "<div class=\"tracker-bar\"></div>" +
+                    "<span>" + step + "</span>" +
+                  "</div>";
+                }).join("") +
+              "</div>";
+
+          const itemsText = o.items.map(i => escapeHTML(i.name) + " × " + Number(i.quantity)).join(", ");
+          const orderCode = escapeHTML(String(o._id).slice(-6).toUpperCase());
+          const orderDate = new Date(o.createdAt).toLocaleDateString("en-IN", {
+            day: "numeric",
+            month: "short",
+            year: "numeric"
+          });
+
+          return "<div class=\"order-card\">" +
+            "<div class=\"order-card-top\">" +
+              "<div>" +
+                "<span class=\"order-id\">Order #" + orderCode + "</span>" +
+                "<span class=\"" + statusClass + "\">" + escapeHTML(o.orderStatus) + "</span>" +
+              "</div>" +
+              "<strong class=\"order-total\">" + money(o.totalAmount) + "</strong>" +
+            "</div>" +
+            "<p class=\"order-meta\">Placed on " + orderDate + "</p>" +
+            "<p class=\"order-items\">" + itemsText + "</p>" +
+            "<p class=\"order-address\"><span>Deliver to:</span> " + escapeHTML(o.deliveryAddress || "N/A") + "</p>" +
+            trackerHTML +
+          "</div>";
+        }).join("")
+      : "<p class=\"muted\">You have no orders yet.</p>";
+  } catch (err) {
+    box.textContent = err.message;
+  }
 }
-try {
-const data = await apiRequest("/api/orders/my-orders");
-const orders = data.orders || [];
-const steps = ["Pending", "Confirmed", "Shipped", "Delivered"];
-box.innerHTML = orders.length
-? orders.map(o => {
-const isCancelled = o.orderStatus === "Cancelled";
-const currentIdx = steps.indexOf(o.orderStatus);
-const statusClass = "status-pill " + String(o.orderStatus || "pending").toLowerCase();
-const trackerHTML = isCancelled
-? '✕ This order was cancelled'
-: '' +
-steps.map((step, idx) => {
-const done = idx <= currentIdx;
-return '<div class="tracker-step ' + (done ? "done" : "") + '">' +
-'' +
-'' + step + '' +
-'';
-}).join("") +
-'';
-const itemsText = o.items.map(i => escapeHTML(i.name) + " × " + Number(i.quantity)).join(", ");
-const orderCode = escapeHTML(String(o._id).slice(-6).toUpperCase());
-const orderDate = new Date(o.createdAt).toLocaleDateString("en-IN", {
-day: "numeric",
-month: "short",
-year: "numeric"
-});
-return '' +
-'' +
-'' +
-'Order #' + orderCode + '' +
-'' + escapeHTML(o.orderStatus) + '' +
-'' +
-'' + money(o.totalAmount) + '' +
-'' +
-'Placed on ' + orderDate + '' +
-'' + itemsText + '' +
-'Deliver to: ' + escapeHTML(o.deliveryAddress || "N/A") + '' +
-trackerHTML +
-'';
-}).join("")
-: 'You have no orders yet.';
-} catch (err) {
-box.textContent = err.message;
-}
-}
+
+
 byId("search-form").addEventListener("submit", e => {
 e.preventDefault();
 const q = byId("search-input").value.trim().toLowerCase();
