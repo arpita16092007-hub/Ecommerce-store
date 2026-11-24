@@ -8,7 +8,7 @@ const adminMiddleware = require("../middleware/adminMiddleware");
 
 const router = express.Router();
 
-const ALLOWED_STATUSES = ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"];
+const ALLOWED_STATUSES = ["Pending", "Confirmed", "Shipped", "Delivered", "Cancelled"];
 
 // ========================================
 // CHECKOUT

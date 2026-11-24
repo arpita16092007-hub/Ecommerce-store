@@ -48,8 +48,8 @@ async function loadStore() {
     renderCategories();
     renderProducts(allProducts);
   } catch (error) {
-    byId("product-grid").innerHTML = "<div class=\"loading-card\">Couldn't load products. " + escapeHTML(error.message) + "<br><br>Check that your backend is running on port 5050.</div>";
-    showNotice("Backend connection failed. Start your backend and refresh this page.", true);
+    byId("product-grid").innerHTML = "<div class=\"loading-card\">Couldn't load products. " + escapeHTML(error.message) + "<br><br>Check that your backend is running.</div>";
+    showNotice("Backend connection failed. Refresh this page once the server is ready.", true);
   }
 }
 
@@ -73,20 +73,20 @@ function renderProducts(products) {
     const primaryImg = (Array.isArray(p.images) && p.images.at(0)) || p.imageUrl || "";
     const safeSrc = String(primaryImg).replace(/"/g, "&quot;");
     const image = safeSrc
-      ? "<img src=\"" + safeSrc + "\" alt=\"" + escapeHTML(p.name) + "\" loading=\"lazy\" onerror=\"this.onerror=null;this.parentElement.innerHTML='<span class=\\x27product-placeholder\\x27>A</span>'\">"
-      : "<span class=\"product-placeholder\">A</span>";
+      ? '<img src="' + safeSrc + '" alt="' + escapeHTML(p.name) + '" loading="lazy" onerror="this.style.display=\'none\'">'
+      : '<span class="product-placeholder">A</span>';
     const desc = escapeHTML((p.description || "").slice(0, 85)) + ((p.description || "").length > 85 ? "…" : "");
-    return "<article class=\"product-card\">" +
-      "<div class=\"product-image\" data-view=\"" + p._id + "\">" + image + "<span class=\"image-badge\">" + escapeHTML(p.name) + "</span></div>" +
-      "<div class=\"product-info\">" +
-        "<h3 data-view=\"" + p._id + "\">" + escapeHTML(p.name) + "</h3>" +
-        "<p>" + desc + "</p>" +
-        "<div class=\"product-bottom\">" +
-          "<span class=\"price\">" + money(p.price) + "</span>" +
-          "<button class=\"add-button\" data-add=\"" + p._id + "\" " + (p.stock < 1 ? "disabled" : "") + ">" + (p.stock < 1 ? "OUT OF STOCK" : "＋ ADD TO BAG") + "</button>" +
-        "</div>" +
-      "</div>" +
-    "</article>";
+    return '<article class="product-card">' +
+      '<div class="product-image" data-view="' + p._id + '">' + image + '<span class="image-badge">' + escapeHTML(p.name) + '</span></div>' +
+      '<div class="product-info">' +
+        '<h3 data-view="' + p._id + '">' + escapeHTML(p.name) + '</h3>' +
+        '<p>' + desc + '</p>' +
+        '<div class="product-bottom">' +
+          '<span class="price">' + money(p.price) + '</span>' +
+          '<button class="add-button" data-add="' + p._id + '" ' + (p.stock < 1 ? "disabled" : "") + '>' + (p.stock < 1 ? "OUT OF STOCK" : "＋ ADD TO BAG") + '</button>' +
+        '</div>' +
+      '</div>' +
+    '</article>';
   }).join("");
 }
 
@@ -148,7 +148,7 @@ async function updateCartQuantity(productId, newQuantity) {
 async function openCart() {
   openModal("cart-modal");
   if (!getToken()) {
-    byId("cart-items").innerHTML = "<p class=\"muted\">Please sign in to view your cart.</p>";
+    byId("cart-items").innerHTML = '<p class="muted">Please sign in to view your cart.</p>';
     byId("cart-subtotal").textContent = money(0);
     return;
   }
@@ -157,22 +157,22 @@ async function openCart() {
     const items = data.items || [];
     byId("cart-items").innerHTML = items.length
       ? items.map(item =>
-        "<div class=\"cart-row\">" +
-          "<div>" +
-            "<b>" + escapeHTML(item.productName) + "</b>" +
-            "<small>" + money(item.price) + " each</small>" +
-            "<div style=\"display:inline-flex;align-items:center;gap:8px;margin-top:6px;\">" +
-              "<button type=\"button\" class=\"add-button\" style=\"padding:3px 10px;\" data-qty-id=\"" + item.productId + "\" data-qty-next=\"" + (item.quantity - 1) + "\">−</button>" +
-              "<span style=\"font-weight:700;min-width:18px;text-align:center;\">" + item.quantity + "</span>" +
-              "<button type=\"button\" class=\"add-button\" style=\"padding:3px 10px;\" data-qty-id=\"" + item.productId + "\" data-qty-next=\"" + (item.quantity + 1) + "\">＋</button>" +
-            "</div>" +
-          "</div>" +
-          "<strong style=\"text-align:right;\">" +
-            money(item.itemTotal) + "<br>" +
-            "<button type=\"button\" class=\"text-button small\" data-remove=\"" + item.productId + "\">Remove all</button>" +
-          "</strong>" +
-        "</div>").join("")
-      : "<p class=\"muted\">Your bag is empty. Explore the collection to add something you love.</p>";
+        '<div class="cart-row">' +
+          '<div>' +
+            '<b>' + escapeHTML(item.productName) + '</b>' +
+            '<small>' + money(item.price) + ' each</small>' +
+            '<div style="display:inline-flex;align-items:center;gap:8px;margin-top:6px;">' +
+              '<button type="button" class="add-button" style="padding:3px 10px;" data-qty-id="' + item.productId + '" data-qty-next="' + (item.quantity - 1) + '">−</button>' +
+              '<span style="font-weight:700;min-width:18px;text-align:center;">' + item.quantity + '</span>' +
+              '<button type="button" class="add-button" style="padding:3px 10px;" data-qty-id="' + item.productId + '" data-qty-next="' + (item.quantity + 1) + '">＋</button>' +
+            '</div>' +
+          '</div>' +
+          '<strong style="text-align:right;">' +
+            money(item.itemTotal) + '<br>' +
+            '<button type="button" class="text-button small" data-remove="' + item.productId + '">Remove all</button>' +
+          '</strong>' +
+        '</div>').join("")
+      : '<p class="muted">Your bag is empty. Explore the collection to add something you love.</p>';
     byId("cart-subtotal").textContent = money(data.subtotal);
   } catch (e) {
     byId("cart-items").textContent = e.message;
@@ -188,8 +188,8 @@ function openAuth(mode = "login") {
   byId("auth-password").autocomplete = mode === "login" ? "current-password" : "new-password";
   byId("auth-submit").textContent = mode === "login" ? "LOGIN →" : "CREATE ACCOUNT →";
   byId("auth-switch-line").innerHTML = mode === "login"
-    ? "Don't have an account? <button class=\"text-button\" id=\"switch-auth\">Create account</button>"
-    : "Already registered? <button class=\"text-button\" id=\"switch-auth\">Sign in</button>";
+    ? 'Don\'t have an account? <button class="text-button" id="switch-auth">Create account</button>'
+    : 'Already registered? <button class="text-button" id="switch-auth">Sign in</button>';
   byId("auth-message").textContent = "";
   openModal("auth-modal");
 }
@@ -203,28 +203,28 @@ async function showProduct(id) {
     const mainSrc = String(gallery.at(0) || "").replace(/"/g, "&quot;");
 
     const thumbsHTML = gallery.length > 1
-      ? "<div class=\"detail-thumbs\">" + gallery.map((src, idx) => {
+      ? '<div class="detail-thumbs">' + gallery.map((src, idx) => {
           const clean = String(src).replace(/"/g, "&quot;");
-          return "<button type=\"button\" class=\"thumb-btn " + (idx === 0 ? "active" : "") + "\" data-thumb=\"" + clean + "\">" +
-            "<img src=\"" + clean + "\" alt=\"" + escapeHTML(p.name) + " angle " + (idx + 1) + "\">" +
-          "</button>";
-        }).join("") + "</div>"
+          return '<button type="button" class="thumb-btn ' + (idx === 0 ? "active" : "") + '" data-thumb="' + clean + '">' +
+            '<img src="' + clean + '" alt="' + escapeHTML(p.name) + ' angle ' + (idx + 1) + '">' +
+          '</button>';
+        }).join("") + '</div>'
       : "";
 
-    byId("product-detail").innerHTML = "<div class=\"detail-layout\">" +
-      "<div>" +
-        "<div class=\"detail-image\">" + (mainSrc ? "<img id=\"detail-main-img\" src=\"" + mainSrc + "\" alt=\"" + escapeHTML(p.name) + "\">" : "<span class=\"product-placeholder\">A</span>") + "</div>" +
+    byId("product-detail").innerHTML = '<div class="detail-layout">' +
+      '<div>' +
+        '<div class="detail-image">' + (mainSrc ? '<img id="detail-main-img" src="' + mainSrc + '" alt="' + escapeHTML(p.name) + '">' : '<span class="product-placeholder">A</span>') + '</div>' +
         thumbsHTML +
-      "</div>" +
-      "<div>" +
-        "<p class=\"eyebrow\">ARPIARES COLLECTION</p>" +
-        "<h2>" + escapeHTML(p.name) + "</h2>" +
-        "<p class=\"price\">" + money(p.price) + "</p>" +
-        "<p>" + escapeHTML(p.description) + "</p>" +
-        "<p class=\"small\">Availability: " + (Number(p.stock) > 0 ? p.stock + " in stock" : "Out of stock") + "</p>" +
-        "<button class=\"primary-button\" data-add=\"" + p._id + "\" " + (p.stock < 1 ? "disabled" : "") + ">ADD TO BAG →</button>" +
-      "</div>" +
-    "</div>";
+      '</div>' +
+      '<div>' +
+        '<p class="eyebrow">ARPIARES COLLECTION</p>' +
+        '<h2>' + escapeHTML(p.name) + '</h2>' +
+        '<p class="price">' + money(p.price) + '</p>' +
+        '<p>' + escapeHTML(p.description) + '</p>' +
+        '<p class="small">Availability: ' + (Number(p.stock) > 0 ? p.stock + " in stock" : "Out of stock") + '</p>' +
+        '<button class="primary-button" data-add="' + p._id + '" ' + (p.stock < 1 ? "disabled" : "") + '>ADD TO BAG →</button>' +
+      '</div>' +
+    '</div>';
     openModal("product-modal");
   } catch (e) {
     showNotice(e.message, true);
@@ -241,13 +241,14 @@ document.addEventListener("click", async e => {
     const mainImg = byId("detail-main-img");
     if (mainImg) mainImg.src = thumb.dataset.thumb;
     document.querySelectorAll(".thumb-btn").forEach(b => b.classList.remove("active"));
- thumb.classList.add("active");
-}
-const category = e.target.closest("[data-category]");
-if (category) {
-selectedCategory = category.dataset.category;
-document.querySelectorAll("[data-category]").forEach(b => b.classList.toggle("active", b.dataset.category === selectedCategory));
-const filtered = selectedCategory ? allProducts.filter(p => (p.categoryId?._id || p.categoryId) === selectedCategory) : allProducts;
+    thumb.classList.add("active");
+  }
+
+  const category = e.target.closest("[data-category]");
+  if (category) {
+    selectedCategory = category.dataset.category;
+    document.querySelectorAll("[data-category]").forEach(b => b.classList.toggle("active", b.dataset.category === selectedCategory));
+    const filtered = selectedCategory ? allProducts.filter(p => (p.categoryId?._id || p.categoryId) === selectedCategory) : allProducts;
 renderProducts(filtered);
 }
 const add = e.target.closest("[data-add]");
@@ -269,114 +270,106 @@ if (e.target.closest("#open-orders")) await openOrders();
 if (e.target.closest("#wishlist-shortcut")) showNotice("Wishlist is a visual placeholder; a wishlist API is not yet available.");
 });
 async function openOrders() {
-  openModal("orders-modal");
-  const box = byId("orders-list");
-  if (!getToken()) {
-    box.innerHTML = '<p class="muted">Please sign in to track your orders.</p>';
-    return;
-  }
-  try {
-    const data = await apiRequest("/api/orders/my-orders");
-    const orders = data.orders || [];
-    const steps = ["Pending", "Processing", "Shipped", "Delivered"];
-
-    box.innerHTML = orders.length
-      ? orders.map(o => {
-          const isCancelled = o.orderStatus === "Cancelled";
-          const currentIdx = steps.indexOf(o.orderStatus);
-          const trackerHTML = isCancelled
-            ? '<div style="margin-top:8px;padding:6px 10px;border-radius:8px;background:#fdecea;color:#a3442f;font-size:11px;font-weight:700;">✕ Order Cancelled</div>'
-            : '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:10px;">' +
-                steps.map((step, idx) => {
-                  const done = idx <= currentIdx;
-                  return '<div style="text-align:center;">' +
-                    '<div style="height:5px;border-radius:4px;background:' + (done ? "#06271d" : "#e7d8c2") + ';margin-bottom:4px;"></div>' +
-                    '<span style="font-size:10px;font-weight:' + (done ? "700" : "500") + ';color:' + (done ? "#06271d" : "#7d8178") + ';">' + step + '</span>' +
-                  '</div>';
-                }).join("") +
-              '</div>';
-
-          const itemsText = o.items.map(i => escapeHTML(i.name) + " × " + Number(i.quantity)).join(", ");
-          const orderCode = escapeHTML(String(o._id).slice(-6).toUpperCase());
-          const orderDate = new Date(o.createdAt).toLocaleDateString("en-IN");
-
-          return '<div class="cart-row" style="display:block;padding:14px 0;">' +
-            '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">' +
-              '<b>Order #' + orderCode + '</b>' +
-              '<strong>' + money(o.totalAmount) + '</strong>' +
-            '</div>' +
-            '<small>' + orderDate + ' · Status: <b>' + escapeHTML(o.orderStatus) + '</b></small>' +
-            '<small>' + itemsText + '</small>' +
-            '<small>Deliver to: ' + escapeHTML(o.deliveryAddress || "N/A") + '</small>' +
-            trackerHTML +
-          '</div>';
-        }).join("")
-      : '<p class="muted">You have no orders yet.</p>';
-  } catch (err) {
-    box.textContent = err.message;
-  }
+openModal("orders-modal");
+const box = byId("orders-list");
+if (!getToken()) {
+box.innerHTML = 'Please sign in to track your orders.';
+return;
 }
-
-
+try {
+const data = await apiRequest("/api/orders/my-orders");
+const orders = data.orders || [];
+const steps = ["Pending", "Confirmed", "Shipped", "Delivered"];
+box.innerHTML = orders.length
+? orders.map(o => {
+const isCancelled = o.orderStatus === "Cancelled";
+const currentIdx = steps.indexOf(o.orderStatus);
+const trackerHTML = isCancelled
+? '✕ Order Cancelled'
+: '' +
+steps.map((step, idx) => {
+const done = idx <= currentIdx;
+return '' +
+'<div style="height:5px;border-radius:4px;background:' + (done ? "#06271d" : "#e7d8c2") + ';margin-bottom:4px;">' +
+'<span style="font-size:10px;font-weight:' + (done ? "700" : "500") + ';color:' + (done ? "#06271d" : "#7d8178") + ';">' + step + '' +
+'';
+}).join("") +
+'';
+const itemsText = o.items.map(i => escapeHTML(i.name) + " × " + Number(i.quantity)).join(", ");
+const orderCode = escapeHTML(String(o._id).slice(-6).toUpperCase());
+const orderDate = new Date(o.createdAt).toLocaleDateString("en-IN");
+return '' +
+'' +
+'Order #' + orderCode + '' +
+'' + money(o.totalAmount) + '' +
+'' +
+'' + orderDate + ' · Status: ' + escapeHTML(o.orderStatus) + '' +
+'' + itemsText + '' +
+'Deliver to: ' + escapeHTML(o.deliveryAddress || "N/A") + '' +
+trackerHTML +
+'';
+}).join("")
+: 'You have no orders yet.';
+} catch (err) {
+box.textContent = err.message;
+}
+}
 byId("search-form").addEventListener("submit", e => {
-  e.preventDefault();
-  const q = byId("search-input").value.trim().toLowerCase();
-  const base = selectedCategory ? allProducts.filter(p => (p.categoryId?._id || p.categoryId) === selectedCategory) : allProducts;
-  renderProducts(base.filter(p => (p.name + " " + p.description).toLowerCase().includes(q)));
+e.preventDefault();
+const q = byId("search-input").value.trim().toLowerCase();
+const base = selectedCategory ? allProducts.filter(p => (p.categoryId?._id || p.categoryId) === selectedCategory) : allProducts;
+renderProducts(base.filter(p => (p.name + " " + p.description).toLowerCase().includes(q)));
 });
-
 byId("sort-select").addEventListener("change", e => {
-  const sorted = [...allProducts];
-  if (e.target.value === "price-low") sorted.sort((a, b) => a.price - b.price);
-  if (e.target.value === "price-high") sorted.sort((a, b) => b.price - a.price);
-  renderProducts(selectedCategory ? sorted.filter(p => (p.categoryId?._id || p.categoryId) === selectedCategory) : sorted);
+const sorted = [...allProducts];
+if (e.target.value === "price-low") sorted.sort((a, b) => a.price - b.price);
+if (e.target.value === "price-high") sorted.sort((a, b) => b.price - a.price);
+renderProducts(selectedCategory ? sorted.filter(p => (p.categoryId?._id || p.categoryId) === selectedCategory) : sorted);
 });
-
 byId("auth-form").addEventListener("submit", async e => {
-  e.preventDefault();
-  const message = byId("auth-message");
-  message.textContent = "Please wait…";
-  const body = { email: byId("auth-email").value.trim(), password: byId("auth-password").value };
-  if (authMode === "signup") body.name = byId("auth-name").value.trim();
-  try {
-    const data = await apiRequest(authMode === "signup" ? "/api/auth/signup" : "/api/auth/login", { method: "POST", body: JSON.stringify(body) });
-    if (authMode === "signup") {
-      message.textContent = "Account created. Please sign in.";
-      openAuth("login");
-      byId("auth-email").value = body.email;
-    } else {
-      localStorage.setItem("arpiares_token", data.token);
-      localStorage.setItem("arpiares_user", JSON.stringify(data.user));
-      updateAccountUI();
-      closeModal("auth-modal");
-      await refreshCartCount();
-      showNotice("Welcome, " + data.user.name + "!");
-    }
-  } catch (err) {
-    message.textContent = err.message;
-  }
+e.preventDefault();
+const message = byId("auth-message");
+message.textContent = "Please wait…";
+const body = { email: byId("auth-email").value.trim(), password: byId("auth-password").value };
+if (authMode === "signup") body.name = byId("auth-name").value.trim();
+try {
+const data = await apiRequest(authMode === "signup" ? "/api/auth/signup" : "/api/auth/login", { method: "POST", body: JSON.stringify(body) });
+if (authMode === "signup") {
+message.textContent = "Account created. Please sign in.";
+openAuth("login");
+byId("auth-email").value = body.email;
+} else {
+localStorage.setItem("arpiares_token", data.token);
+localStorage.setItem("arpiares_user", JSON.stringify(data.user));
+updateAccountUI();
+closeModal("auth-modal");
+await refreshCartCount();
+showNotice("Welcome, " + data.user.name + "!");
+}
+} catch (err) {
+message.textContent = err.message;
+}
 });
-
 byId("checkout-form").addEventListener("submit", async e => {
-  e.preventEvent();
-  if (!getToken()) {
-    byId("cart-message").textContent = "Please sign in first.";
-    return;
-  }
-  try {
-    const data = await apiRequest("/api/orders/checkout", {
-      method: "POST",
-      body: JSON.stringify({ deliveryAddress: byId("delivery-address").value.trim() })
-    });
-    byId("cart-message").textContent = data.message + ". Your order has been placed.";
-    byId("delivery-address").value = "";
-    await refreshCartCount();
-    byId("cart-items").innerHTML = "<p class=\"muted\">Your order was placed successfully. Your bag is now empty.</p>";
-    byId("cart-subtotal").textContent = money(0);
-    await loadStore();
-  } catch (err) {
-    byId("cart-message").textContent = err.message;
-  }
+e.preventDefault();
+if (!getToken()) {
+byId("cart-message").textContent = "Please sign in first.";
+return;
+}
+try {
+const data = await apiRequest("/api/orders/checkout", {
+method: "POST",
+body: JSON.stringify({ deliveryAddress: byId("delivery-address").value.trim() })
+});
+byId("cart-message").textContent = data.message + ". Your order has been placed.";
+byId("delivery-address").value = "";
+await refreshCartCount();
+byId("cart-items").innerHTML = 'Your order was placed successfully. Your bag is now empty.';
+byId("cart-subtotal").textContent = money(0);
+await loadStore();
+} catch (err) {
+byId("cart-message").textContent = err.message;
+}
 });
 updateAccountUI();
 loadStore();

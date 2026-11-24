@@ -120,7 +120,9 @@ function renderAdminOrders() {
   const ordersBox = byId("admin-orders-list");
   if (!ordersBox) return;
 
-  const statuses = ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"];
+    const statuses = ["Pending", "Confirmed", "Shipped", "Delivered", "Cancelled"];
+
+
   ordersBox.innerHTML = adminOrders.length
     ? adminOrders.map(o => {
         const customerName = o.userId?.name || "Customer";
