@@ -1,4 +1,3 @@
-
 const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema(
@@ -8,42 +7,57 @@ const productSchema = new mongoose.Schema(
             required: true,
             trim: true
         },
-
         description: {
             type: String,
-            required: true,
-            trim: true
+            required: true
         },
-
         price: {
             type: Number,
             required: true,
             min: 0
         },
-
         stock: {
             type: Number,
             required: true,
-            min: 0,
-            default: 0
+            min: 0
         },
-
         imageUrl: {
             type: String,
             default: ""
         },
-
+        images: {
+            type: [String],
+            default: []
+        },
         categoryId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Category",
-            default: null
+            required: true
+        },
+        retailerName: {
+            type: String,
+            default: "ARPIARES Curated",
+            trim: true
+        },
+        retailerProductUrl: {
+            type: String,
+            default: "",
+            trim: true
+        },
+        lastPriceCheckedAt: {
+            type: Date,
+            default: Date.now
+        },
+        currency: {
+            type: String,
+            default: "INR"
+        },
+        isActive: {
+            type: Boolean,
+            default: true
         }
     },
-    {
-        timestamps: true
-    }
+    { timestamps: true }
 );
 
-const Product = mongoose.model("Product", productSchema);
-
-module.exports = Product;
+module.exports = mongoose.model("Product", productSchema);

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ARPIARES — Admin Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">A</span>
+      <span>ARPIARES <small>ADMIN CONSOLE</small></span>
+    </a>
+    <div class="header-actions">
+      <a class="account-button" href="index.html" style="text-decoration:none;">← Back to Store</a>
+      <button class="account-button" id="admin-logout" type="button">Logout</button>
+    </div>
+  </header>
+
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <p class="sidebar-heading">MANAGEMENT</p>
+      <a class="category-link active" href="#product-section">✦ <span>Products</span></a>
+      <a class="category-link" href="#category-section">◇ <span>Categories</span></a>
+    </aside>
+
+    <main class="admin-main">
+      <p class="eyebrow">STORE ADMINISTRATION</p>
+      <h1>ARPIARES Control Room</h1>
+      <p class="notice" id="admin-message"></p>
+
+      <div class="stat-grid">
+        <div class="stat-card"><span>✦</span><small>Active Products</small><strong id="stat-products">0</strong></div>
+        <div class="stat-card"><span>◇</span><small>Categories</small><strong id="stat-categories">0</strong></div>
+        <div class="stat-card"><span>📦</span><small>Total Stock Units</small><strong id="stat-stock">0</strong></div>
+      </div>
+
+      <section class="admin-panel" id="product-section">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+          <h2 id="product-form-heading">Add a product</h2>
+          <button type="button" class="text-button hidden" id="cancel-edit-btn">✕ Cancel editing</button>
+        </div>
+
+        <form class="admin-form" id="product-form">
+          <input type="hidden" name="productId" id="edit-product-id">
+          <input name="name" placeholder="Product name" required>
+          <input name="price" type="number" min="1" step="1" placeholder="Price (INR)" required>
+          <input name="stock" type="number" min="0" step="1" placeholder="Stock quantity" required>
+          <select name="categoryId" id="admin-category-select" required><option value="">Choose category</option></select>
+
+          <div style="grid-column: 1 / -1; display: grid; gap: 10px; background: #fffaf2; border: 1px dashed #c89d5c; border-radius: 12px; padding: 14px;">
+            <label style="font-size: 12px; font-weight: 600; color: #06271d; cursor: pointer;">
+              📷 Upload Product Photos from Mac / Android (select one or multiple angles):
+              <input type="file" id="product-file-input" accept="image/*" multiple style="margin-top: 8px; padding: 8px; background: #fff;">
+            </label>
+            <input name="imageUrl" id="product-url-input" placeholder="Or enter image path / URL (e.g., images/watch-1.png or https://...)">
+            <div id="admin-image-preview" style="display: flex; gap: 10px; flex-wrap: wrap;"></div>
+          </div>
+
+          <textarea name="description" placeholder="Product description" required></textarea>
+          <button class="primary-button" id="product-submit-btn" type="submit">ADD PRODUCT →</button>
+        </form>
+
+        <h2>Current catalogue</h2>
+        <div class="admin-product-list" id="admin-product-list"></div>
+      </section>
+
+      <section class="admin-panel" id="category-section">
+        <h2>Categories</h2>
+        <form class="inline-form" id="category-form">
+          <input name="name" placeholder="New category name" required>
+          <input name="description" placeholder="Short description">
+          <button class="primary-button" type="submit">ADD CATEGORY →</button>
+        </form>
+        <div class="category-chips" id="admin-category-list"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/api.js" defer></script>
+  <script src="js/admin.js" defer></script>
+</body>
+</html>

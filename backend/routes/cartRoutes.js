@@ -139,6 +139,7 @@ router.get("/", authMiddleware, async (req, res) => {
                 return {
                     productId: product._id,
                     productName: product.name,
+                    imageUrl: product.imageUrl,
                     price: product.price,
                     quantity: item.quantity,
                     itemTotal: product.price * item.quantity
@@ -163,6 +164,101 @@ router.get("/", authMiddleware, async (req, res) => {
             message: "Error fetching cart",
             error: error.message
         });
+    }
+});
+
+
+// ========================================
+// UPDATE ITEM QUANTITY
+// PUT /api/cart/item/:productId
+// ========================================
+
+router.put("/item/:productId", authMiddleware, async (req, res) => {
+    try {
+        const { productId } = req.params;
+        const { quantity } = req.body;
+
+        if (!mongoose.Types.ObjectId.isValid(productId)) {
+            return res.status(400).json({ message: "Invalid product ID" });
+        }
+
+        if (!Number.isInteger(quantity) || quantity < 1) {
+            return res.status(400).json({
+                message: "Quantity must be a positive integer"
+            });
+        }
+
+        const product = await Product.findById(productId);
+
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        if (quantity > product.stock) {
+            return res.status(400).json({
+                message: "Not enough stock available"
+            });
+        }
+
+        const cart = await Cart.findOne({ userId: req.user.userId });
+        const item = cart && cart.items.find(
+            i => i.productId.toString() === productId
+        );
+
+        if (!item) {
+            return res.status(404).json({ message: "Item not in cart" });
+        }
+
+        item.quantity = quantity;
+        await cart.save();
+
+        return res.status(200).json({
+            message: "Cart updated successfully"
+        });
+
+    } catch (error) {
+        return res.status(500).json({ message: "Error updating cart" });
+    }
+});
+
+
+// ========================================
+// REMOVE ITEM FROM CART
+// DELETE /api/cart/item/:productId
+// ========================================
+
+router.delete("/item/:productId", authMiddleware, async (req, res) => {
+    try {
+        const { productId } = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(productId)) {
+            return res.status(400).json({ message: "Invalid product ID" });
+        }
+
+        const cart = await Cart.findOne({ userId: req.user.userId });
+
+        if (!cart) {
+            return res.status(404).json({ message: "Cart not found" });
+        }
+
+        const before = cart.items.length;
+
+        cart.items = cart.items.filter(
+            i => i.productId.toString() !== productId
+        );
+
+        if (cart.items.length === before) {
+            return res.status(404).json({ message: "Item not in cart" });
+        }
+
+        await cart.save();
+
+        return res.status(200).json({
+            message: "Item removed from cart"
+        });
+
+    } catch (error) {
+        return res.status(500).json({ message: "Error removing item" });
     }
 });
 

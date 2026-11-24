@@ -1,4 +1,3 @@
-
 const express = require("express");
 const mongoose = require("mongoose");
 const Product = require("../models/Product");
@@ -8,8 +7,37 @@ const adminMiddleware = require("../middleware/adminMiddleware");
 
 const router = express.Router();
 
+function isValidImageSource(value) {
+    if (!value) return true;
+    if (typeof value !== "string") return false;
+    const trimmed = value.trim();
+    if (/^data:image\/(png|jpe?g|webp|gif|svg\+xml);base64,/i.test(trimmed)) return true;
+    if (/^images\/[a-zA-Z0-9._-]+$/.test(trimmed)) return true;
+    try {
+        const parsed = new URL(trimmed);
+        return parsed.protocol === "https:";
+    } catch {
+        return false;
+    }
+}
+
+function escapeRegex(value) {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function normalizeGallery(images, imageUrl) {
+    if (Array.isArray(images) && images.length) {
+        return images.map(s => String(s).trim()).filter(Boolean);
+    }
+    if (typeof imageUrl === "string" && imageUrl.trim()) {
+        return [imageUrl.trim()];
+    }
+    return [];
+}
+
 // ========================================
-// CREATE a product (Admin only)
+// CREATE PRODUCT (ADMIN ONLY)
+// POST /api/products
 // ========================================
 router.post("/", authMiddleware, adminMiddleware, async (req, res) => {
     try {
@@ -19,284 +47,267 @@ router.post("/", authMiddleware, adminMiddleware, async (req, res) => {
             price,
             stock,
             imageUrl,
-            categoryId
+            images,
+            categoryId,
+            retailerName,
+            retailerProductUrl,
+            currency
         } = req.body;
 
-        // Check required fields
-        if (!name || !description || price === undefined) {
+        if (!name || !description || price === undefined || stock === undefined || !categoryId) {
             return res.status(400).json({
-                message: "Name, description and price are required."
+                message: "name, description, price, stock, and categoryId are required"
             });
         }
 
-        // Validate category ID
-        if (categoryId) {
-            if (!mongoose.isValidObjectId(categoryId)) {
-                return res.status(400).json({
-                    message: "Invalid category ID."
-                });
-            }
-
-            const categoryExists = await Category.findById(categoryId);
-
-            if (!categoryExists) {
-                return res.status(404).json({
-                    message: "Category not found."
-                });
-            }
+        if (typeof name !== "string" || !name.trim() || typeof description !== "string" || !description.trim()) {
+            return res.status(400).json({ message: "name and description must be non-empty strings" });
         }
 
-        // Create product
+        const numericPrice = Number(price);
+        const numericStock = Number(stock);
+
+        if (!Number.isFinite(numericPrice) || numericPrice < 0) {
+            return res.status(400).json({ message: "price must be a valid non-negative number" });
+        }
+
+        if (!Number.isInteger(numericStock) || numericStock < 0) {
+            return res.status(400).json({ message: "stock must be a valid non-negative integer" });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(categoryId)) {
+            return res.status(400).json({ message: "Invalid categoryId" });
+        }
+
+        const categoryExists = await Category.findById(categoryId);
+        if (!categoryExists) {
+            return res.status(404).json({ message: "Category not found" });
+        }
+
+        const gallery = normalizeGallery(images, imageUrl);
+        if (gallery.some(src => !isValidImageSource(src))) {
+            return res.status(400).json({
+                message: "Each image must be an uploaded photo, a local images/ path, or an https:// URL"
+            });
+        }
+
         const product = await Product.create({
-            name,
-            description,
-            price,
-            stock,
-            imageUrl,
-            categoryId
+            name: name.trim(),
+            description: description.trim(),
+            price: numericPrice,
+            stock: numericStock,
+            imageUrl: gallery.at(0) || "",
+            images: gallery,
+            categoryId,
+            retailerName: typeof retailerName === "string" && retailerName.trim() ? retailerName.trim() : "ARPIARES Curated",
+            retailerProductUrl: typeof retailerProductUrl === "string" ? retailerProductUrl.trim() : "",
+            lastPriceCheckedAt: new Date(),
+            currency: typeof currency === "string" && currency.trim() ? currency.trim().toUpperCase() : "INR"
         });
 
-        // Populate category details
-        await product.populate("categoryId", "name description");
-
-        res.status(201).json({
+        return res.status(201).json({
             message: "Product created successfully",
             product
         });
-
     } catch (error) {
-        console.error("Product creation error:", error);
-
-        res.status(500).json({
-            message: "Could not create product.",
-            error: error.message
-        });
+        return res.status(500).json({ message: "Error creating product" });
     }
 });
 
-
 // ========================================
-// READ all products with search, category
-// filtering and pagination (Public)
+// GET ALL ACTIVE PRODUCTS
+// GET /api/products
 // ========================================
 router.get("/", async (req, res) => {
     try {
-        const { search, categoryId } = req.query;
+        const { category, search, page = 1, limit = 100 } = req.query;
+        const pageNumber = Math.max(1, parseInt(page, 10) || 1);
+        const pageSize = Math.min(100, Math.max(1, parseInt(limit, 10) || 100));
+        const filter = { isActive: true };
 
-        // Pagination settings
-        const page = Number.parseInt(req.query.page, 10) || 1;
-        const limit = Number.parseInt(req.query.limit, 10) || 10;
-
-        // Validate pagination
-        if (page < 1 || limit < 1 || limit > 100) {
-            return res.status(400).json({
-                message: "Page must be positive and limit must be between 1 and 100."
-            });
-        }
-
-        // Build product filter
-        const filter = {};
-
-        // Search by product name or description
-        if (search) {
-            const safeSearch = search.replace(
-                /[.*+?^${}()|[\]\\]/g,
-                "\\$&"
-            );
-
-            filter.$or = [
-                {
-                    name: {
-                        $regex: safeSearch,
-                        $options: "i"
-                    }
-                },
-                {
-                    description: {
-                        $regex: safeSearch,
-                        $options: "i"
-                    }
-                }
-            ];
-        }
-
-        // Filter by category
-        if (categoryId) {
-            if (!mongoose.isValidObjectId(categoryId)) {
-                return res.status(400).json({
-                    message: "Invalid category ID."
-                });
+        if (category) {
+            if (!mongoose.Types.ObjectId.isValid(category)) {
+                return res.status(400).json({ message: "Invalid category filter" });
             }
-
-            filter.categoryId = categoryId;
+            filter.categoryId = category;
         }
 
-        // Count matching products
+        if (search && typeof search === "string") {
+            const safeSearch = escapeRegex(search.trim().slice(0, 100));
+            if (safeSearch) {
+                filter.$or = [
+                    { name: { $regex: safeSearch, $options: "i" } },
+                    { description: { $regex: safeSearch, $options: "i" } }
+                ];
+            }
+        }
+
         const totalProducts = await Product.countDocuments(filter);
-
-        // Calculate products to skip
-        const skip = (page - 1) * limit;
-
-        // Fetch products
         const products = await Product.find(filter)
             .populate("categoryId", "name description")
             .sort({ createdAt: -1 })
-            .skip(skip)
-            .limit(limit);
+            .skip((pageNumber - 1) * pageSize)
+            .limit(pageSize);
 
-        // Calculate total pages
-        const totalPages = Math.ceil(totalProducts / limit);
-
-        res.status(200).json({
+        return res.status(200).json({
+            message: "Products fetched successfully",
             totalProducts,
-            totalPages,
-            currentPage: page,
-            pageSize: limit,
+            currentPage: pageNumber,
+            totalPages: Math.ceil(totalProducts / pageSize),
             products
         });
-
     } catch (error) {
-        console.error("Product fetching error:", error);
-
-        res.status(500).json({
-            message: "Could not fetch products."
-        });
+        return res.status(500).json({ message: "Error fetching products" });
     }
 });
 
-
 // ========================================
-// READ one product (Public)
+// GET SINGLE PRODUCT BY ID
+// GET /api/products/:id
 // ========================================
 router.get("/:id", async (req, res) => {
     try {
-        if (!mongoose.isValidObjectId(req.params.id)) {
-            return res.status(400).json({
-                message: "Invalid product ID."
-            });
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ message: "Invalid product ID" });
         }
 
-        const product = await Product.findById(req.params.id)
-            .populate("categoryId", "name description");
+        const product = await Product.findOne({
+            _id: req.params.id,
+            isActive: true
+        }).populate("categoryId", "name description");
 
         if (!product) {
-            return res.status(404).json({
-                message: "Product not found."
-            });
+            return res.status(404).json({ message: "Product not found" });
         }
 
-        res.status(200).json(product);
-
+        return res.status(200).json(product);
     } catch (error) {
-        console.error("Get product error:", error);
-
-        res.status(500).json({
-            message: "Could not fetch product."
-        });
+        return res.status(500).json({ message: "Error fetching product" });
     }
 });
 
-
 // ========================================
-// UPDATE a product (Admin only)
+// UPDATE PRODUCT (ADMIN ONLY)
+// PUT /api/products/:id
 // ========================================
 router.put("/:id", authMiddleware, adminMiddleware, async (req, res) => {
     try {
-        if (!mongoose.isValidObjectId(req.params.id)) {
-            return res.status(400).json({
-                message: "Invalid product ID."
-            });
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ message: "Invalid product ID" });
         }
 
-        // Validate category if supplied
-        if (
-            req.body.categoryId !== undefined &&
-            req.body.categoryId !== null
-        ) {
-            if (!mongoose.isValidObjectId(req.body.categoryId)) {
-                return res.status(400).json({
-                    message: "Invalid category ID."
-                });
+        const allowedFields = [
+            "name",
+            "description",
+            "price",
+            "stock",
+            "imageUrl",
+            "images",
+            "categoryId",
+            "retailerName",
+            "retailerProductUrl",
+            "currency",
+            "isActive"
+        ];
+
+        const updates = {};
+        for (const field of allowedFields) {
+            if (req.body[field] !== undefined) {
+                updates[field] = req.body[field];
             }
+        }
 
-            const categoryExists = await Category.findById(
-                req.body.categoryId
-            );
+        if (updates.name !== undefined) {
+            if (typeof updates.name !== "string" || !updates.name.trim()) {
+                return res.status(400).json({ message: "name must be a non-empty string" });
+            }
+            updates.name = updates.name.trim();
+        }
 
+        if (updates.description !== undefined) {
+            if (typeof updates.description !== "string" || !updates.description.trim()) {
+                return res.status(400).json({ message: "description must be a non-empty string" });
+            }
+            updates.description = updates.description.trim();
+        }
+
+        if (updates.price !== undefined) {
+            const numericPrice = Number(updates.price);
+            if (!Number.isFinite(numericPrice) || numericPrice < 0) {
+                return res.status(400).json({ message: "price must be a valid non-negative number" });
+            }
+            updates.price = numericPrice;
+        }
+
+        if (updates.stock !== undefined) {
+            const numericStock = Number(updates.stock);
+            if (!Number.isInteger(numericStock) || numericStock < 0) {
+                return res.status(400).json({ message: "stock must be a valid non-negative integer" });
+            }
+            updates.stock = numericStock;
+        }
+
+        if (updates.categoryId !== undefined) {
+            if (!mongoose.Types.ObjectId.isValid(updates.categoryId)) {
+                return res.status(400).json({ message: "Invalid categoryId" });
+            }
+            const categoryExists = await Category.findById(updates.categoryId);
             if (!categoryExists) {
-                return res.status(404).json({
-                    message: "Category not found."
-                });
+                return res.status(404).json({ message: "Category not found" });
             }
         }
 
-        // Update product
-        const product = await Product.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            {
-                new: true,
-                runValidators: true
+        if (updates.images !== undefined || updates.imageUrl !== undefined) {
+            const gallery = normalizeGallery(updates.images, updates.imageUrl);
+            if (gallery.some(src => !isValidImageSource(src))) {
+                return res.status(400).json({
+                    message: "Each image must be an uploaded photo, a local images/ path, or an https:// URL"
+                });
             }
+            updates.images = gallery;
+            updates.imageUrl = gallery.at(0) || "";
+        }
+
+        const updatedProduct = await Product.findByIdAndUpdate(
+            req.params.id,
+            updates,
+            { returnDocument: "after", runValidators: true }
         );
 
-        if (!product) {
-            return res.status(404).json({
-                message: "Product not found."
-            });
-        }
-
-        // Populate category details
-        await product.populate("categoryId", "name description");
-
-        res.status(200).json({
-            message: "Product updated successfully",
-            product
-        });
-
-    } catch (error) {
-        console.error("Product update error:", error);
-
-        res.status(500).json({
-            message: "Could not update product.",
-            error: error.message
-        });
-    }
+        if (!updatedProduct) {
+            return res.status(404).json({ message: "Product not found" });
+}
+return res.status(200).json({
+message: "Product updated successfully",
+product: updatedProduct
 });
-
-
+} catch (error) {
+return res.status(500).json({ message: "Error updating product" });
+}
+});
 // ========================================
-// DELETE a product (Admin only)
+// DELETE PRODUCT (SOFT DELETE - ADMIN ONLY)
+// DELETE /api/products/:id
 // ========================================
 router.delete("/:id", authMiddleware, adminMiddleware, async (req, res) => {
-    try {
-        if (!mongoose.isValidObjectId(req.params.id)) {
-            return res.status(400).json({
-                message: "Invalid product ID."
-            });
-        }
-
-        const product = await Product.findByIdAndDelete(req.params.id);
-
-        if (!product) {
-            return res.status(404).json({
-                message: "Product not found."
-            });
-        }
-
-        res.status(200).json({
-            message: "Product deleted successfully."
-        });
-
-    } catch (error) {
-        console.error("Product deletion error:", error);
-
-        res.status(500).json({
-            message: "Could not delete product."
-        });
-    }
+try {
+if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+return res.status(400).json({ message: "Invalid product ID" });
+}
+const product = await Product.findByIdAndUpdate(
+req.params.id,
+{ isActive: false },
+{ returnDocument: "after" }
+);
+if (!product) {
+return res.status(404).json({ message: "Product not found" });
+}
+return res.status(200).json({
+message: "Product removed successfully",
+product
 });
-
-
-// Export router
+} catch (error) {
+return res.status(500).json({ message: "Error deleting product" });
+}
+});
 module.exports = router;
