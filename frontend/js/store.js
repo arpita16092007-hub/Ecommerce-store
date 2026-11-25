@@ -424,83 +424,65 @@ alert(err.message);
 }
 });
 async function openOrders() {
-openModal("orders-modal");
-const box = byId("orders-list");
-if (!getToken()) {
-box.innerHTML = 'Please sign in to track your orders.';
-return;
+  openModal("orders-modal");
+  const box = byId("orders-list");
+  if (!getToken()) {
+    box.innerHTML = '<p class="muted">Please sign in to track your orders.</p>';
+    return;
+  }
+  box.innerHTML = '<p class="muted">Loading your order history…</p>';
+  try {
+    const data = await apiRequest("/api/orders/my-orders");
+    const orders = data.orders || [];
+    const steps = ["Pending", "Confirmed", "Shipped", "Delivered"];
+    const isCustomer = getUser()?.role === "customer";
+    if (!orders.length) {
+      box.innerHTML = '<p class="muted">You have no orders yet.</p>';
+      return;
+    }
+    box.innerHTML = orders.map(o => {
+      const isCancelled = o.orderStatus === "Cancelled";
+      const isDelivered = o.orderStatus === "Delivered";
+      const currentIdx = steps.indexOf(o.orderStatus);
+      const statusClass = "status-pill " + String(o.orderStatus || "pending").toLowerCase();
+      const trackerHTML = isCancelled
+        ? '<div class="order-cancelled">✕ This order was cancelled</div>'
+        : '<div class="order-tracker">' + steps.map((step, idx) => {
+            const done = idx <= currentIdx;
+            return '<div class="tracker-step ' + (done ? "done" : "") + '"><div class="tracker-bar"></div><span>' + step + '</span></div>';
+          }).join("") + '</div>';
+      let ratingHTML = "";
+      if (isDelivered && isCustomer) {
+        if (o.rating) {
+          const stars = "★".repeat(o.rating) + "☆".repeat(5 - o.rating);
+          ratingHTML = '<div class="rated-box"><strong>Your Rating: <span class="gold-stars">' + stars + '</span> (' + o.rating + '/5)</strong>' + (o.reviewComment ? '<p>"' + escapeHTML(o.reviewComment) + '"</p>' : "") + '</div>';
+        } else {
+          const starBtns = Array.from({ length: 5 }, (_, i) => i + 1).map(n =>
+            '<button type="button" class="star-btn active" data-star-order="' + o._id + '" data-star-val="' + n + '">★</button>'
+          ).join("");
+          ratingHTML = '<div class="rate-box"><p class="rate-title">✨ Delivered! Rate your order experience:</p><div class="star-picker">' + starBtns + '<span class="star-score-label" id="rating-label-' + o._id + '">5 / 5</span></div><input type="hidden" id="rating-val-' + o._id + '" value="5"><input type="text" id="rating-note-' + o._id + '" placeholder="Share a quick review (optional)…"><button type="button" class="add-button" data-submit-rating="' + o._id + '">Submit Rating ★</button></div>';
+        }
+      }
+      const itemsText = o.items.map(i => escapeHTML(i.name) + " × " + Number(i.quantity)).join(", ");
+      const orderCode = escapeHTML(String(o._id).slice(-6).toUpperCase());
+      const orderDate = new Date(o.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+      const payBadge = escapeHTML(o.paymentMethod || "COD") + " · " + escapeHTML(o.paymentStatus || "Pending");
+      return '<div class="order-card">' +
+        '<div class="order-card-top"><div><span class="order-id">Order #' + orderCode + '</span><span class="' + statusClass + '">' + escapeHTML(o.orderStatus) + '</span></div><strong class="order-total">' + money(o.totalAmount) + '</strong></div>' +
+        '<p class="order-meta">Placed on ' + orderDate + ' · Payment: <b>' + payBadge + '</b></p>' +
+        '<p class="order-items">' + itemsText + '</p>' +
+        '<p class="order-address"><span>Deliver to:</span> ' + escapeHTML(o.deliveryAddress || "N/A") + '</p>' +
+        trackerHTML +
+        ratingHTML +
+        '<div style="margin-top:10px;text-align:right;"><a href="profile.html#orders-section" class="text-button small" style="text-decoration:none;">View in User Dashboard →</a></div>' +
+      '</div>';
+    }).join("");
+  } catch (err) {
+    box.innerHTML = '<p class="muted">' + escapeHTML(err.message) + '</p>';
+  }
 }
-try {
-const data = await apiRequest("/api/orders/my-orders");
-const orders = data.orders || [];
-const steps = ["Pending", "Confirmed", "Shipped", "Delivered"];
-box.innerHTML = orders.length
-? orders.map(o => {
-const isCancelled = o.orderStatus === "Cancelled";
-const isDelivered = o.orderStatus === "Delivered";
-const currentIdx = steps.indexOf(o.orderStatus);
-const statusClass = "status-pill " + String(o.orderStatus || "pending").toLowerCase();
-const trackerHTML = isCancelled
-? '✕ This order was cancelled'
-: '' +
-steps.map((step, idx) => {
-const done = idx <= currentIdx;
-return '<div class="tracker-step ' + (done ? "done" : "") + '">' +
-'' +
-'' + step + '' +
-'';
-}).join("") +
-'';
-let ratingHTML = "";
-const isCustomer = getUser()?.role === "customer";
-          if (isDelivered && isCustomer) {
-if (o.rating) {
-const stars = "★".repeat(o.rating) + "☆".repeat(5 - o.rating);
-ratingHTML = '' +
-'Your Rating: ' + stars + ' (' + o.rating + '/5)' +
-(o.reviewComment ? '"' + escapeHTML(o.reviewComment) + '"' : '') +
-'';
-} else {
-const starBtns = [1, 2, 3, 4, 5].map(n =>
-'★'
-).join("");
-ratingHTML = '' +
-'✨ Delivered! Rate your order experience:' +
-'' + starBtns + '' +
-'' +
-'' +
-'Submit Rating ★' +
-'';
-}
-}
-const itemsText = o.items.map(i => escapeHTML(i.name) + " × " + Number(i.quantity)).join(", ");
-const orderCode = escapeHTML(String(o._id).slice(-6).toUpperCase());
-const orderDate = new Date(o.createdAt).toLocaleDateString("en-IN", {
-day: "numeric",
-month: "short",
-year: "numeric"
-});
-const payBadge = escapeHTML(o.paymentMethod || "COD") + " · " + escapeHTML(o.paymentStatus || "Pending");
-return '' +
-'' +
-'' +
-'Order #' + orderCode + '' +
-'' + escapeHTML(o.orderStatus) + '' +
-'' +
-'' + money(o.totalAmount) + '' +
-'' +
-'Placed on ' + orderDate + ' · Payment: ' + payBadge + '' +
-'' + itemsText + '' +
-'Deliver to: ' + escapeHTML(o.deliveryAddress || "N/A") + '' +
-trackerHTML +
-ratingHTML +
-'';
-}).join("")
-: 'You have no orders yet.';
-} catch (err) {
-box.textContent = err.message;
-}
-}
+
+
 byId("search-form").addEventListener("submit", e => {
 e.preventDefault();
 const q = byId("search-input").value.trim().toLowerCase();

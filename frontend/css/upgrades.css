@@ -50,3 +50,29 @@
 .concierge-text b { display: block; font: 600 13px "Playfair Display", serif; color: #f7d9a3; }
 .concierge-text small { display: block; font: 500 10.5px "DM Sans", sans-serif; color: #dfd0b8; }
 .chat-review-panel { background: #fff8eb; border-bottom: 1px solid #d6b77e; padding: 10px 12px; }
+
+/* High-Contrast Interactive Star Picker (Selected vs Unselected) */
+.star-picker { display: flex; align-items: center; gap: 6px; margin: 4px 0; }
+.star-btn {
+  background: transparent;
+  border: 0;
+  font-size: 26px;
+  line-height: 1;
+  color: #d8cfc0;
+  cursor: pointer;
+  padding: 2px 3px;
+  transition: transform 0.15s, color 0.15s;
+}
+.star-btn:hover { transform: scale(1.15); }
+.star-btn.active {
+  color: #d97706;
+  text-shadow: 0 2px 6px rgba(217, 119, 6, 0.28);
+}
+.star-score-label {
+  font: 700 12px "DM Sans", sans-serif;
+  color: #06271d;
+  margin-left: 6px;
+  background: #f4ebd9;
+  padding: 3px 9px;
+  border-radius: 12px;
+}

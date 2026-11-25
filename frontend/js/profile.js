@@ -50,7 +50,7 @@ function buildFullOrderCard(o) {
       ).join("");
       ratingHTML = '<div class="rate-box">' +
         '<p class="rate-title">✨ Delivered! Rate your order experience:</p>' +
-        '<div class="star-picker">' + starBtns + '</div>' +
+        '<div class="star-picker">' + starBtns + '<span class="star-score-label" id="rating-label-' + o._id + '">5 / 5</span></div>' +
         '<input type="hidden" id="rating-val-' + o._id + '" value="5">' +
         '<input type="text" id="rating-note-' + o._id + '" placeholder="Share a quick review (optional)…">' +
         '<button type="button" class="add-button" data-submit-rating="' + o._id + '">Submit Rating ★</button>' +
@@ -204,6 +204,8 @@ document.addEventListener("click", async e => {
     document.querySelectorAll('[data-star-order="' + orderId + '"]').forEach(btn => {
       btn.classList.toggle("active", Number(btn.dataset.starVal) <= val);
     });
+    const lbl = byId("rating-label-" + orderId);
+    if (lbl) lbl.textContent = val + " / 5";
   }
 
   const submitRate = e.target.closest("[data-submit-rating]");
