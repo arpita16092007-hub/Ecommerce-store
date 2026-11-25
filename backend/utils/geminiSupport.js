@@ -36,7 +36,7 @@ async function embedText(text) {
 
     let lastError = null;
     for (const model of models) {
-        const url = `https://googleapis.com${model}:embedContent?key=${encodeURIComponent(apiKey)}`;
+        const url = `https://googleapis.com{model}:embedContent?key=${encodeURIComponent(apiKey)}`;
         const response = await fetch(url, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -104,7 +104,7 @@ async function generateGroundedReply({ question, matchedChunks, history }) {
         (recentHistory ? `RECENT CONVERSATION:\n${recentHistory}\n\n` : "") +
         `CUSTOMER QUESTION:\n${question}`;
 
-    const url = `https://googleapis.comgemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
+    const url = `https://googleapis.com{encodeURIComponent(apiKey)}`;
     const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -130,7 +130,7 @@ async function generateGroundedReply({ question, matchedChunks, history }) {
         throw new Error(data?.error?.message || "Gemini chat generation failed");
     }
 
-    const replyText = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
+    const replyText = data?.candidates?.?.content?.parts?.?.text?.trim() || "";
     return replyText;
 }
 
