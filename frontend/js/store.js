@@ -104,9 +104,68 @@ async function refreshCartCount() {
   }
 }
 
+function logoutUser() {
+  localStorage.removeItem("arpiares_token");
+  localStorage.removeItem("arpiares_user");
+  updateAccountUI();
+  refreshCartCount();
+  closeModal("profile-modal");
+  closeModal("orders-modal");
+  closeModal("cart-modal");
+  showNotice("You have signed out safely.");
+}
+
+async function openProfile() {
+  const user = getUser();
+  if (!getToken() || !user) {
+    openAuth("login");
+    return;
+  }
+  openModal("profile-modal");
+  const box = byId("profile-content");
+  box.innerHTML = '<p class="muted">Loading your profile, saved addresses, and orders…</p>';
+  try {
+    const data = await apiRequest("/api/orders/my-orders");
+    const orders = data.orders || [];
+    const totalSpent = orders.filter(o => o.orderStatus !== "Cancelled").reduce((sum, o) => sum + Number(o.totalAmount || 0), 0);
+    const uniqueAddresses = [];
+    const seen = new Set();
+    for (const o of orders) {
+      const addr = String(o.deliveryAddress || "").trim();
+      if (addr && !seen.has(addr)) {
+        seen.add(addr);
+        uniqueAddresses.push({ formatted: addr, details: o.shippingDetails || null });
+      }
+    }
+    window.__savedAddresses = uniqueAddresses;
+    const addressesHTML = uniqueAddresses.length
+      ? uniqueAddresses.map((a, idx) =>
+          '<div class="saved-addr-row"><span>📍 ' + escapeHTML(a.formatted) + '</span><button type="button" class="add-button" style="padding:5px 10px;font-size:11px;" data-use-addr="' + idx + '">Use at Checkout</button></div>'
+        ).join("")
+      : '<p class="muted small">No previous delivery addresses saved yet.</p>';
+    const ordersSummaryHTML = orders.length
+      ? orders.map(o => {
+          const code = escapeHTML(String(o._id).slice(-6).toUpperCase());
+          const dt = new Date(o.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+          const items = o.items.map(i => escapeHTML(i.name) + " × " + Number(i.quantity)).join(", ");
+          const stClass = "status-pill " + String(o.orderStatus || "pending").toLowerCase();
+          return '<div class="order-card"><div class="order-card-top"><div><span class="order-id">Order #' + code + '</span><span class="' + stClass + '">' + escapeHTML(o.orderStatus) + '</span></div><strong class="order-total">' + money(o.totalAmount) + '</strong></div><p class="order-meta">Placed on ' + dt + ' · Payment: <b>' + escapeHTML(o.paymentMethod || "COD") + '</b></p><p class="order-items">' + items + '</p></div>';
+        }).join("")
+      : '<p class="muted small">No orders placed yet.</p>';
+    box.innerHTML =
+      '<div class="profile-summary-card"><div class="profile-avatar">' + escapeHTML(user.name.trim().charAt(0).toUpperCase()) + '</div><div style="flex:1;min-width:180px;"><h3 style="margin:0;font:700 18px \'Playfair Display\',serif;">' + escapeHTML(user.name) + '</h3><p style="margin:2px 0 6px;font-size:12.5px;color:var(--muted);">' + escapeHTML(user.email) + ' · <b>' + escapeHTML((user.role || "customer").toUpperCase()) + '</b></p><div class="profile-stats"><span>📦 <b>' + orders.length + '</b> Orders</span><span>💳 <b>' + money(totalSpent) + '</b> Total Spent</span><span>📍 <b>' + uniqueAddresses.length + '</b> Saved Addresses</span></div></div></div>' +
+      '<h3 class="profile-section-title">Saved Previous Addresses</h3><div style="display:grid;gap:8px;margin-bottom:18px;">' + addressesHTML + '</div>' +
+      '<h3 class="profile-section-title">Recent Orders &amp; Status</h3><div style="display:grid;gap:12px;">' + ordersSummaryHTML + '</div>';
+  } catch (err) {
+    box.innerHTML = '<p class="muted">' + escapeHTML(err.message) + '</p>';
+  }
+}
+
 function updateAccountUI() {
   const user = getUser();
-  byId("account-label").textContent = user ? user.name.trim().split(/\s+/).at(0) : "Sign in";
+  byId("account-label").textContent = user ? user.name.trim().split(/\s+/).at(0) : "Sign in / Sign up";
+  const logoutBtn = byId("header-logout-btn");
+  if (logoutBtn) logoutBtn.classList.toggle("hidden", !user);
   const adminLink = byId("admin-nav-link") || document.querySelector(".admin-link");
   if (adminLink) {
     adminLink.classList.toggle("hidden", !user || user.role !== "admin");
@@ -267,7 +326,24 @@ const add = e.target.closest("[data-add]");
 if (add) await addToCart(add.dataset.add);
 const view = e.target.closest("[data-view]");
 if (view) await showProduct(view.dataset.view);
-if (e.target.closest("#open-auth")) openAuth("login");
+if (e.target.closest("#open-auth")) { if (getToken() && getUser()) await openProfile(); else openAuth("login"); }
+  if (e.target.closest("#header-logout-btn") || e.target.closest("#profile-logout-btn")) logoutUser();
+  const useAddrBtn = e.target.closest("[data-use-addr]");
+  if (useAddrBtn) {
+    const item = (window.__savedAddresses || [])[Number(useAddrBtn.dataset.useAddr)];
+    closeModal("profile-modal");
+    await openCart();
+    if (item?.details) {
+      if (byId("ship-name")) byId("ship-name").value = item.details.fullName || "";
+      if (byId("ship-phone")) byId("ship-phone").value = item.details.phone || "";
+      if (byId("ship-address")) byId("ship-address").value = item.details.addressLine || item.formatted;
+      if (byId("ship-city")) byId("ship-city").value = item.details.city || "";
+      if (byId("ship-state")) byId("ship-state").value = item.details.state || "";
+      if (byId("ship-pincode")) byId("ship-pincode").value = item.details.pincode || "";
+    } else if (item?.formatted && byId("ship-address")) {
+      byId("ship-address").value = item.formatted;
+    }
+  }
 if (e.target.closest("#open-cart")) await openCart();
 if (e.target.closest("#switch-auth")) openAuth(authMode === "login" ? "signup" : "login");
 const qtyBtn = e.target.closest("[data-qty-id]");
