@@ -107,6 +107,10 @@ async function refreshCartCount() {
 function updateAccountUI() {
   const user = getUser();
   byId("account-label").textContent = user ? user.name.trim().split(/\s+/).at(0) : "Sign in";
+  const adminLink = byId("admin-nav-link") || document.querySelector(".admin-link");
+  if (adminLink) {
+    adminLink.classList.toggle("hidden", !user || user.role !== "admin");
+  }
 }
 
 async function addToCart(productId) {
