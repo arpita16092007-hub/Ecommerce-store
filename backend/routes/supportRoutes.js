@@ -2,6 +2,7 @@ const express = require("express");
 const FaqDocument = require("../models/FaqDocument");
 const ChatSession = require("../models/ChatSession");
 const UnansweredQuestion = require("../models/UnansweredQuestion");
+const CustomerFeedback = require("../models/CustomerFeedback");
 const authMiddleware = require("../middleware/authMiddleware");
 const adminMiddleware = require("../middleware/adminMiddleware");
 const {
@@ -183,11 +184,12 @@ router.post("/chat/feedback", async (req, res) => {
 
 router.get("/admin/overview", authMiddleware, adminMiddleware, async (req, res) => {
     try {
-        const [sessions, unanswered] = await Promise.all([
+        const [sessions, unanswered, feedbacks] = await Promise.all([
             ChatSession.find({}).sort({ updatedAt: -1 }).limit(50),
-            UnansweredQuestion.find({}).sort({ status: 1, createdAt: -1 })
+            UnansweredQuestion.find({}).sort({ status: 1, createdAt: -1 }),
+            CustomerFeedback.find({}).sort({ createdAt: -1 }).limit(50)
         ]);
-        return res.status(200).json({ sessions, unanswered });
+        return res.status(200).json({ sessions, unanswered, feedbacks });
     } catch (error) {
         return res.status(500).json({ message: "Error loading support overview" });
     }
@@ -238,4 +240,24 @@ message: addToFaq ? "Replied and added to FAQ knowledge base!" : "Reply sent to 
 return res.status(500).json({ message: error.message || "Error resolving question" });
 }
 });
+router.post("/feedback", async (req, res) => {
+    try {
+        const { sessionId = "", customerName = "Guest Shopper", customerEmail = "", category = "Website", rating = 5, comment } = req.body;
+        if (!comment || !String(comment).trim()) {
+            return res.status(400).json({ message: "Please write your feedback or review before submitting" });
+        }
+        const saved = await CustomerFeedback.create({
+            sessionId: String(sessionId),
+            customerName: String(customerName || "Guest Shopper").trim(),
+            customerEmail: String(customerEmail || "").trim(),
+            category: ["Product", "Website", "Delivery", "Support", "Other"].includes(category) ? category : "Website",
+            rating: Math.min(5, Math.max(1, Number(rating) || 5)),
+            comment: String(comment).trim()
+        });
+        return res.status(201).json({ message: "Thank you for sharing your review with ARPIARES! ✨", feedback: saved });
+    } catch (error) {
+        return res.status(500).json({ message: "Could not save feedback" });
+    }
+});
+
 module.exports = router;

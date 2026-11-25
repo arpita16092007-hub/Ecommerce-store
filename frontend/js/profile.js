@@ -36,7 +36,8 @@ function buildFullOrderCard(o) {
       '</div>';
 
   let ratingHTML = "";
-  if (isDelivered) {
+  const isCustomer = getUser()?.role === "customer";
+  if (isDelivered && isCustomer) {
     if (o.rating) {
       const stars = "★".repeat(o.rating) + "☆".repeat(5 - o.rating);
       ratingHTML = '<div class="rated-box">' +

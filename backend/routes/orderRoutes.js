@@ -89,6 +89,9 @@ router.get("/my-orders", authMiddleware, async (req, res) => {
 
 router.put("/:id/rate", authMiddleware, async (req, res) => {
     try {
+        if (req.user.role !== "customer") {
+            return res.status(403).json({ message: "Only customer accounts can rate delivered products" });
+        }
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) return res.status(400).json({ message: "Invalid order ID" });
         const rating = Number(req.body.rating);
         const reviewComment = String(req.body.reviewComment || "").trim();

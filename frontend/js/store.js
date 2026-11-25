@@ -229,18 +229,39 @@ async function updateCartQuantity(productId, newQuantity) {
 
 async function openCart() {
   openModal("cart-modal");
+  const form = byId("checkout-form");
+  if (byId("cart-message")) byId("cart-message").textContent = "";
   if (!getToken()) {
     byId("cart-items").innerHTML = '<p class="muted">Please sign in to view your cart.</p>';
     byId("cart-subtotal").textContent = money(0);
+    if (form) form.classList.add("hidden");
     return;
   }
   const user = getUser();
+  const savedRaw = localStorage.getItem("arpiares_selected_address");
+  if (savedRaw) {
+    try {
+      const item = JSON.parse(savedRaw);
+      if (item?.details) {
+        if (byId("ship-name")) byId("ship-name").value = item.details.fullName || "";
+        if (byId("ship-phone")) byId("ship-phone").value = item.details.phone || "";
+        if (byId("ship-address")) byId("ship-address").value = item.details.addressLine || item.formatted;
+        if (byId("ship-city")) byId("ship-city").value = item.details.city || "";
+        if (byId("ship-state")) byId("ship-state").value = item.details.state || "";
+        if (byId("ship-pincode")) byId("ship-pincode").value = item.details.pincode || "";
+      } else if (item?.formatted && byId("ship-address")) {
+        byId("ship-address").value = item.formatted;
+      }
+    } catch {}
+    localStorage.removeItem("arpiares_selected_address");
+  }
   if (user && byId("ship-name") && !byId("ship-name").value) {
     byId("ship-name").value = user.name || "";
   }
   try {
     const data = await apiRequest("/api/cart");
     const items = data.items || [];
+    if (form) form.classList.toggle("hidden", items.length === 0);
     byId("cart-items").innerHTML = items.length
       ? items.map(item =>
         '<div class="cart-row">' +
@@ -264,6 +285,7 @@ async function openCart() {
     byId("cart-items").textContent = e.message;
   }
 }
+
 
 function openAuth(mode = "login") {
   authMode = mode;
@@ -430,7 +452,8 @@ return '<div class="tracker-step ' + (done ? "done" : "") + '">' +
 }).join("") +
 '';
 let ratingHTML = "";
-if (isDelivered) {
+const isCustomer = getUser()?.role === "customer";
+          if (isDelivered && isCustomer) {
 if (o.rating) {
 const stars = "★".repeat(o.rating) + "☆".repeat(5 - o.rating);
 ratingHTML = '' +
@@ -515,35 +538,52 @@ message.textContent = err.message;
 }
 });
 byId("checkout-form").addEventListener("submit", async e => {
-e.preventDefault();
-if (!getToken()) {
-byId("cart-message").textContent = "Please sign in first.";
-return;
-}
-const shippingDetails = {
-fullName: byId("ship-name").value.trim(),
-phone: byId("ship-phone").value.trim(),
-addressLine: byId("ship-address").value.trim(),
-city: byId("ship-city").value.trim(),
-state: byId("ship-state").value.trim(),
-pincode: byId("ship-pincode").value.trim()
-};
-const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value || "COD";
-const checkoutFeedback = byId("checkout-feedback").value.trim();
-try {
-const data = await apiRequest("/api/orders/checkout", {
-method: "POST",
-body: JSON.stringify({ shippingDetails, paymentMethod, checkoutFeedback })
-});
-byId("cart-message").textContent = "🎉 " + data.message + "! Thank you for shopping with ARPIARES ✨";
-e.target.reset();
-await refreshCartCount();
-byId("cart-items").innerHTML = 'Your order was placed successfully. Your bag is now empty.';
-byId("cart-subtotal").textContent = money(0);
-await loadStore();
-} catch (err) {
-byId("cart-message").textContent = err.message;
-}
+  e.preventDefault();
+  if (!getToken()) {
+    byId("cart-message").textContent = "Please sign in first.";
+    return;
+  }
+  const submitBtn = e.target.querySelector('button[type="submit"]');
+  if (submitBtn) submitBtn.disabled = true;
+  byId("cart-message").textContent = "Placing your order…";
+  const shippingDetails = {
+    fullName: byId("ship-name").value.trim(),
+    phone: byId("ship-phone").value.trim(),
+    addressLine: byId("ship-address").value.trim(),
+    city: byId("ship-city").value.trim(),
+    state: byId("ship-state").value.trim(),
+    pincode: byId("ship-pincode").value.trim()
+  };
+  const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value || "COD";
+  const checkoutFeedback = byId("checkout-feedback").value.trim();
+  try {
+    const data = await apiRequest("/api/orders/checkout", {
+      method: "POST",
+      body: JSON.stringify({ shippingDetails, paymentMethod, checkoutFeedback })
+    });
+    const order = data.order || {};
+    const orderCode = escapeHTML(String(order._id || "").slice(-6).toUpperCase());
+    e.target.reset();
+    e.target.classList.add("hidden");
+    await refreshCartCount();
+    byId("cart-subtotal").textContent = money(0);
+    byId("cart-items").innerHTML =
+      '<div class="order-receipt-card">' +
+        '<p class="eyebrow" style="color:#1d5438;">✓ ORDER CONFIRMED</p>' +
+        '<h3 style="margin:4px 0 8px;font:700 20px \'Playfair Display\',serif;color:var(--green);">Thank you for your order! 🎉</h3>' +
+        '<p style="font-size:13px;margin:0 0 6px;"><b>Order ID:</b> #' + orderCode + ' · <b>Total:</b> ' + money(order.totalAmount) + '</p>' +
+        '<p style="font-size:12.5px;margin:0 0 6px;"><b>Payment Mode:</b> ' + escapeHTML(order.paymentMethod || paymentMethod) + ' (' + escapeHTML(order.paymentStatus || "Pending") + ')</p>' +
+        '<p style="font-size:12px;color:var(--muted);margin:0 0 14px;"><b>Deliver to:</b> ' + escapeHTML(order.deliveryAddress || "") + '</p>' +
+        '<div style="display:flex;gap:10px;flex-wrap:wrap;">' +
+          '<a href="profile.html#orders-section" class="primary-button" style="text-decoration:none;text-align:center;flex:1;">TRACK IN USER DASHBOARD →</a>' +
+        '</div>' +
+      '</div>';
+    await loadStore();
+  } catch (err) {
+    byId("cart-message").textContent = err.message;
+  } finally {
+    if (submitBtn) submitBtn.disabled = false;
+  }
 });
 updateAccountUI();
 loadStore();
