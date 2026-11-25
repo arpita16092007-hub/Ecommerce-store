@@ -8,12 +8,10 @@ function getApiKey() {
     return key;
 }
 
-// Split longer help documents into focused FAQ chunks
 function chunkText(title, rawText) {
     const cleaned = String(rawText || "").replace(/\r\n/g, "\n").trim();
     if (!cleaned) return [];
 
-    // Split by blank lines first, then keep chunks around ~600 chars
     const paragraphs = cleaned.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
     const chunks = [];
     let current = "";
@@ -38,7 +36,7 @@ async function embedText(text) {
 
     let lastError = null;
     for (const model of models) {
-        const url = `https://googleapis.com{model}:embedContent?key=${encodeURIComponent(apiKey)}`;
+        const url = `https://googleapis.com${model}:embedContent?key=${encodeURIComponent(apiKey)}`;
         const response = await fetch(url, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -106,7 +104,7 @@ async function generateGroundedReply({ question, matchedChunks, history }) {
         (recentHistory ? `RECENT CONVERSATION:\n${recentHistory}\n\n` : "") +
         `CUSTOMER QUESTION:\n${question}`;
 
-    const url = `https://googleapis.com{encodeURIComponent(apiKey)}`;
+    const url = `https://googleapis.comgemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
     const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
