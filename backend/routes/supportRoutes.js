@@ -14,22 +14,16 @@ const {
 
 const router = express.Router();
 
-// ========================================
-// ADMIN: UPLOAD FAQ OR HELP DOCUMENT
-// POST /api/support/faq
-// ========================================
 router.post("/faq", authMiddleware, adminMiddleware, async (req, res) => {
     try {
         const { title, content } = req.body;
         if (!title || !content || !String(title).trim() || !String(content).trim()) {
             return res.status(400).json({ message: "Title and FAQ/document content are required" });
         }
-
         const chunks = chunkText(String(title).trim(), String(content).trim());
         const savedDocs = [];
-
         for (const chunk of chunks) {
-            const embedding = await embedText(`${chunk.title}\n${chunk.content}`);
+            const embedding = await embedText(chunk.title + "\n" + chunk.content);
             const doc = await FaqDocument.create({
                 title: chunk.title,
                 content: chunk.content,
@@ -38,9 +32,8 @@ router.post("/faq", authMiddleware, adminMiddleware, async (req, res) => {
             });
             savedDocs.push({ _id: doc._id, title: doc.title, content: doc.content });
         }
-
         return res.status(201).json({
-            message: `Added ${savedDocs.length} knowledge base entry(s)`,
+            message: "Added " + savedDocs.length + " knowledge base entry(s)",
             entries: savedDocs
         });
     } catch (error) {
@@ -48,10 +41,6 @@ router.post("/faq", authMiddleware, adminMiddleware, async (req, res) => {
     }
 });
 
-// ========================================
-// ADMIN: LIST & DELETE FAQ ENTRIES
-// GET /api/support/faq
-// ========================================
 router.get("/faq", authMiddleware, adminMiddleware, async (req, res) => {
     try {
         const faqs = await FaqDocument.find({}, { embedding: 0 }).sort({ createdAt: -1 });
@@ -70,17 +59,12 @@ router.delete("/faq/:id", authMiddleware, adminMiddleware, async (req, res) => {
     }
 });
 
-// ========================================
-// CUSTOMER: CHAT WITH MEMORY & CONFIDENCE CHECK
-// POST /api/support/chat
-// ========================================
 router.post("/chat", async (req, res) => {
     try {
         const { sessionId, message, customerName, customerEmail } = req.body;
         if (!sessionId || !message || !String(message).trim()) {
             return res.status(400).json({ message: "sessionId and message are required" });
         }
-
         const cleanMsg = String(message).trim();
         let session = await ChatSession.findOne({ sessionId: String(sessionId) });
         if (!session) {
@@ -95,10 +79,9 @@ router.post("/chat", async (req, res) => {
             if (customerEmail) session.customerEmail = customerEmail;
         }
 
-        // Build contextual search query using last user turn for follow-up memory
         const prevUserTurn = [...session.messages].reverse().find(m => m.role === "user");
         const retrievalQuery = prevUserTurn && cleanMsg.split(/\s+/).length <= 7
-            ? `${prevUserTurn.text} — ${cleanMsg}`
+            ? prevUserTurn.text + " — " + cleanMsg
             : cleanMsg;
 
         const allFaqs = await FaqDocument.find({});
@@ -108,7 +91,7 @@ router.post("/chat", async (req, res) => {
         if (allFaqs.length > 0) {
             const queryEmbedding = await embedText(retrievalQuery);
             topMatches = retrieveTopMatches(queryEmbedding, allFaqs, 3);
-            bestScore = topMatches[0]?.score || 0;
+            bestScore = topMatches.at(0)?.score || 0;
         }
 
         session.messages.push({ role: "user", text: cleanMsg });
@@ -165,25 +148,39 @@ router.post("/chat", async (req, res) => {
     }
 });
 
-// ========================================
-// CUSTOMER: FETCH CHAT HISTORY BY SESSION
-// GET /api/support/chat/:sessionId
-// ========================================
 router.get("/chat/:sessionId", async (req, res) => {
     try {
         const session = await ChatSession.findOne({ sessionId: req.params.sessionId });
-        return res.status(200).json({
-            messages: session ? session.messages : []
-        });
+        return res.status(200).json({ messages: session ? session.messages : [] });
     } catch (error) {
         return res.status(500).json({ message: "Error loading chat session" });
     }
 });
 
-// ========================================
-// ADMIN: VIEW ALL CHATS & UNANSWERED QUEUE
-// GET /api/support/admin/overview
-// ========================================
+router.post("/chat/feedback", async (req, res) => {
+    try {
+        const { sessionId, messageIndex, feedback } = req.body;
+        if (!sessionId || !["up", "down"].includes(feedback)) {
+            return res.status(400).json({ message: "Valid sessionId and feedback required" });
+        }
+        const session = await ChatSession.findOne({ sessionId: String(sessionId) });
+        if (!session || !session.messages[messageIndex]) {
+            return res.status(404).json({ message: "Chat message not found" });
+        }
+        session.messages[messageIndex].feedback = feedback;
+        if (feedback === "down") {
+            session.needsHuman = true;
+        }
+        await session.save();
+        return res.status(200).json({
+            message: feedback === "up" ? "Glad that helped!" : "Flagged for human review",
+            messages: session.messages
+        });
+    } catch (error) {
+        return res.status(500).json({ message: "Error saving chat feedback" });
+    }
+});
+
 router.get("/admin/overview", authMiddleware, adminMiddleware, async (req, res) => {
     try {
         const [sessions, unanswered] = await Promise.all([
@@ -196,27 +193,20 @@ router.get("/admin/overview", authMiddleware, adminMiddleware, async (req, res) 
     }
 });
 
-// ========================================
-// ADMIN: REPLY TO ESCALATED QUESTION (& OPTIONAL ADD TO FAQ)
-// POST /api/support/admin/resolve/:id
-// ========================================
 router.post("/admin/resolve/:id", authMiddleware, adminMiddleware, async (req, res) => {
     try {
         const { adminReply, addToFaq } = req.body;
         if (!adminReply || !String(adminReply).trim()) {
             return res.status(400).json({ message: "Reply text is required" });
         }
-
         const item = await UnansweredQuestion.findById(req.params.id);
         if (!item) {
             return res.status(404).json({ message: "Question not found" });
         }
-
         item.status = "Resolved";
         item.adminReply = String(adminReply).trim();
         await item.save();
 
-        // Append human agent response directly into the customer's chat transcript
         await ChatSession.findOneAndUpdate(
             { sessionId: item.sessionId },
             {
@@ -224,16 +214,15 @@ router.post("/admin/resolve/:id", authMiddleware, adminMiddleware, async (req, r
                 $push: {
                     messages: {
                         role: "admin",
-                        text: `Human Support Specialist: ${item.adminReply}`,
+                        text: "Human Support Specialist: " + item.adminReply,
                         timestamp: new Date()
                     }
                 }
             }
         );
 
-        // Optionally train the FAQ vector store with this new Q&A
         if (addToFaq) {
-            const embedding = await embedText(`${item.question}\n${item.adminReply}`);
+            const embedding = await embedText(item.question + "\n" + item.adminReply);
             await FaqDocument.create({
                 title: item.question,
                 content: item.adminReply,
@@ -243,11 +232,10 @@ router.post("/admin/resolve/:id", authMiddleware, adminMiddleware, async (req, r
         }
 
         return res.status(200).json({
-            message: addToFaq ? "Replied and added to FAQ knowledge base!" : "Reply sent to customer chat!"
-        });
-    } catch (error) {
-        return res.status(500).json({ message: error.message || "Error resolving question" });
-    }
+message: addToFaq ? "Replied and added to FAQ knowledge base!" : "Reply sent to customer chat!"
 });
-
+} catch (error) {
+return res.status(500).json({ message: error.message || "Error resolving question" });
+}
+});
 module.exports = router;

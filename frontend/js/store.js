@@ -48,7 +48,7 @@ async function loadStore() {
     renderCategories();
     renderProducts(allProducts);
   } catch (error) {
-    byId("product-grid").innerHTML = "<div class=\"loading-card\">Couldn't load products. " + escapeHTML(error.message) + "<br><br>Check that your backend is running.</div>";
+    byId("product-grid").innerHTML = '<div class="loading-card">Couldn\'t load products. ' + escapeHTML(error.message) + '</div>';
     showNotice("Backend connection failed. Refresh this page once the server is ready.", true);
   }
 }
@@ -56,7 +56,7 @@ async function loadStore() {
 function renderCategories() {
   const list = byId("category-list");
   list.innerHTML = allCategories.map(c =>
-    "<button class=\"category-link\" data-category=\"" + escapeHTML(c._id) + "\">◇ <span>" + escapeHTML(c.name) + "</span></button>"
+    '<button class="category-link" data-category="' + escapeHTML(c._id) + '">◇ <span>' + escapeHTML(c.name) + '</span></button>'
   ).join("");
   document.querySelectorAll("[data-category]").forEach(btn =>
     btn.classList.toggle("active", btn.dataset.category === selectedCategory)
@@ -66,7 +66,7 @@ function renderCategories() {
 function renderProducts(products) {
   const grid = byId("product-grid");
   if (!products.length) {
-    grid.innerHTML = "<div class=\"loading-card\">No products found. Try another search or category.</div>";
+    grid.innerHTML = '<div class="loading-card">No products found. Try another search or category.</div>';
     return;
   }
   grid.innerHTML = products.map(p => {
@@ -151,6 +151,10 @@ async function openCart() {
     byId("cart-items").innerHTML = '<p class="muted">Please sign in to view your cart.</p>';
     byId("cart-subtotal").textContent = money(0);
     return;
+  }
+  const user = getUser();
+  if (user && byId("ship-name") && !byId("ship-name").value) {
+    byId("ship-name").value = user.name || "";
   }
   try {
     const data = await apiRequest("/api/cart");
@@ -247,8 +251,12 @@ document.addEventListener("click", async e => {
   const category = e.target.closest("[data-category]");
   if (category) {
     selectedCategory = category.dataset.category;
-    document.querySelectorAll("[data-category]").forEach(b => b.classList.toggle("active", b.dataset.category === selectedCategory));
-    const filtered = selectedCategory ? allProducts.filter(p => (p.categoryId?._id || p.categoryId) === selectedCategory) : allProducts;
+const starBtns = Array.from({ length: 5 }, (_, i) => i + 1).map(n =>
+  '<button type="button" class="star-btn active" data-star-order="' + o._id + '" data-star-val="' + n + '">★</button>'
+).join("");
+
+document.querySelectorAll("[data-category]").forEach(b => b.classList.toggle("active", b.dataset.category === selectedCategory));
+const filtered = selectedCategory ? allProducts.filter(p => (p.categoryId?._id || p.categoryId) === selectedCategory) : allProducts;
 renderProducts(filtered);
 }
 const add = e.target.closest("[data-add]");
@@ -268,66 +276,109 @@ await updateCartQuantity(rm.dataset.remove, 0);
 }
 if (e.target.closest("#open-orders")) await openOrders();
 if (e.target.closest("#wishlist-shortcut")) showNotice("Wishlist is a visual placeholder; a wishlist API is not yet available.");
+const starBtn = e.target.closest("[data-star-order]");
+if (starBtn) {
+const orderId = starBtn.dataset.starOrder;
+const val = Number(starBtn.dataset.starVal);
+const hidden = byId("rating-val-" + orderId);
+if (hidden) hidden.value = val;
+document.querySelectorAll('[data-star-order="' + orderId + '"]').forEach(btn => {
+btn.classList.toggle("active", Number(btn.dataset.starVal) <= val);
+});
+}
+const submitRate = e.target.closest("[data-submit-rating]");
+if (submitRate) {
+const orderId = submitRate.dataset.submitRating;
+const rating = Number(byId("rating-val-" + orderId)?.value || 5);
+const reviewComment = byId("rating-note-" + orderId)?.value.trim() || "";
+try {
+await apiRequest("/api/orders/" + orderId + "/rate", {
+method: "PUT",
+body: JSON.stringify({ rating, reviewComment })
+});
+await openOrders();
+} catch (err) {
+alert(err.message);
+}
+}
 });
 async function openOrders() {
-  openModal("orders-modal");
-  const box = byId("orders-list");
-  if (!getToken()) {
-    box.innerHTML = "<p class=\"muted\">Please sign in to track your orders.</p>";
-    return;
-  }
-  try {
-    const data = await apiRequest("/api/orders/my-orders");
-    const orders = data.orders || [];
-    const steps = ["Pending", "Confirmed", "Shipped", "Delivered"];
-
-    box.innerHTML = orders.length
-      ? orders.map(o => {
-          const isCancelled = o.orderStatus === "Cancelled";
-          const currentIdx = steps.indexOf(o.orderStatus);
-          const statusClass = "status-pill " + String(o.orderStatus || "pending").toLowerCase();
-
-          const trackerHTML = isCancelled
-            ? "<div class=\"order-cancelled\">✕ This order was cancelled</div>"
-            : "<div class=\"order-tracker\">" +
-                steps.map((step, idx) => {
-                  const done = idx <= currentIdx;
-                  return "<div class=\"tracker-step " + (done ? "done" : "") + "\">" +
-                    "<div class=\"tracker-bar\"></div>" +
-                    "<span>" + step + "</span>" +
-                  "</div>";
-                }).join("") +
-              "</div>";
-
-          const itemsText = o.items.map(i => escapeHTML(i.name) + " × " + Number(i.quantity)).join(", ");
-          const orderCode = escapeHTML(String(o._id).slice(-6).toUpperCase());
-          const orderDate = new Date(o.createdAt).toLocaleDateString("en-IN", {
-            day: "numeric",
-            month: "short",
-            year: "numeric"
-          });
-
-          return "<div class=\"order-card\">" +
-            "<div class=\"order-card-top\">" +
-              "<div>" +
-                "<span class=\"order-id\">Order #" + orderCode + "</span>" +
-                "<span class=\"" + statusClass + "\">" + escapeHTML(o.orderStatus) + "</span>" +
-              "</div>" +
-              "<strong class=\"order-total\">" + money(o.totalAmount) + "</strong>" +
-            "</div>" +
-            "<p class=\"order-meta\">Placed on " + orderDate + "</p>" +
-            "<p class=\"order-items\">" + itemsText + "</p>" +
-            "<p class=\"order-address\"><span>Deliver to:</span> " + escapeHTML(o.deliveryAddress || "N/A") + "</p>" +
-            trackerHTML +
-          "</div>";
-        }).join("")
-      : "<p class=\"muted\">You have no orders yet.</p>";
-  } catch (err) {
-    box.textContent = err.message;
-  }
+openModal("orders-modal");
+const box = byId("orders-list");
+if (!getToken()) {
+box.innerHTML = 'Please sign in to track your orders.';
+return;
 }
-
-
+try {
+const data = await apiRequest("/api/orders/my-orders");
+const orders = data.orders || [];
+const steps = ["Pending", "Confirmed", "Shipped", "Delivered"];
+box.innerHTML = orders.length
+? orders.map(o => {
+const isCancelled = o.orderStatus === "Cancelled";
+const isDelivered = o.orderStatus === "Delivered";
+const currentIdx = steps.indexOf(o.orderStatus);
+const statusClass = "status-pill " + String(o.orderStatus || "pending").toLowerCase();
+const trackerHTML = isCancelled
+? '✕ This order was cancelled'
+: '' +
+steps.map((step, idx) => {
+const done = idx <= currentIdx;
+return '<div class="tracker-step ' + (done ? "done" : "") + '">' +
+'' +
+'' + step + '' +
+'';
+}).join("") +
+'';
+let ratingHTML = "";
+if (isDelivered) {
+if (o.rating) {
+const stars = "★".repeat(o.rating) + "☆".repeat(5 - o.rating);
+ratingHTML = '' +
+'Your Rating: ' + stars + ' (' + o.rating + '/5)' +
+(o.reviewComment ? '"' + escapeHTML(o.reviewComment) + '"' : '') +
+'';
+} else {
+const starBtns = [1, 2, 3, 4, 5].map(n =>
+'★'
+).join("");
+ratingHTML = '' +
+'✨ Delivered! Rate your order experience:' +
+'' + starBtns + '' +
+'' +
+'' +
+'Submit Rating ★' +
+'';
+}
+}
+const itemsText = o.items.map(i => escapeHTML(i.name) + " × " + Number(i.quantity)).join(", ");
+const orderCode = escapeHTML(String(o._id).slice(-6).toUpperCase());
+const orderDate = new Date(o.createdAt).toLocaleDateString("en-IN", {
+day: "numeric",
+month: "short",
+year: "numeric"
+});
+const payBadge = escapeHTML(o.paymentMethod || "COD") + " · " + escapeHTML(o.paymentStatus || "Pending");
+return '' +
+'' +
+'' +
+'Order #' + orderCode + '' +
+'' + escapeHTML(o.orderStatus) + '' +
+'' +
+'' + money(o.totalAmount) + '' +
+'' +
+'Placed on ' + orderDate + ' · Payment: ' + payBadge + '' +
+'' + itemsText + '' +
+'Deliver to: ' + escapeHTML(o.deliveryAddress || "N/A") + '' +
+trackerHTML +
+ratingHTML +
+'';
+}).join("")
+: 'You have no orders yet.';
+} catch (err) {
+box.textContent = err.message;
+}
+}
 byId("search-form").addEventListener("submit", e => {
 e.preventDefault();
 const q = byId("search-input").value.trim().toLowerCase();
@@ -370,13 +421,23 @@ if (!getToken()) {
 byId("cart-message").textContent = "Please sign in first.";
 return;
 }
+const shippingDetails = {
+fullName: byId("ship-name").value.trim(),
+phone: byId("ship-phone").value.trim(),
+addressLine: byId("ship-address").value.trim(),
+city: byId("ship-city").value.trim(),
+state: byId("ship-state").value.trim(),
+pincode: byId("ship-pincode").value.trim()
+};
+const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value || "COD";
+const checkoutFeedback = byId("checkout-feedback").value.trim();
 try {
 const data = await apiRequest("/api/orders/checkout", {
 method: "POST",
-body: JSON.stringify({ deliveryAddress: byId("delivery-address").value.trim() })
+body: JSON.stringify({ shippingDetails, paymentMethod, checkoutFeedback })
 });
-byId("cart-message").textContent = data.message + ". Your order has been placed.";
-byId("delivery-address").value = "";
+byId("cart-message").textContent = "🎉 " + data.message + "! Thank you for shopping with ARPIARES ✨";
+e.target.reset();
 await refreshCartCount();
 byId("cart-items").innerHTML = 'Your order was placed successfully. Your bag is now empty.';
 byId("cart-subtotal").textContent = money(0);
