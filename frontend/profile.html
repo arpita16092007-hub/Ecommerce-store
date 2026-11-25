@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ARPIARES — Customer Dashboard</title>
+  <link rel="preconnect" href="https://googleapis.com">
+  <link rel="preconnect" href="https://gstatic.com" crossorigin>
+  <link href="https://googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=20">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">A</span>
+      <span>ARPIARES <small>MY ACCOUNT</small></span>
+    </a>
+    <div class="header-actions">
+      <a class="account-button" href="index.html" style="text-decoration:none;">← Back to Store</a>
+      <button class="logout-pill" id="profile-page-logout" type="button">Logout</button>
+    </div>
+  </header>
+
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <p class="sidebar-heading">MY ACCOUNT</p>
+      <a class="category-link active" href="#overview-section">👤 <span>Profile Overview</span></a>
+      <a class="category-link" href="#orders-section">📦 <span>My Orders &amp; Tracking</span></a>
+      <a class="category-link" href="#addresses-section">📍 <span>Saved Addresses</span></a>
+      <a class="category-link" href="#reviews-section">★ <span>My Ratings &amp; Reviews</span></a>
+    </aside>
+
+    <main class="admin-main">
+      <p class="eyebrow">CUSTOMER DASHBOARD</p>
+      <h1 id="profile-greeting">Welcome back</h1>
+      <p class="notice" id="profile-notice"></p>
+
+      <section class="admin-panel" id="overview-section">
+        <div id="profile-hero-card"></div>
+        <div class="stat-grid" style="margin-top:16px;">
+          <div class="stat-card"><span>📦</span><small>Total Orders</small><strong id="u-stat-orders">0</strong></div>
+          <div class="stat-card"><span>🚚</span><small>In Progress</small><strong id="u-stat-active">0</strong></div>
+          <div class="stat-card"><span>✓</span><small>Delivered</small><strong id="u-stat-delivered">0</strong></div>
+          <div class="stat-card"><span>💳</span><small>Total Spent</small><strong id="u-stat-spent">₹0</strong></div>
+        </div>
+
+        <h3 class="profile-section-title" style="margin-top:20px;">Quick Jump to Recent Orders (Click any order to inspect)</h3>
+        <div id="quick-orders-list" style="display:grid;gap:8px;"></div>
+      </section>
+
+      <section class="admin-panel" id="orders-section">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+          <h2>All Orders, Payment &amp; Delivery Tracking</h2>
+          <button type="button" class="add-button" id="refresh-user-orders">↻ Refresh Orders</button>
+        </div>
+        <div id="user-all-orders" style="display:grid;gap:14px;margin-top:14px;"></div>
+      </section>
+
+      <section class="admin-panel" id="addresses-section">
+        <h2>Saved Previous Delivery Addresses</h2>
+        <div id="user-saved-addresses" style="display:grid;gap:10px;margin-top:12px;"></div>
+      </section>
+
+      <section class="admin-panel" id="reviews-section">
+        <h2>My Ratings &amp; Reviews</h2>
+        <div id="user-reviews-list" style="display:grid;gap:10px;margin-top:12px;"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/api.js?v=20" defer></script>
+  <script src="js/profile.js?v=20" defer></script>
+</body>
+</html>

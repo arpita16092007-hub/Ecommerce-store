@@ -117,6 +117,23 @@ function logoutUser() {
 
 async function openProfile() {
   const user = getUser();
+  const savedRaw = localStorage.getItem("arpiares_selected_address");
+  if (savedRaw) {
+    try {
+      const item = JSON.parse(savedRaw);
+      if (item?.details) {
+        if (byId("ship-name")) byId("ship-name").value = item.details.fullName || "";
+        if (byId("ship-phone")) byId("ship-phone").value = item.details.phone || "";
+        if (byId("ship-address")) byId("ship-address").value = item.details.addressLine || item.formatted;
+        if (byId("ship-city")) byId("ship-city").value = item.details.city || "";
+        if (byId("ship-state")) byId("ship-state").value = item.details.state || "";
+        if (byId("ship-pincode")) byId("ship-pincode").value = item.details.pincode || "";
+      } else if (item?.formatted && byId("ship-address")) {
+        byId("ship-address").value = item.formatted;
+      }
+    } catch {}
+    localStorage.removeItem("arpiares_selected_address");
+  }
   if (!getToken() || !user) {
     openAuth("login");
     return;
@@ -166,7 +183,9 @@ function updateAccountUI() {
   byId("account-label").textContent = user ? user.name.trim().split(/\s+/).at(0) : "Sign in / Sign up";
   const logoutBtn = byId("header-logout-btn");
   if (logoutBtn) logoutBtn.classList.toggle("hidden", !user);
-  const adminLink = byId("admin-nav-link") || document.querySelector(".admin-link");
+  const userLink = byId("user-nav-link");
+  if (userLink) userLink.classList.toggle("hidden", !user);
+  const adminLink = byId("admin-nav-link");
   if (adminLink) {
     adminLink.classList.toggle("hidden", !user || user.role !== "admin");
   }
@@ -326,7 +345,7 @@ const add = e.target.closest("[data-add]");
 if (add) await addToCart(add.dataset.add);
 const view = e.target.closest("[data-view]");
 if (view) await showProduct(view.dataset.view);
-if (e.target.closest("#open-auth")) { if (getToken() && getUser()) await openProfile(); else openAuth("login"); }
+if (e.target.closest("#open-auth")) { if (getToken() && getUser()) { window.location.href = "profile.html"; return; } else openAuth("login"); }
   if (e.target.closest("#header-logout-btn") || e.target.closest("#profile-logout-btn")) logoutUser();
   const useAddrBtn = e.target.closest("[data-use-addr]");
   if (useAddrBtn) {
