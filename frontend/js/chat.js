@@ -18,7 +18,7 @@ return String(value ?? "")
 .replace(/&/g, "&")
 .replace(/</g, "<")
 .replace(/>/g, ">")
-.replace(/"/g, """);
+.replace(/"/g, "&quot;");
 }
 function renderMessages(messages) {
 const body = document.getElementById("chat-widget-messages");
