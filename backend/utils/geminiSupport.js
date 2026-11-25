@@ -21,7 +21,7 @@ function chunkText(title, rawText) {
             chunks.push({ title, content: current.trim() });
             current = para;
         } else {
-            current = current ? `${current}\n${para}` : para;
+            current = current ? current + "\n" + para : para;
         }
     }
     if (current.trim()) {
@@ -30,13 +30,22 @@ function chunkText(title, rawText) {
     return chunks;
 }
 
+function buildGeminiUrl(model, action, apiKey) {
+    return [
+        "https://generativelanguage.googleapis.com",
+        "v1beta",
+        "models",
+        model + ":" + action
+    ].join("/") + "?key=" + encodeURIComponent(apiKey);
+}
+
 async function embedText(text) {
     const apiKey = getApiKey();
     const models = ["text-embedding-004", "gemini-embedding-001"];
 
     let lastError = null;
     for (const model of models) {
-        const url = `https://googleapis.com{model}:embedContent?key=${encodeURIComponent(apiKey)}`;
+        const url = buildGeminiUrl(model, "embedContent", apiKey);
         const response = await fetch(url, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -51,7 +60,7 @@ async function embedText(text) {
         if (response.ok && Array.isArray(data?.embedding?.values)) {
             return data.embedding.values;
         }
-        lastError = new Error(data?.error?.message || `Embedding failed on ${model}`);
+        lastError = new Error(data?.error?.message || "Embedding failed on " + model);
     }
     throw lastError;
 }
@@ -84,12 +93,12 @@ function retrieveTopMatches(queryEmbedding, faqDocs, topK = 3) {
 async function generateGroundedReply({ question, matchedChunks, history }) {
     const apiKey = getApiKey();
     const contextBlock = matchedChunks
-        .map((m, idx) => `[Source ${idx + 1}: ${m.doc.title}]\n${m.doc.content}`)
+        .map((m, idx) => "[Source " + (idx + 1) + ": " + m.doc.title + "]\n" + m.doc.content)
         .join("\n\n");
 
     const recentHistory = (history || [])
         .slice(-6)
-        .map(m => `${m.role === "user" ? "Customer" : "Support Agent"}: ${m.text}`)
+        .map(m => (m.role === "user" ? "Customer" : "Support Agent") + ": " + m.text)
         .join("\n");
 
     const systemInstruction =
@@ -100,11 +109,11 @@ async function generateGroundedReply({ question, matchedChunks, history }) {
         "Keep answers polite, concise (2-4 sentences), and clear.";
 
     const prompt =
-        `VERIFIED KNOWLEDGE BASE:\n${contextBlock}\n\n` +
-        (recentHistory ? `RECENT CONVERSATION:\n${recentHistory}\n\n` : "") +
-        `CUSTOMER QUESTION:\n${question}`;
+        "VERIFIED KNOWLEDGE BASE:\n" + contextBlock + "\n\n" +
+        (recentHistory ? "RECENT CONVERSATION:\n" + recentHistory + "\n\n" : "") +
+        "CUSTOMER QUESTION:\n" + question;
 
-    const url = `https://googleapis.com{encodeURIComponent(apiKey)}`;
+    const url = buildGeminiUrl("gemini-2.5-flash", "generateContent", apiKey);
     const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
