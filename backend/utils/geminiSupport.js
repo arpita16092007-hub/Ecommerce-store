@@ -130,7 +130,7 @@ async function generateGroundedReply({ question, matchedChunks, history }) {
         throw new Error(data?.error?.message || "Gemini chat generation failed");
     }
 
-    const replyText = data?.candidates?.?.content?.parts?.?.text?.trim() || "";
+    const replyText = data?.candidates?.at(0)?.content?.parts?.at(0)?.text?.trim() || "";
     return replyText;
 }
 
