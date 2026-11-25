@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://googleapis.com">
   <link rel="preconnect" href="https://gstatic.com" crossorigin>
   <link href="https://googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=5">
 </head>
 <body>
   <header class="site-header">
@@ -25,6 +25,7 @@
     <aside class="admin-sidebar">
       <p class="sidebar-heading">MANAGEMENT</p>
       <a class="category-link active" href="#orders-section">📦 <span>Customer Orders</span></a>
+      <a class="category-link" href="#support-section">💬 <span>AI Support &amp; FAQs</span></a>
       <a class="category-link" href="#product-section">✦ <span>Products</span></a>
       <a class="category-link" href="#category-section">◇ <span>Categories</span></a>
     </aside>
@@ -46,6 +47,32 @@
           <button type="button" class="add-button" id="refresh-orders-btn">↻ Refresh Orders</button>
         </div>
         <div class="admin-product-list" id="admin-orders-list" style="margin-top:14px;"></div>
+      </section>
+
+      <section class="admin-panel" id="support-section">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+          <h2>AI Support Knowledge Base &amp; Escalations</h2>
+          <button type="button" class="add-button" id="refresh-support-btn">↻ Refresh Support</button>
+        </div>
+
+        <form class="admin-form" id="faq-form">
+          <input name="title" placeholder="FAQ Topic / Document Title (e.g., Return & Refund Policy)" required>
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:#06271d;background:#fffaf2;border:1px solid #e7d8c2;border-radius:10px;padding:10px 12px;cursor:pointer;">
+            📄 Or upload a .txt / .md help file:
+            <input type="file" id="faq-file-input" accept=".txt,.md,text/plain" style="padding:0;border:0;background:transparent;">
+          </label>
+          <textarea name="content" id="faq-content-input" placeholder="Paste FAQ answer or help document text here. Longer documents are automatically chunked and embedded into vectors." required></textarea>
+          <button class="primary-button" type="submit">UPLOAD TO KNOWLEDGE BASE →</button>
+        </form>
+
+        <h3 style="font:19px 'Playfair Display';margin:22px 0 10px;">Unanswered / Escalated Customer Questions</h3>
+        <div class="admin-product-list" id="admin-unanswered-list"></div>
+
+        <h3 style="font:19px 'Playfair Display';margin:22px 0 10px;">All Customer Chat Sessions</h3>
+        <div class="admin-product-list" id="admin-chats-list"></div>
+
+        <h3 style="font:19px 'Playfair Display';margin:22px 0 10px;">Indexed FAQ Documents (<span id="stat-faqs">0</span>)</h3>
+        <div class="admin-product-list" id="admin-faq-list"></div>
       </section>
 
       <section class="admin-panel" id="product-section">
@@ -90,7 +117,7 @@
     </main>
   </div>
 
-  <script src="js/api.js" defer></script>
-  <script src="js/admin.js" defer></script>
+  <script src="js/api.js?v=5" defer></script>
+  <script src="js/admin.js?v=5" defer></script>
 </body>
 </html>

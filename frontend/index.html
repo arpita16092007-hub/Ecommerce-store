@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://googleapis.com">
   <link rel="preconnect" href="https://gstatic.com" crossorigin>
   <link href="https://googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=4">
+  <link rel="stylesheet" href="css/style.css?v=5">
 </head>
 <body>
   <div class="announcement">A LITTLE LUXURY, EVERY DAY <span>✦</span> DISCOVER ARPIARES</div>
@@ -162,7 +162,31 @@
     </div>
   </div>
 
-  <script src="js/api.js?v=4" defer></script>
-  <script src="js/store.js?v=4" defer></script>
+  <!-- AI Customer Support Widget -->
+  <button type="button" class="chat-launcher" id="chat-widget-toggle" aria-label="Open customer support chat">
+    💬 <span>Support</span>
+  </button>
+
+  <aside class="chat-drawer" id="chat-widget-drawer" aria-hidden="true">
+    <div class="chat-drawer-header">
+      <div>
+        <strong>ARPIARES AI Support</strong>
+        <small>Answers from verified store FAQs</small>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button type="button" class="chat-header-btn" id="chat-widget-new" title="Start new chat">New</button>
+        <button type="button" class="chat-header-btn" id="chat-widget-close" aria-label="Close chat">×</button>
+      </div>
+    </div>
+    <div class="chat-drawer-body" id="chat-widget-messages"></div>
+    <form class="chat-drawer-form" id="chat-widget-form">
+      <input type="text" id="chat-widget-input" placeholder="Ask about delivery, returns, warranty…" required autocomplete="off">
+      <button type="submit" id="chat-widget-send">Send</button>
+    </form>
+  </aside>
+
+  <script src="js/api.js?v=5" defer></script>
+  <script src="js/store.js?v=5" defer></script>
+  <script src="js/chat.js?v=5" defer></script>
 </body>
 </html>

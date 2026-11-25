@@ -24,7 +24,7 @@ function checkAdminAccess() {
   if (!getToken() || !user || user.role !== "admin") {
     byId("admin-message").textContent = "This account is not an admin. Admin-only actions are disabled.";
     byId("admin-message").style.color = "#a3442f";
-    document.querySelectorAll("#product-form button, #category-form button, #refresh-orders-btn").forEach(btn => {
+    document.querySelectorAll("#product-form button, #category-form button, #faq-form button, #refresh-orders-btn, #refresh-support-btn").forEach(btn => {
       btn.disabled = true;
     });
     return false;
@@ -120,9 +120,7 @@ function renderAdminOrders() {
   const ordersBox = byId("admin-orders-list");
   if (!ordersBox) return;
 
-    const statuses = ["Pending", "Confirmed", "Shipped", "Delivered", "Cancelled"];
-
-
+  const statuses = ["Pending", "Confirmed", "Shipped", "Delivered", "Cancelled"];
   ordersBox.innerHTML = adminOrders.length
     ? adminOrders.map(o => {
         const customerName = o.userId?.name || "Customer";
@@ -156,12 +154,88 @@ function renderAdminOrders() {
     : '<p class="muted">No customer orders placed yet.</p>';
 }
 
+async function loadSupportAdmin() {
+  if (!getToken() || getUser()?.role !== "admin") return;
+  try {
+    const [faqData, overview] = await Promise.all([
+      apiRequest("/api/support/faq"),
+      apiRequest("/api/support/admin/overview")
+    ]);
+
+    const faqs = faqData.faqs || [];
+    const unanswered = overview.unanswered || [];
+    const sessions = overview.sessions || [];
+
+    if (byId("stat-faqs")) byId("stat-faqs").textContent = faqs.length;
+
+    if (byId("admin-unanswered-list")) {
+      byId("admin-unanswered-list").innerHTML = unanswered.length
+        ? unanswered.map(q => {
+            const isOpen = q.status === "Open";
+            return '<div class="admin-product-row" style="display:block;">' +
+              '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px;">' +
+                '<b>' + escapeHTML(q.question) + '</b>' +
+                '<span class="status-pill ' + (isOpen ? "cancelled" : "delivered") + '">' + escapeHTML(q.status) + ' · Score ' + q.bestScore + '</span>' +
+              '</div>' +
+              '<small>Asked by ' + escapeHTML(q.customerName || "Guest") + ' · ' + new Date(q.createdAt).toLocaleString("en-IN") + '</small>' +
+              (isOpen
+                ? '<div style="display:grid;gap:8px;margin-top:10px;">' +
+                    '<input type="text" id="reply-input-' + q._id + '" placeholder="Type human support reply…">' +
+                    '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
+                      '<label style="font-size:12px;display:flex;align-items:center;gap:6px;cursor:pointer;">' +
+                        '<input type="checkbox" id="add-faq-' + q._id + '" checked style="width:auto;"> Also add Q&amp;A to FAQ knowledge base' +
+                      '</label>' +
+                      '<button type="button" class="add-button" data-resolve-question="' + q._id + '">Send Reply →</button>' +
+                    '</div>' +
+                  '</div>'
+                : '<p style="font-size:12px;color:#06271d;margin:8px 0 0;"><b>Agent Reply:</b> ' + escapeHTML(q.adminReply) + '</p>') +
+            '</div>';
+          }).join("")
+        : '<p class="muted">No unanswered questions right now.</p>';
+    }
+
+    if (byId("admin-chats-list")) {
+      byId("admin-chats-list").innerHTML = sessions.length
+        ? sessions.map(s => {
+            const msgsHTML = (s.messages || []).map(m =>
+              '<div style="font-size:12px;padding:4px 0;border-bottom:1px dotted #e7d8c2;">' +
+                '<b>' + (m.role === "user" ? "Customer" : (m.role === "admin" ? "Human Agent" : "AI Bot")) + ':</b> ' +
+                escapeHTML(m.text) +
+              '</div>'
+            ).join("");
+            return '<details class="admin-product-row" style="display:block;">' +
+              '<summary style="cursor:pointer;font-weight:600;">' +
+                escapeHTML(s.customerName || "Guest") + ' · ' + (s.messages || []).length + ' messages' +
+                (s.needsHuman ? ' <span style="color:#a3442f;">(Needs Human)</span>' : '') +
+              '</summary>' +
+              '<div style="margin-top:10px;padding-left:10px;">' + msgsHTML + '</div>' +
+            '</details>';
+          }).join("")
+        : '<p class="muted">No customer chat sessions recorded yet.</p>';
+    }
+
+    if (byId("admin-faq-list")) {
+      byId("admin-faq-list").innerHTML = faqs.length
+        ? faqs.map(f =>
+            '<div class="admin-product-row">' +
+              '<div><b>' + escapeHTML(f.title) + '</b><small>' + escapeHTML(f.content.slice(0, 140)) + (f.content.length > 140 ? "…" : "") + '</small></div>' +
+              '<button type="button" class="text-button" data-delete-faq="' + escapeHTML(f._id) + '" style="color:#a3442f;">Delete</button>' +
+            '</div>'
+          ).join("")
+        : '<p class="muted">Knowledge base is empty. Upload your store FAQs above.</p>';
+    }
+  } catch (err) {
+    byId("admin-message").textContent = err.message;
+  }
+}
+
 async function loadAdmin() {
   try {
     const [productData, categoryData] = await Promise.all([
       apiRequest("/api/products?limit=100"),
       apiRequest("/api/categories")
     ]);
+
     adminProducts = productData.products || [];
     adminCategories = categoryData.categories || [];
 
@@ -183,20 +257,20 @@ async function loadAdmin() {
       const thumb = (Array.isArray(p.images) && p.images.at(0)) || p.imageUrl || "";
       const cleanThumb = String(thumb).replace(/"/g, "&quot;");
       const imgTag = cleanThumb
-        ? '<img src="' + cleanThumb + '" alt="' + escapeHTML(p.name) + '" style="width:48px;height:48px;object-fit:contain;background:#fff;border:1px solid #e7d8c2;border-radius:8px;padding:3px;">'
-        : '<div style="width:48px;height:48px;border-radius:8px;background:#e9dcc7;display:grid;place-items:center;font-weight:700;">A</div>';
+        ? '<img src="' + cleanThumb + '" alt="' + escapeHTML(p.name) + '" style="width:56px;height:56px;object-fit:cover;border-radius:8px;">'
+        : '<span class="brand-mark" style="display:flex;width:56px;height:56px;align-items:center;justify-content:center;">A</span>';
       const angleCount = Array.isArray(p.images) && p.images.length > 1 ? " · " + p.images.length + " photos" : "";
+
       return '<div class="admin-product-row">' +
-        '<div style="display:flex;align-items:center;gap:12px;">' +
+        '<div style="display:flex;align-items:center;gap:12px;min-width:0;">' +
           imgTag +
-          '<div>' +
-            '<b>' + escapeHTML(p.name) + '</b>' +
-            '<small>' + escapeHTML(p.categoryId?.name || "Uncategorized") + ' · ' + money(p.price) + ' · Stock: ' + p.stock + angleCount + '</small>' +
-          '</div>' +
+          '<div><b>' + escapeHTML(p.name) + '</b><small>' +
+            escapeHTML(p.categoryId?.name || "Uncategorized") + " · " + money(p.price) + " · Stock: " + p.stock + angleCount +
+          '</small></div>' +
         '</div>' +
-        '<div style="display:flex;gap:12px;align-items:center;">' +
-          '<button type="button" class="add-button" style="padding:7px 13px;" data-edit-product="' + p._id + '">Edit</button>' +
-          '<button type="button" class="text-button" style="color:#a3442f;" data-delete-product="' + p._id + '">Delete</button>' +
+        '<div style="display:flex;gap:8px;">' +
+          '<button type="button" class="text-button" data-edit-product="' + escapeHTML(p._id) + '">Edit</button>' +
+          '<button type="button" class="text-button" data-delete-product="' + escapeHTML(p._id) + '" style="color:#a3442f;">Delete</button>' +
         '</div>' +
       '</div>';
     }).join("");
@@ -205,46 +279,71 @@ async function loadAdmin() {
       const orderData = await apiRequest("/api/orders");
       adminOrders = orderData.orders || [];
       renderAdminOrders();
+      await loadSupportAdmin();
     }
   } catch (err) {
     byId("admin-message").textContent = err.message;
   }
 }
-
-byId("product-file-input").addEventListener("change", async e => {
-  const files = Array.from(e.target.files || []);
-  if (!files.length) return;
-  byId("admin-message").textContent = "Processing selected photos…";
-  try {
-    for (const file of files) {
-      const compressed = await compressImageFile(file);
-      stagedImages.push(compressed);
-    }
-    renderImagePreviews();
-    byId("admin-message").textContent = files.length + " photo(s) ready.";
-  } catch (err) {
-    byId("admin-message").textContent = err.message;
-  }
-  e.target.value = "";
+byId("faq-file-input")?.addEventListener("change", async e => {
+const file = e.target.files?.[0];
+if (!file) return;
+const text = await file.text();
+byId("faq-content-input").value = text;
+const titleInput = byId("faq-form")?.elements?.title;
+if (titleInput && !titleInput.value.trim()) {
+titleInput.value = file.name.replace(/.[^.]+$/, "");
+}
 });
-
+byId("faq-form")?.addEventListener("submit", async e => {
+e.preventDefault();
+const fd = new FormData(e.target);
+byId("admin-message").textContent = "Generating Gemini embeddings and indexing FAQ…";
+try {
+const data = await apiRequest("/api/support/faq", {
+method: "POST",
+body: JSON.stringify({
+title: fd.get("title"),
+content: fd.get("content")
+})
+});
+e.target.reset();
+byId("admin-message").textContent = data.message;
+await loadSupportAdmin();
+} catch (err) {
+byId("admin-message").textContent = err.message;
+}
+});
+byId("product-file-input").addEventListener("change", async e => {
+const files = Array.from(e.target.files || []);
+if (!files.length) return;
+byId("admin-message").textContent = "Processing selected photos…";
+try {
+for (const file of files) {
+const compressed = await compressImageFile(file);
+stagedImages.push(compressed);
+}
+renderImagePreviews();
+byId("admin-message").textContent = files.length + " photo(s) ready.";
+} catch (err) {
+byId("admin-message").textContent = err.message;
+}
+e.target.value = "";
+});
 byId("product-form").addEventListener("submit", async e => {
-  e.preventDefault();
-  const fd = new FormData(e.target);
-  const editId = String(fd.get("productId") || "").trim();
-
-  const typedUrls = String(fd.get("imageUrl") || "")
-    .split(",")
-    .map(s => s.trim())
-    .filter(Boolean);
-
-  const combinedImages = [...stagedImages, ...typedUrls];
-
-  const payload = {
-    name: fd.get("name"),
-    price: Number(fd.get("price")),
-    stock: Number(fd.get("stock")),
-    categoryId: fd.get("categoryId"),
+e.preventDefault();
+const fd = new FormData(e.target);
+const editId = String(fd.get("productId") || "").trim();
+const typedUrls = String(fd.get("imageUrl") || "")
+.split(",")
+.map(s => s.trim())
+.filter(Boolean);
+const combinedImages = [...stagedImages, ...typedUrls];
+const payload = {
+name: fd.get("name"),
+price: Number(fd.get("price")),
+stock: Number(fd.get("stock")),
+categoryId: fd.get("categoryId"),
 description: fd.get("description"),
 imageUrl: combinedImages.at(0) || "",
 images: combinedImages
@@ -339,9 +438,43 @@ await loadAdmin();
 byId("admin-message").textContent = err.message;
 }
 }
+const resolveBtn = e.target.closest("[data-resolve-question]");
+if (resolveBtn) {
+const qId = resolveBtn.dataset.resolveQuestion;
+const replyVal = byId("reply-input-" + qId)?.value.trim();
+const addToFaq = Boolean(byId("add-faq-" + qId)?.checked);
+if (!replyVal) {
+byId("admin-message").textContent = "Please enter a reply first.";
+return;
+}
+try {
+const data = await apiRequest("/api/support/admin/resolve/" + qId, {
+method: "POST",
+body: JSON.stringify({ adminReply: replyVal, addToFaq })
+});
+byId("admin-message").textContent = data.message;
+await loadSupportAdmin();
+} catch (err) {
+byId("admin-message").textContent = err.message;
+}
+}
+const delFaqBtn = e.target.closest("[data-delete-faq]");
+if (delFaqBtn) {
+try {
+await apiRequest("/api/support/faq/" + delFaqBtn.dataset.deleteFaq, { method: "DELETE" });
+byId("admin-message").textContent = "FAQ entry removed.";
+await loadSupportAdmin();
+} catch (err) {
+byId("admin-message").textContent = err.message;
+}
+}
 if (e.target.closest("#refresh-orders-btn")) {
 await loadAdmin();
 byId("admin-message").textContent = "Orders refreshed.";
+}
+if (e.target.closest("#refresh-support-btn")) {
+await loadSupportAdmin();
+byId("admin-message").textContent = "Support logs refreshed.";
 }
 if (e.target.closest("#admin-logout")) {
 localStorage.removeItem("arpiares_token");
@@ -349,5 +482,5 @@ localStorage.removeItem("arpiares_user");
 window.location.href = "index.html";
 }
 });
-checkAdminAccess(); 
+checkAdminAccess();
 loadAdmin();

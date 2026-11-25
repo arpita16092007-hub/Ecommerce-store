@@ -14,6 +14,7 @@ const productRoutes = require("./routes/productRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const orderRoutes = require("./routes/orderRoutes");
+const supportRoutes = require("./routes/supportRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5050;
@@ -30,6 +31,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/support", supportRoutes);
 
 connectDB().then(() => {
     app.get("/health", (req, res) => {
