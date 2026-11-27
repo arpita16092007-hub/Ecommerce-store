@@ -1470,3 +1470,86 @@ footer.arp-clean-footer {
   background: rgba(255, 250, 242, 0.08);
   border: 1px solid rgba(229, 193, 123, 0.4);
 }
+/* Floating Emerald & Gold Pop-Up Notification for Bag & Saved Collection */
+.arp-toast {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  z-index: 95;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 270px;
+  max-width: min(360px, 90vw);
+  background: linear-gradient(135deg, #06271d 0%, #0f3d2e 100%);
+  color: #fff4df;
+  border: 1.5px solid #e5c17b;
+  border-radius: 16px;
+  padding: 13px 16px;
+  box-shadow: 0 18px 42px rgba(4, 21, 15, 0.36);
+  opacity: 0;
+  transform: translateY(24px) scale(0.95);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.arp-toast.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+.arp-toast-badge {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e5c17b, #b88946);
+  color: #06271d;
+  font: 700 15px "DM Sans", sans-serif;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.arp-toast-body {
+  flex: 1;
+  min-width: 0;
+}
+.arp-toast-body strong {
+  display: block;
+  font: 700 13.5px "Playfair Display", serif;
+  color: #f4d399;
+  letter-spacing: 0.2px;
+}
+.arp-toast-body small {
+  display: block;
+  font: 400 12px "DM Sans", sans-serif;
+  color: #efe3cf;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+.arp-toast-link {
+  display: inline-block;
+  margin-top: 5px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: #e5c17b;
+  font: 700 11.5px "DM Sans", sans-serif;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.arp-toast-link:hover {
+  color: #ffffff;
+}
+.arp-toast-close {
+  background: transparent;
+  border: 0;
+  color: #cbbba0;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 4px;
+}
+.arp-toast-close:hover {
+  color: #ffffff;
+}

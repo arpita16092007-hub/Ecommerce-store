@@ -17,7 +17,17 @@ function toggleSavedProduct(productId) {
   const next = exists ? current.filter(x => x !== id) : [...current, id];
   localStorage.setItem(getWishlistKey(), JSON.stringify(next));
   refreshWishlistUI();
-  showNotice(exists ? "Removed from your Saved Collection." : "❖ Saved to your Curated Collection!");
+  const prod = allProducts.find(p => String(p._id) === id);
+  const pName = prod ? prod.name : "Curated item";
+  const msg = exists ? "Removed from Saved Collection." : "Saved to your Curated Collection!";
+  showNotice(msg);
+  showLuxuryToast({
+    title: exists ? "Removed from Saved" : "Saved to Collection",
+    subtitle: pName,
+    actionText: "View Saved (" + next.length + ") →",
+    actionHref: "wishlist.html",
+    tone: "gold"
+  });
 }
 function refreshWishlistUI() {
   const saved = getSavedIds();
@@ -62,6 +72,44 @@ const escapeHTML = value =>
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+
+
+let arpToastTimer = null;
+function showLuxuryToast({ title, subtitle = "", actionText = "", actionHref = "", onAction = null, tone = "gold" }) {
+  let toast = byId("arp-floating-toast");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "arp-floating-toast";
+    toast.className = "arp-toast";
+    document.body.appendChild(toast);
+  }
+  const badgeIcon = tone === "bag" ? "✓" : "❖";
+  const actionHtml = actionText
+    ? (actionHref
+        ? '<a href="' + escapeHTML(actionHref) + '" class="arp-toast-link">' + escapeHTML(actionText) + '</a>'
+        : '<button type="button" class="arp-toast-link" id="arp-toast-action-btn">' + escapeHTML(actionText) + '</button>')
+    : "";
+  toast.innerHTML =
+    '<div class="arp-toast-badge">' + badgeIcon + '</div>' +
+    '<div class="arp-toast-body">' +
+      '<strong>' + escapeHTML(title) + '</strong>' +
+      (subtitle ? '<small>' + escapeHTML(subtitle) + '</small>' : "") +
+      actionHtml +
+    '</div>' +
+    '<button type="button" class="arp-toast-close" id="arp-toast-close-btn" aria-label="Dismiss">×</button>';
+  toast.classList.remove("show");
+  void toast.offsetWidth;
+  toast.classList.add("show");
+  byId("arp-toast-close-btn")?.addEventListener("click", () => toast.classList.remove("show"));
+  if (onAction) {
+    byId("arp-toast-action-btn")?.addEventListener("click", () => {
+      toast.classList.remove("show");
+      onAction();
+    });
+  }
+  if (arpToastTimer) clearTimeout(arpToastTimer);
+  arpToastTimer = setTimeout(() => toast.classList.remove("show"), 3400);
+}
 
 function showNotice(message, isError = false) {
   const el = byId("notice");
@@ -257,7 +305,16 @@ async function addToCart(productId) {
       method: "POST",
       body: JSON.stringify({ productId, quantity: 1 })
     });
-    showNotice("Added to your shopping bag.");
+    const prod = allProducts.find(p => String(p._id) === String(productId));
+    const pName = prod ? prod.name : "Selected item";
+    showNotice("Added " + pName + " to your shopping bag.");
+    showLuxuryToast({
+      title: "Added to Shopping Bag",
+      subtitle: pName,
+      actionText: "Open Bag →",
+      onAction: openCart,
+      tone: "bag"
+    });
     await refreshCartCount();
   } catch (e) {
     showNotice(e.message, true);
