@@ -854,3 +854,39 @@
   background: #104232;
   transform: translateY(-1px);
 }
+/* Custom Luxury ARPIARES Brand SVG Icons */
+.arp-ico-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  vertical-align: middle;
+}
+.arp-ico {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  vertical-align: -2px;
+  color: currentColor;
+}
+.concierge-emblem .arp-ico {
+  width: 17px;
+  height: 17px;
+  color: #06271d;
+}
+.curate-save-btn .arp-ico {
+  width: 16px;
+  height: 16px;
+}
+.hero-perks .arp-ico {
+  color: #e5c17b;
+}
+.pay-option .arp-ico {
+  color: #06271d;
+  width: 16px;
+  height: 16px;
+}
+.stat-card .arp-ico {
+  width: 20px;
+  height: 20px;
+  color: #b88946;
+}
