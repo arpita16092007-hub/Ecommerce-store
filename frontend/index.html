@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="css/style.css?v=21">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://w3.org' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2306271d'/><text x='50' y='68' font-size='56' text-anchor='middle' fill='%23e5c17b' font-family='Georgia,serif'>A</text></svg>">
 
-  <link rel="stylesheet" href="css/upgrades.css?v=5">
+  <link rel="stylesheet" href="css/upgrades.css?v=6">
 </head>
 <body>
   <div class="announcement">A LITTLE LUXURY, EVERY DAY <span>✦</span> DISCOVER ARPIARES</div>
@@ -32,7 +32,7 @@
         🛒 <span class="count" id="cart-count">0</span>
       </button>
       <button class="menu-drawer-btn" id="open-menu-drawer" type="button" aria-label="Open menu">
-        ☰ <span>Explore &amp; Account</span>
+        ☰ <span>Account &amp; Menu</span>
       </button>
     </div>
   </header>
@@ -43,7 +43,7 @@
     <div class="nav-drawer-top">
       <div>
         <p class="eyebrow" style="color:#d4af6a;margin:0;">ARPIARES</p>
-        <strong style="font:700 18px 'Playfair Display',serif;color:#fff4df;">Explore &amp; Menu</strong>
+        <strong style="font:700 18px 'Playfair Display',serif;color:#fff4df;">Account &amp; Menu</strong>
       </div>
       <button type="button" class="chat-header-btn" id="close-menu-drawer" aria-label="Close menu">✕</button>
     </div>
@@ -60,18 +60,21 @@
         <button type="button" class="drawer-item-btn logout-drawer-btn hidden" id="header-logout-btn">→ <span>Sign Out / Logout</span></button>
       </div>
 
-      <div class="nav-drawer-section">
-        <p class="sidebar-heading">EXPLORE CATEGORIES</p>
-        <button type="button" class="category-link active" data-category="">✦ <span>All products</span></button>
-        <div id="category-list" style="display:grid;gap:6px;margin-top:6px;">
-          <span class="muted small">Loading categories…</span>
-        </div>
       </div>
     </div>
   </aside>
 
 
   <div class="layout top-explore-layout">
+    <nav class="sandstone-explore-bar" aria-label="Explore product categories">
+      <span class="explore-ribbon-label">✦ EXPLORE</span>
+      <div class="explore-ribbon-pills">
+        <button type="button" class="explore-pill active" data-category="">All Products</button>
+        <div id="category-list" class="explore-dynamic-list">
+          <span class="muted small">Loading categories…</span>
+        </div>
+      </div>
+    </nav>
     <main class="store-content">
             <section class="hero lively-hero">
         <div class="hero-copy">
