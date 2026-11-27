@@ -626,3 +626,110 @@
   opacity: 0.92;
   transform: translateX(3px);
 }
+
+/* Unique Diamond-Crest "❖" Curated Save Button & Wishlist Showcase Page */
+.curate-save-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 4;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 250, 242, 0.94);
+  color: #5f594f;
+  border: 1.5px solid #d6b77e;
+  font-size: 16px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(6, 27, 20, 0.14);
+  transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease;
+}
+.curate-save-btn:hover {
+  transform: scale(1.1);
+  border-color: #06271d;
+  color: #06271d;
+}
+.curate-save-btn.saved {
+  background: #06271d;
+  color: #f4d399;
+  border-color: #e5c17b;
+  box-shadow: 0 6px 16px rgba(6, 27, 20, 0.28);
+}
+.curate-modal-btn {
+  background: #fffaf2;
+  color: #06271d;
+  border: 1.5px solid #c89d5c;
+  border-radius: 28px;
+  padding: 12px 18px;
+  font: 700 12px "DM Sans", sans-serif;
+  cursor: pointer;
+}
+.curate-modal-btn.saved {
+  background: #06271d;
+  color: #f4d399;
+}
+.wishlist-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 22px;
+}
+.wish-detail-card {
+  background: #fffdf8;
+  border: 1px solid #d6b77e;
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 26px rgba(80, 59, 26, 0.08);
+}
+.wish-card-media {
+  position: relative;
+  height: 220px;
+  background: #ffffff;
+  border-bottom: 1px solid #eadcc6;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+}
+.wish-card-media img {
+  max-height: 184px;
+  max-width: 100%;
+  object-fit: contain;
+}
+.wish-cat-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: #06271d;
+  color: #f4d399;
+  font: 700 10px "DM Sans", sans-serif;
+  letter-spacing: 0.5px;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+.wish-card-body {
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.wish-card-body h3 {
+  font: 700 18px "Playfair Display", serif;
+  margin: 0 0 8px;
+  color: #161614;
+}
+.wish-desc {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #5f594f;
+  margin: 0 0 12px;
+  flex: 1;
+}
+.wish-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ARPIARES — Saved Collection</title>
+  <link rel="preconnect" href="https://googleapis.com">
+  <link rel="preconnect" href="https://gstatic.com" crossorigin>
+  <link href="https://googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=25">
+  <link rel="stylesheet" href="css/upgrades.css?v=8">
+</head>
+<body>
+  <div class="announcement">CURATED FOR YOU <span>❖</span> YOUR SAVED ARPIARES COLLECTION</div>
+
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">A</span>
+      <span>ARPIARES <small>SAVED COLLECTION</small></span>
+    </a>
+    <div class="header-actions">
+      <a class="menu-drawer-btn" href="index.html" style="text-decoration:none;">← Back to Storefront</a>
+    </div>
+  </header>
+
+  <main class="cat-page-wrap">
+    <section class="cat-page-hero reveal-card is-visible">
+      <p class="eyebrow" style="color:#e5c17b;">PERSONAL ARCHIVE</p>
+      <h1>Your <em>Curated Saves.</em></h1>
+      <p>Keep track of the extraordinary pieces you love and move them into your shopping bag whenever you're ready.</p>
+    </section>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+      <p class="notice" id="wish-notice" style="margin:0;"></p>
+      <button type="button" class="logout-pill hidden" id="clear-wishlist-btn">Clear All Saved</button>
+    </div>
+
+    <div class="wishlist-detail-grid" id="wishlist-grid">
+      <div class="loading-card">Loading your saved items…</div>
+    </div>
+  </main>
+
+  <footer>
+    <span class="brand footer-brand"><span class="brand-mark">A</span> ARPIARES</span>
+    <span>SHOP · EXPLORE · CONQUER</span>
+    <span>© 2026 ARPIARES</span>
+  </footer>
+
+  <script src="js/api.js?v=25" defer></script>
+  <script src="js/wishlist.js?v=1" defer></script>
+</body>
+</html>

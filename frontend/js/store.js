@@ -1,3 +1,34 @@
+function getWishlistKey() {
+  const user = getUser();
+  return "arpiares_saved_" + (user?._id || user?.email || "guest");
+}
+function getSavedIds() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(getWishlistKey()) || "[]");
+    return Array.isArray(raw) ? raw.map(String) : [];
+  } catch {
+    return [];
+  }
+}
+function toggleSavedProduct(productId) {
+  const id = String(productId);
+  const current = getSavedIds();
+  const exists = current.includes(id);
+  const next = exists ? current.filter(x => x !== id) : [...current, id];
+  localStorage.setItem(getWishlistKey(), JSON.stringify(next));
+  refreshWishlistUI();
+  showNotice(exists ? "Removed from your Saved Collection." : "❖ Saved to your Curated Collection!");
+}
+function refreshWishlistUI() {
+  const saved = getSavedIds();
+  const countEl = byId("wishlist-count");
+  if (countEl) countEl.textContent = saved.length;
+  document.querySelectorAll("[data-save-id]").forEach(btn => {
+    const isSaved = saved.includes(String(btn.dataset.saveId));
+    btn.classList.toggle("saved", isSaved);
+    btn.title = isSaved ? "Saved in collection" : "Save to collection";
+  });
+}
 function openNavDrawer() {
   byId("nav-slide-drawer")?.classList.add("open");
   byId("nav-drawer-backdrop")?.classList.add("open");
@@ -99,7 +130,7 @@ function renderProducts(products) {
       : '<span class="product-placeholder">A</span>';
     const desc = escapeHTML((p.description || "").slice(0, 85)) + ((p.description || "").length > 85 ? "…" : "");
     return '<article class="product-card">' +
-      '<div class="product-image" data-view="' + p._id + '">' + image + '<span class="image-badge">' + escapeHTML(p.name) + '</span></div>' +
+      '<div class="product-image" data-view="' + p._id + '">' + image + '<button type="button" class="curate-save-btn ' + (getSavedIds().includes(String(p._id)) ? "saved" : "") + '" data-save-id="' + p._id + '" aria-label="Save product" title="Save to collection">❖</button><span class="image-badge">' + escapeHTML(p.name) + '</span></div>' +
       '<div class="product-info">' +
         '<h3 data-view="' + p._id + '">' + escapeHTML(p.name) + '</h3>' +
         '<p>' + desc + '</p>' +
@@ -130,7 +161,9 @@ function logoutUser() {
   localStorage.removeItem("arpiares_token");
   localStorage.removeItem("arpiares_user");
   updateAccountUI();
+  refreshWishlistUI();
   refreshCartCount();
+refreshWishlistUI();
   closeModal("profile-modal");
   closeModal("orders-modal");
   closeModal("cart-modal");
@@ -352,7 +385,7 @@ async function showProduct(id) {
         '<p class="price">' + money(p.price) + '</p>' +
         '<p>' + escapeHTML(p.description) + '</p>' +
         '<p class="small">Availability: ' + (Number(p.stock) > 0 ? p.stock + " in stock" : "Out of stock") + '</p>' +
-        '<button class="primary-button" data-add="' + p._id + '" ' + (p.stock < 1 ? "disabled" : "") + '>ADD TO BAG →</button>' +
+        '<div style="display:flex;gap:10px;flex-wrap:wrap;"><button class="primary-button" style="flex:1;" data-add="' + p._id + '" ' + (p.stock < 1 ? "disabled" : "") + '>ADD TO BAG →</button><button type="button" class="curate-modal-btn ' + (getSavedIds().includes(String(p._id)) ? "saved" : "") + '" data-save-id="' + p._id + '">❖ Save</button></div>' +
       '</div>' +
     '</div>';
     openModal("product-modal");
@@ -388,7 +421,9 @@ document.addEventListener("click", async e => {
   }
 const add = e.target.closest("[data-add]");
 if (add) await addToCart(add.dataset.add);
-const view = e.target.closest("[data-view]");
+const saveBtn = e.target.closest("[data-save-id]");
+  if (saveBtn) { e.stopPropagation(); toggleSavedProduct(saveBtn.dataset.saveId); return; }
+  const view = e.target.closest("[data-view]");
 if (view) await showProduct(view.dataset.view);
 if (e.target.closest("#open-auth")) { if (getToken() && getUser()) { window.location.href = "profile.html"; return; } else openAuth("login"); }
   if (e.target.closest("#header-logout-btn") || e.target.closest("#profile-logout-btn")) logoutUser();
