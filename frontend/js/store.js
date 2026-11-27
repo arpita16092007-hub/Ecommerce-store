@@ -643,6 +643,9 @@ function renderHeroSpotlight() {
   const imgSrc = (Array.isArray(p.images) && p.images.at(0)) || p.imageUrl || "";
   const safeImg = String(imgSrc).replace(/"/g, "&quot;");
   const catName = escapeHTML(p.categoryId?.name || "Featured Pick");
+  card.classList.remove("spotlight-animate-in");
+  void card.offsetWidth;
+  card.classList.add("spotlight-animate-in");
   card.innerHTML =
     '<span class="spotlight-tag">✦ ' + catName + '</span>' +
     '<div class="spotlight-img-wrap" data-view="' + p._id + '">' +
@@ -675,4 +678,19 @@ document.addEventListener("click", e => {
   if (e.target.closest("#hero-next")) { heroIndex++; renderHeroSpotlight(); startHeroAutoplay(); }
   const dot = e.target.closest("[data-hero-dot]");
   if (dot) { heroIndex = Number(dot.dataset.heroDot); renderHeroSpotlight(); startHeroAutoplay(); }
+});
+
+
+document.addEventListener("mousemove", e => {
+  const card = byId("hero-spotlight-card");
+  if (!card) return;
+  const rect = card.getBoundingClientRect();
+  const inside = e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom;
+  if (!inside) {
+    card.style.transform = "";
+    return;
+  }
+  const x = (e.clientX - rect.left) / rect.width - 0.5;
+  const y = (e.clientY - rect.top) / rect.height - 0.5;
+  card.style.transform = "perspective(700px) rotateY(" + (x * 8).toFixed(2) + "deg) rotateX(" + (-y * 8).toFixed(2) + "deg) translateY(-4px)";
 });

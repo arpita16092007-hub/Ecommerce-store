@@ -733,3 +733,106 @@
   gap: 10px;
   align-items: center;
 }
+
+/* Animated Hero Banner: Drifting Orbs, Floating Sparkles, Slide-In Spotlight & Button Sheen */
+.hero.lively-hero {
+  position: relative;
+  overflow: hidden;
+}
+.hero-ambient-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+.hero.lively-hero .hero-copy {
+  position: relative;
+  z-index: 2;
+  animation: heroCopyEnter 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes heroCopyEnter {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.ambient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(42px);
+  opacity: 0.45;
+}
+.ambient-orb.orb-a {
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle, #e5c17b, transparent 70%);
+  top: -60px;
+  right: 12%;
+  animation: orbDriftA 9s ease-in-out infinite alternate;
+}
+.ambient-orb.orb-b {
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, #2a9d74, transparent 70%);
+  bottom: -70px;
+  left: 28%;
+  animation: orbDriftB 11s ease-in-out infinite alternate;
+}
+@keyframes orbDriftA {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-35px, 28px) scale(1.15); }
+}
+@keyframes orbDriftB {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(40px, -24px) scale(1.12); }
+}
+.ambient-spark {
+  position: absolute;
+  color: #f4d399;
+  opacity: 0.35;
+  font-size: 15px;
+  animation: sparkFloat 6s ease-in-out infinite;
+}
+.ambient-spark.s1 { top: 20%; left: 48%; animation-delay: 0s; }
+.ambient-spark.s2 { top: 72%; left: 42%; font-size: 12px; animation-delay: 2s; }
+.ambient-spark.s3 { top: 16%; right: 6%; font-size: 17px; animation-delay: 3.5s; }
+@keyframes sparkFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.28; }
+  50% { transform: translateY(-14px) rotate(18deg); opacity: 0.72; }
+}
+
+/* Smooth Slide-In + Gentle Float on Featured Product Spotlight Card */
+.hero-showcase-card {
+  animation: spotlightLevitate 4.8s ease-in-out infinite;
+  will-change: transform;
+}
+.hero-showcase-card.spotlight-animate-in {
+  animation: spotlightSlideIn 0.55s cubic-bezier(0.22, 1, 0.36, 1), spotlightLevitate 4.8s ease-in-out 0.55s infinite;
+}
+@keyframes spotlightSlideIn {
+  from { opacity: 0; transform: translateX(22px) scale(0.96); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+@keyframes spotlightLevitate {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Gold Button Periodic Light Sheen */
+.hero.lively-hero .gold-button {
+  position: relative;
+  overflow: hidden;
+}
+.hero.lively-hero .gold-button::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 65%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: skewX(-22deg);
+  animation: buttonSheen 4.5s ease-in-out infinite;
+}
+@keyframes buttonSheen {
+  0%, 65% { left: -120%; }
+  100% { left: 160%; }
+}
