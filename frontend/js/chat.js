@@ -74,12 +74,7 @@
     const welcomeCard =
       '<div class="chat-msg bot">' +
         '<p>✨ Welcome to <b>ARPIARES Care</b>! Ask me anything about delivery, returns, payments, or share a product/website review.</p>' +
-        '<div class="quick-chips">' +
-          '<button type="button" class="quick-chip" data-quick-ask="What are your shipping and delivery times?">🚚 Delivery time</button>' +
-          '<button type="button" class="quick-chip" data-quick-ask="What is your return and refund policy?">🔄 Returns</button>' +
-          '<button type="button" class="quick-chip" data-quick-ask="Which payment modes do you accept?">💳 Payments</button>' +
-          '<button type="button" class="quick-chip" id="chip-open-review">⭐ Leave a Review</button>' +
-        '</div>' +
+        '<div class="quick-chips">  <button type="button" class="quick-chip" data-quick-ask="What are your shipping and delivery times?">Delivery Time</button>  <button type="button" class="quick-chip" data-quick-ask="What is your 7-day return and refund policy?">Returns &amp; Refunds</button>  <button type="button" class="quick-chip" data-quick-ask="Which payment modes and COD options do you accept?">Payments &amp; COD</button>  <button type="button" class="quick-chip" data-quick-ask="Do electronics come with a warranty?">Warranty</button>  <button type="button" class="quick-chip" data-quick-ask="How can I contact customer support directly?">Contact Support</button>  <button type="button" class="quick-chip" id="chip-open-review">★ Leave a Review</button></div>' +
       '</div>';
 
     if (!messages || !messages.length) {

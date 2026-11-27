@@ -928,3 +928,113 @@
   transform: translateY(-2px);
   color: #f4d399;
 }
+
+/* Full-Featured Luxury E-Commerce Footer */
+.arp-luxury-footer {
+  background: linear-gradient(180deg, #06271d 0%, #041912 100%);
+  color: #efe3cf;
+  border-top: 2px solid #c89d5c;
+  margin-top: 48px;
+  padding: 46px 28px 22px;
+}
+.arp-footer-grid {
+  max-width: 1260px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.4fr 0.9fr 1fr 1.3fr;
+  gap: 32px;
+}
+@media (max-width: 900px) {
+  .arp-footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 560px) {
+  .arp-footer-grid { grid-template-columns: 1fr; }
+}
+.arp-footer-col h4 {
+  font: 700 11.5px "DM Sans", sans-serif;
+  letter-spacing: 1.4px;
+  color: #e5c17b;
+  margin: 0 0 14px;
+}
+.arp-footer-about {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #d8cbb4;
+  margin: 0 0 14px;
+}
+.arp-footer-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.arp-footer-badges span {
+  background: rgba(255, 244, 223, 0.08);
+  border: 1px solid rgba(229, 193, 123, 0.35);
+  color: #f4d399;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 14px;
+}
+.arp-footer-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 9px;
+}
+.arp-footer-col ul a {
+  color: #e6d7be;
+  text-decoration: none;
+  font-size: 13px;
+  transition: color 0.2s, padding-left 0.2s;
+}
+.arp-footer-col ul a:hover {
+  color: #f4d399;
+  padding-left: 4px;
+}
+.arp-footer-contact-note {
+  font-size: 12.5px;
+  color: #d8cbb4;
+  margin: 0 0 12px;
+  line-height: 1.5;
+}
+.arp-contact-cards {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.arp-contact-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 250, 242, 0.08);
+  border: 1px solid rgba(229, 193, 123, 0.45);
+  border-radius: 12px;
+  padding: 9px 12px;
+  color: #fff4df;
+  text-decoration: none;
+  font-size: 12.5px;
+  transition: background 0.2s, border-color 0.2s;
+}
+.arp-contact-link:hover {
+  background: rgba(229, 193, 123, 0.18);
+  border-color: #e5c17b;
+}
+.arp-hours {
+  display: block;
+  font-size: 11px;
+  color: #bfa984;
+}
+.arp-footer-bottom {
+  max-width: 1260px;
+  margin: 28px auto 0;
+  padding-top: 18px;
+  border-top: 1px solid rgba(229, 193, 123, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 11.5px;
+  color: #bfa984;
+}
