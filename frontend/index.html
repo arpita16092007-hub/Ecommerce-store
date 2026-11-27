@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="css/style.css?v=21">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://w3.org' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2306271d'/><text x='50' y='68' font-size='56' text-anchor='middle' fill='%23e5c17b' font-family='Georgia,serif'>A</text></svg>">
 
-  <link rel="stylesheet" href="css/upgrades.css?v=9">
+  <link rel="stylesheet" href="css/upgrades.css?v=10">
 </head>
 <body>
   <div class="announcement">A LITTLE LUXURY, EVERY DAY <span>✦</span> DISCOVER ARPIARES</div>
@@ -53,6 +53,7 @@
         <p class="sidebar-heading">ACCOUNT &amp; ORDERS</p>
         <button type="button" class="drawer-item-btn" id="open-auth">♙ <span id="account-label">Sign in / Sign up</span></button>
         <a class="drawer-item-btn hidden" id="admin-nav-link" href="admin.html">⚙ <span>Admin Dashboard</span></a>
+        <a class="drawer-item-btn" href="categories.html">✦ <span>Browse All Categories</span></a>
         <button type="button" class="drawer-item-btn" id="open-orders">📦 <span>My Orders &amp; Tracking</span></button>
         <button type="button" class="drawer-item-btn" id="header-support-btn">💬 <span>ARPIARES Care &amp; Reviews</span></button>
         <a class="drawer-item-btn" id="wishlist-nav-link" href="wishlist.html">❖ <span>Saved Collection (<b id="wishlist-count">0</b>)</span></a>
@@ -66,13 +67,14 @@
 
   <div class="layout top-explore-layout">
     <nav class="sandstone-explore-bar" aria-label="Explore product categories">
-      <a href="categories.html" class="explore-ribbon-label" style="text-decoration:none;" title="Open full Categories showcase">✦ ALL CATEGORIES ↗</a>
+      <span class="explore-ribbon-label">✦ EXPLORE</span>
       <div class="explore-ribbon-pills">
         <button type="button" class="explore-pill active" data-category="">All Products</button>
         <div id="category-list" class="explore-dynamic-list">
           <span class="muted small">Loading categories…</span>
         </div>
       </div>
+      <a href="categories.html" class="explore-all-cats-btn">BROWSE ALL CATEGORIES ✦</a>
     </nav>
     <main class="store-content">
             <section class="hero lively-hero">

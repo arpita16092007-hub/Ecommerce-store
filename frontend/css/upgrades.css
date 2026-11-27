@@ -836,3 +836,21 @@
   0%, 65% { left: -120%; }
   100% { left: 160%; }
 }
+
+.explore-all-cats-btn {
+  margin-left: auto;
+  background: #06271d;
+  color: #f4d399;
+  border: 1px solid #c89d5c;
+  border-radius: 22px;
+  padding: 7px 15px;
+  font: 700 11px "DM Sans", sans-serif;
+  letter-spacing: 0.6px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: 0.2s;
+}
+.explore-all-cats-btn:hover {
+  background: #104232;
+  transform: translateY(-1px);
+}
