@@ -60,6 +60,8 @@ async function loadStore() {
     allCategories = categoryData.categories || [];
     renderCategories();
     renderProducts(allProducts);
+    renderHeroSpotlight();
+    startHeroAutoplay();
   } catch (error) {
     byId("product-grid").innerHTML = '<div class="loading-card">Couldn\'t load products. ' + escapeHTML(error.message) + '</div>';
     showNotice("Backend connection failed. Refresh this page once the server is ready.", true);
@@ -584,3 +586,51 @@ byId("checkout-form").addEventListener("submit", async e => {
 updateAccountUI();
 loadStore();
 refreshCartCount();
+
+let heroIndex = 0;
+let heroTimer = null;
+
+function renderHeroSpotlight() {
+  const card = byId("hero-spotlight-card");
+  const dotsBox = byId("hero-dots");
+  if (!card || !allProducts.length) return;
+  const featured = allProducts.slice(0, 5);
+  if (heroIndex >= featured.length) heroIndex = 0;
+  if (heroIndex < 0) heroIndex = featured.length - 1;
+  const p = featured[heroIndex];
+  const imgSrc = (Array.isArray(p.images) && p.images.at(0)) || p.imageUrl || "";
+  const safeImg = String(imgSrc).replace(/"/g, "&quot;");
+  const catName = escapeHTML(p.categoryId?.name || "Featured Pick");
+  card.innerHTML =
+    '<span class="spotlight-tag">✦ ' + catName + '</span>' +
+    '<div class="spotlight-img-wrap" data-view="' + p._id + '">' +
+      (safeImg ? '<img src="' + safeImg + '" alt="' + escapeHTML(p.name) + '">' : '<div class="hero-product">A</div>') +
+    '</div>' +
+    '<div class="spotlight-meta">' +
+      '<div><strong data-view="' + p._id + '" style="cursor:pointer;">' + escapeHTML(p.name) + '</strong><span>' + money(p.price) + '</span></div>' +
+      '<button type="button" class="spotlight-add-btn" data-add="' + p._id + '" ' + (p.stock < 1 ? "disabled" : "") + '>' + (p.stock < 1 ? "Sold Out" : "+ Add") + '</button>' +
+    '</div>';
+  if (dotsBox) {
+    dotsBox.innerHTML = featured.map((_, idx) =>
+      '<button type="button" class="hero-dot ' + (idx === heroIndex ? "active" : "") + '" data-hero-dot="' + idx + '" aria-label="Slide ' + (idx + 1) + '"></button>'
+    ).join("");
+  }
+}
+
+function startHeroAutoplay() {
+  if (heroTimer) clearInterval(heroTimer);
+  heroTimer = setInterval(() => {
+    if (allProducts.length > 1) {
+      heroIndex = (heroIndex + 1) % Math.min(5, allProducts.length);
+      renderHeroSpotlight();
+    }
+  }, 4000);
+}
+
+document.addEventListener("click", e => {
+  if (e.target.closest("#hero-open-explore")) openNavDrawer();
+  if (e.target.closest("#hero-prev")) { heroIndex--; renderHeroSpotlight(); startHeroAutoplay(); }
+  if (e.target.closest("#hero-next")) { heroIndex++; renderHeroSpotlight(); startHeroAutoplay(); }
+  const dot = e.target.closest("[data-hero-dot]");
+  if (dot) { heroIndex = Number(dot.dataset.heroDot); renderHeroSpotlight(); startHeroAutoplay(); }
+});
