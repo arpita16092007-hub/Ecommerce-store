@@ -757,3 +757,31 @@ function initWelcomeSplash() {
   });
 }
 initWelcomeSplash();
+
+
+function startWelcomeHumor() {
+  const lineEl = byId("arp-welcome-cheeky");
+  if (!lineEl) return;
+  const jokes = [
+    "Warning: Entering may cause spontaneous \"Add to Bag\" decisions.",
+    "Curated so well, even your wallet will say \"worth it.\"",
+    "Life is too short for boring shelves and ordinary gifts.",
+    "Step inside—your future favorite thing is already waiting."
+  ];
+  let i = 0;
+  setInterval(() => {
+    if (!document.body.contains(lineEl)) return;
+    i = (i + 1) % jokes.length;
+    lineEl.classList.remove("cheeky-pop");
+    void lineEl.offsetWidth;
+    lineEl.textContent = jokes[i];
+    lineEl.classList.add("cheeky-pop");
+  }, 2800);
+}
+startWelcomeHumor();
+document.addEventListener("click", e => {
+  if (e.target.closest("#replay-welcome-btn")) {
+    sessionStorage.removeItem("arpiares_entered");
+    window.location.reload();
+  }
+});
