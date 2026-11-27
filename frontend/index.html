@@ -10,12 +10,12 @@
   <link rel="stylesheet" href="css/style.css?v=21">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://w3.org' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2306271d'/><text x='50' y='68' font-size='56' text-anchor='middle' fill='%23e5c17b' font-family='Georgia,serif'>A</text></svg>">
 
-  <link rel="stylesheet" href="css/upgrades.css?v=3">
+  <link rel="stylesheet" href="css/upgrades.css?v=4">
 </head>
 <body>
   <div class="announcement">A LITTLE LUXURY, EVERY DAY <span>✦</span> DISCOVER ARPIARES</div>
 
-  <header class="site-header">
+    <header class="site-header">
     <a class="brand" href="index.html">
       <span class="brand-mark">A</span>
       <span>ARPIARES <small>SHOP · EXPLORE · CONQUER</small></span>
@@ -28,31 +28,50 @@
     </form>
 
     <div class="header-actions">
-      <button class="concierge-pill" id="header-support-btn" type="button">💬 <span>Care</span></button>
-      <button class="icon-button" id="wishlist-shortcut" title="Wishlist (visual placeholder)" aria-label="Wishlist">♡</button>
-      <button class="icon-button" id="open-orders" title="Order history" aria-label="Order history">📦</button>
       <button class="icon-button" id="open-cart" title="Shopping bag" aria-label="Shopping bag">
         🛒 <span class="count" id="cart-count">0</span>
       </button>
-      <button class="account-button" id="open-auth">♙ <span id="account-label">Sign in / Sign up</span></button>
-      <button class="logout-pill hidden" id="header-logout-btn" type="button" title="Sign out">Logout</button>
+      <button class="menu-drawer-btn" id="open-menu-drawer" type="button" aria-label="Open menu">
+        ☰ <span>Explore &amp; Account</span>
+      </button>
     </div>
   </header>
 
-  <div class="layout top-explore-layout">
-    <nav class="top-explore-bar" aria-label="Product categories">
-      <div class="top-explore-cats">
-        <span class="sidebar-heading" style="margin:0 6px 0 0;">EXPLORE</span>
-        <button class="category-link active" data-category="">✦ <span>All products</span></button>
-        <div id="category-list" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+  <!-- Slide-Out Explore & Account Drawer -->
+  <div class="drawer-backdrop" id="nav-drawer-backdrop" aria-hidden="true"></div>
+  <aside class="nav-slide-drawer" id="nav-slide-drawer" aria-hidden="true">
+    <div class="nav-drawer-top">
+      <div>
+        <p class="eyebrow" style="color:#d4af6a;margin:0;">ARPIARES</p>
+        <strong style="font:700 18px 'Playfair Display',serif;color:#fff4df;">Explore &amp; Menu</strong>
+      </div>
+      <button type="button" class="chat-header-btn" id="close-menu-drawer" aria-label="Close menu">✕</button>
+    </div>
+
+    <div class="nav-drawer-body">
+      <div class="nav-drawer-section">
+        <p class="sidebar-heading">ACCOUNT &amp; ORDERS</p>
+        <button type="button" class="drawer-item-btn" id="open-auth">♙ <span id="account-label">Sign in / Sign up</span></button>
+        <a class="drawer-item-btn hidden" id="user-nav-link" href="profile.html">👤 <span>User Dashboard</span></a>
+        <a class="drawer-item-btn hidden" id="admin-nav-link" href="admin.html">⚙ <span>Admin Dashboard</span></a>
+        <button type="button" class="drawer-item-btn" id="open-orders">📦 <span>My Orders &amp; Tracking</span></button>
+        <button type="button" class="drawer-item-btn" id="header-support-btn">💬 <span>ARPIARES Care &amp; Reviews</span></button>
+        <button type="button" class="drawer-item-btn" id="wishlist-shortcut">♡ <span>Wishlist</span></button>
+        <button type="button" class="drawer-item-btn logout-drawer-btn hidden" id="header-logout-btn">→ <span>Sign Out / Logout</span></button>
+      </div>
+
+      <div class="nav-drawer-section">
+        <p class="sidebar-heading">EXPLORE CATEGORIES</p>
+        <button type="button" class="category-link active" data-category="">✦ <span>All products</span></button>
+        <div id="category-list" style="display:grid;gap:6px;margin-top:6px;">
           <span class="muted small">Loading categories…</span>
         </div>
       </div>
-      <div class="top-explore-links">
-        <a class="admin-link hidden" id="user-nav-link" href="profile.html">👤 <span>User dashboard</span></a>
-        <a class="admin-link hidden" id="admin-nav-link" href="admin.html">⚙ <span>Admin dashboard</span></a>
-      </div>
-    </nav>
+    </div>
+  </aside>
+
+
+  <div class="layout top-explore-layout">
     <main class="store-content">
       <section class="hero">
         <div class="hero-copy">
@@ -208,7 +227,7 @@
     </div>
   </div>
   <script src="js/api.js?v=21" defer></script>
-  <script src="js/store.js?v=24" defer></script>
+  <script src="js/store.js?v=25" defer></script>
   <script src="js/chat.js?v=21" defer></script>
 </body>
 </html>

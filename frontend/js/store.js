@@ -1,3 +1,16 @@
+function openNavDrawer() {
+  byId("nav-slide-drawer")?.classList.add("open");
+  byId("nav-drawer-backdrop")?.classList.add("open");
+}
+function closeNavDrawer() {
+  byId("nav-slide-drawer")?.classList.remove("open");
+  byId("nav-drawer-backdrop")?.classList.remove("open");
+}
+document.addEventListener("click", e => {
+  if (e.target.closest("#open-menu-drawer")) openNavDrawer();
+  if (e.target.closest("#close-menu-drawer") || e.target.id === "nav-drawer-backdrop") closeNavDrawer();
+  if (e.target.closest("#nav-slide-drawer .drawer-item-btn")) closeNavDrawer();
+});
 let allProducts = [];
 let allCategories = [];
 let selectedCategory = "";
@@ -354,15 +367,16 @@ document.addEventListener("click", async e => {
 
   const category = e.target.closest("[data-category]");
   if (category) {
-    selectedCategory = category.dataset.category;
-const starBtns = Array.from({ length: 5 }, (_, i) => i + 1).map(n =>
-  '<button type="button" class="star-btn active" data-star-order="' + o._id + '" data-star-val="' + n + '">★</button>'
-).join("");
-
-document.querySelectorAll("[data-category]").forEach(b => b.classList.toggle("active", b.dataset.category === selectedCategory));
-const filtered = selectedCategory ? allProducts.filter(p => (p.categoryId?._id || p.categoryId) === selectedCategory) : allProducts;
-renderProducts(filtered);
-}
+    selectedCategory = String(category.dataset.category || "");
+    document.querySelectorAll("[data-category]").forEach(b =>
+      b.classList.toggle("active", String(b.dataset.category || "") === selectedCategory)
+    );
+    const filtered = selectedCategory
+      ? allProducts.filter(p => String(p.categoryId?._id || p.categoryId || "") === selectedCategory)
+      : allProducts;
+    renderProducts(filtered);
+    closeNavDrawer();
+  }
 const add = e.target.closest("[data-add]");
 if (add) await addToCart(add.dataset.add);
 const view = e.target.closest("[data-view]");
