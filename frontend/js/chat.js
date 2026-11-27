@@ -102,7 +102,7 @@
           '<button type="button" class="fb-btn ' + upActive + '" data-chat-fb="up" data-msg-idx="' + idx + '">👍</button>' +
           '<button type="button" class="fb-btn ' + downActive + '" data-chat-fb="down" data-msg-idx="' + idx + '">👎</button>' +
         '</div>';
-        closingNote = '<small class="chat-closing">✨ Thank you for shopping with ARPIARES! Let me know if you need anything else 🛍️💛</small>';
+        closingNote = '<small class="chat-closing">Thank you for shopping with ARPIARES! <a href="feedback.html" class="chat-feedback-page-link">Share detailed feedback &amp; reviews →</a></small>';
       } else if (m.role === "admin") {
         badge = '<span class="chat-badge human">Human Agent Reply</span>';
         closingNote = '<small class="chat-closing">🌿 Warm regards, ARPIARES Care Team ✨</small>';
