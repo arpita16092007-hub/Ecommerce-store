@@ -694,3 +694,48 @@ document.addEventListener("mousemove", e => {
   const y = (e.clientY - rect.top) / rect.height - 0.5;
   card.style.transform = "perspective(700px) rotateY(" + (x * 8).toFixed(2) + "deg) rotateX(" + (-y * 8).toFixed(2) + "deg) translateY(-4px)";
 });
+
+
+function initHeroTypewriter() {
+  const wordEl = byId("hero-type-word");
+  const quoteEl = byId("hero-witty-quote");
+  if (!wordEl || !quoteEl) return;
+  const slides = [
+    { word: "extraordinary.", quote: "Because ordinary never made anyone smile when the delivery bell rang." },
+    { word: "unforgettable.", quote: "Curated pieces so good, guests ask where you found them before saying hello." },
+    { word: "effortless luxury.", quote: "Small everyday upgrades that quietly turn a regular Tuesday into a celebration." },
+    { word: "soulful craft.", quote: "Made to outlive trends, spark joy on your shelf, and steal your heart." }
+  ];
+  let slideIdx = 0;
+  let charIdx = slides[0].word.length;
+  let deleting = false;
+  function tick() {
+    const current = slides[slideIdx];
+    if (!deleting) {
+      charIdx++;
+      wordEl.textContent = current.word.slice(0, charIdx);
+      if (charIdx >= current.word.length) {
+        deleting = true;
+        setTimeout(tick, 2400);
+        return;
+      }
+      setTimeout(tick, 75);
+    } else {
+      charIdx--;
+      wordEl.textContent = current.word.slice(0, charIdx);
+      if (charIdx <= 0) {
+        deleting = false;
+        slideIdx = (slideIdx + 1) % slides.length;
+        quoteEl.classList.remove("quote-fade-in");
+        void quoteEl.offsetWidth;
+        quoteEl.textContent = slides[slideIdx].quote;
+        quoteEl.classList.add("quote-fade-in");
+        setTimeout(tick, 320);
+        return;
+      }
+      setTimeout(tick, 42);
+    }
+  }
+  setTimeout(() => { deleting = true; tick(); }, 2600);
+}
+initHeroTypewriter();

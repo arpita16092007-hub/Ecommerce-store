@@ -890,3 +890,41 @@
   height: 20px;
   color: #b88946;
 }
+/* Animated Left Hero Typewriter, Blinking Gold Cursor & Witty Quote Fade */
+.typewriter-wrap {
+  display: inline-flex;
+  align-items: baseline;
+  min-height: 1.15em;
+}
+.type-cursor {
+  display: inline-block;
+  color: #e5c17b;
+  font-weight: 400;
+  margin-left: 2px;
+  animation: cursorBlink 0.85s steps(2, start) infinite;
+}
+@keyframes cursorBlink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.hero-witty-quote {
+  min-height: 44px;
+  max-width: 520px;
+  font: 400 15px/1.55 "DM Sans", sans-serif;
+  color: #efe3cf;
+  margin: 10px 0 0;
+}
+.hero-witty-quote.quote-fade-in {
+  animation: quoteSwap 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes quoteSwap {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.hero-perks span {
+  transition: transform 0.25s ease, color 0.25s ease;
+}
+.hero-perks span:hover {
+  transform: translateY(-2px);
+  color: #f4d399;
+}
