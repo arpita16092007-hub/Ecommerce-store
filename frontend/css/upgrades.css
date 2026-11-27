@@ -1448,3 +1448,25 @@ footer.arp-clean-footer {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-5px); }
 }
+
+/* Match Client Care Banner to ARPIARES Emerald & Brushed Gold Theme */
+.care-lookbook-banner.arp-emerald-care-banner {
+  background: radial-gradient(circle at 50% 30%, #134b39 0%, #06271d 60%, #03150f 100%) !important;
+  color: #fbf4e8;
+  border-bottom: 1.5px solid rgba(200, 157, 92, 0.45);
+  position: relative;
+  overflow: hidden;
+}
+.arp-emerald-care-banner .arp-welcome-monogram {
+  background: linear-gradient(135deg, #e5c17b, #b88946);
+  color: #06271d;
+  border: 2px solid #fff4df;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.28);
+}
+.arp-emerald-care-banner .care-anchor-nav {
+  display: inline-flex;
+  padding: 10px 22px;
+  border-radius: 28px;
+  background: rgba(255, 250, 242, 0.08);
+  border: 1px solid rgba(229, 193, 123, 0.4);
+}
