@@ -739,3 +739,21 @@ function initHeroTypewriter() {
   setTimeout(() => { deleting = true; tick(); }, 2600);
 }
 initHeroTypewriter();
+
+
+function initWelcomeSplash() {
+  const splash = byId("arp-welcome-splash");
+  if (!splash) return;
+  if (sessionStorage.getItem("arpiares_entered") === "1" || window.location.hash || window.location.search) {
+    splash.remove();
+    return;
+  }
+  document.body.style.overflow = "hidden";
+  byId("enter-arpiares-btn")?.addEventListener("click", () => {
+    sessionStorage.setItem("arpiares_entered", "1");
+    splash.classList.add("fade-out");
+    document.body.style.overflow = "";
+    setTimeout(() => splash.remove(), 650);
+  });
+}
+initWelcomeSplash();
