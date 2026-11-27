@@ -1173,3 +1173,162 @@
   color: #f4d399;
   text-decoration: underline;
 }
+/* Airy, Uncluttered 4-Column Footer */
+footer.arp-clean-footer {
+  display: block !important;
+  width: 100%;
+  background: #06271d;
+  color: #efe3cf;
+  border-top: 1px solid rgba(200, 157, 92, 0.45);
+  margin-top: 64px;
+  padding: 56px 32px 28px;
+}
+.arp-clean-footer-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+.arp-clean-footer-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 0.9fr 1.15fr 1fr;
+  gap: 44px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .arp-clean-footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+}
+@media (max-width: 560px) {
+  .arp-clean-footer-grid { grid-template-columns: 1fr; gap: 28px; }
+}
+.arp-clean-desc {
+  margin: 14px 0 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #cbbba0;
+  max-width: 300px;
+}
+.arp-clean-col h4 {
+  font: 700 11px "DM Sans", sans-serif;
+  letter-spacing: 1.8px;
+  color: #e5c17b;
+  margin: 0 0 16px;
+}
+.arp-clean-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+.arp-clean-col ul a {
+  color: #efe3cf;
+  text-decoration: none;
+  font-size: 13px;
+  transition: color 0.2s;
+}
+.arp-clean-col ul a:hover {
+  color: #e5c17b;
+}
+.arp-clean-muted {
+  font-size: 12px;
+  color: #a9987c;
+}
+.arp-clean-bottom {
+  margin-top: 44px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(229, 193, 123, 0.16);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: #a9987c;
+}
+
+/* Editorial Lookbook Client Care Page (care.html) */
+.care-lookbook-banner {
+  background: radial-gradient(circle at 50% 35%, #2b2722 0%, #171613 65%, #0d1713 100%);
+  color: #f7efe2;
+  text-align: center;
+  padding: 64px 24px;
+}
+.care-lookbook-inner {
+  max-width: 680px;
+  margin: 0 auto;
+}
+.care-lookbook-banner h1 {
+  font: 500 clamp(34px, 5.5vw, 56px)/1.1 "Playfair Display", serif;
+  color: #ffffff;
+  margin: 8px 0 24px;
+}
+.care-lookbook-banner h1 em {
+  font-style: italic;
+  color: #f4d399;
+}
+.care-anchor-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  font: 600 11px "DM Sans", sans-serif;
+  letter-spacing: 1.8px;
+}
+.care-anchor-nav a {
+  color: #f4d399;
+  text-decoration: none;
+}
+.care-anchor-nav a:hover {
+  text-decoration: underline;
+}
+.care-editorial-main {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 56px 28px 24px;
+}
+.care-editorial-block {
+  scroll-margin-top: 28px;
+}
+.care-step-num {
+  display: block;
+  font: 700 11px "DM Sans", sans-serif;
+  letter-spacing: 2px;
+  color: #9e6b21;
+  margin-bottom: 8px;
+}
+.care-editorial-block h2 {
+  font: 700 clamp(24px, 3.2vw, 34px) "Playfair Display", serif;
+  color: #06271d;
+  margin: 0 0 10px;
+}
+.care-lead {
+  font-size: 15px;
+  color: #5f594f;
+  max-width: 620px;
+  margin: 0 0 28px;
+  line-height: 1.6;
+}
+.care-three-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+@media (max-width: 760px) {
+  .care-three-cols { grid-template-columns: 1fr; gap: 22px; }
+}
+.care-three-cols h4 {
+  font: 700 15px "Playfair Display", serif;
+  color: #161614;
+  margin: 0 0 8px;
+}
+.care-three-cols p {
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: #5f594f;
+  margin: 0;
+}
+.care-hairline {
+  border: 0;
+  border-top: 1px solid #e2d3bc;
+  margin: 48px 0;
+}
