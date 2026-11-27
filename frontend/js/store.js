@@ -59,7 +59,14 @@ async function loadStore() {
     allProducts = productData.products || [];
     allCategories = categoryData.categories || [];
     renderCategories();
-    renderProducts(allProducts);
+    const initialCatParam = new URLSearchParams(window.location.search).get("category");
+    if (initialCatParam) {
+      selectedCategory = String(initialCatParam);
+      renderCategories();
+      renderProducts(allProducts.filter(p => String(p.categoryId?._id || p.categoryId || "") === selectedCategory));
+    } else {
+      renderProducts(allProducts);
+    }
     renderHeroSpotlight();
     startHeroAutoplay();
   } catch (error) {

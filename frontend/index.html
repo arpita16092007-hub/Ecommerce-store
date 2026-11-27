@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="css/style.css?v=21">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://w3.org' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2306271d'/><text x='50' y='68' font-size='56' text-anchor='middle' fill='%23e5c17b' font-family='Georgia,serif'>A</text></svg>">
 
-  <link rel="stylesheet" href="css/upgrades.css?v=6">
+  <link rel="stylesheet" href="css/upgrades.css?v=7">
 </head>
 <body>
   <div class="announcement">A LITTLE LUXURY, EVERY DAY <span>✦</span> DISCOVER ARPIARES</div>
@@ -52,7 +52,6 @@
       <div class="nav-drawer-section">
         <p class="sidebar-heading">ACCOUNT &amp; ORDERS</p>
         <button type="button" class="drawer-item-btn" id="open-auth">♙ <span id="account-label">Sign in / Sign up</span></button>
-        <a class="drawer-item-btn hidden" id="user-nav-link" href="profile.html">👤 <span>User Dashboard</span></a>
         <a class="drawer-item-btn hidden" id="admin-nav-link" href="admin.html">⚙ <span>Admin Dashboard</span></a>
         <button type="button" class="drawer-item-btn" id="open-orders">📦 <span>My Orders &amp; Tracking</span></button>
         <button type="button" class="drawer-item-btn" id="header-support-btn">💬 <span>ARPIARES Care &amp; Reviews</span></button>
@@ -67,7 +66,7 @@
 
   <div class="layout top-explore-layout">
     <nav class="sandstone-explore-bar" aria-label="Explore product categories">
-      <span class="explore-ribbon-label">✦ EXPLORE</span>
+      <a href="categories.html" class="explore-ribbon-label" style="text-decoration:none;" title="Open full Categories showcase">✦ ALL CATEGORIES ↗</a>
       <div class="explore-ribbon-pills">
         <button type="button" class="explore-pill active" data-category="">All Products</button>
         <div id="category-list" class="explore-dynamic-list">
@@ -83,7 +82,7 @@
           <p>Thoughtful finds, timeless craftsmanship, and everyday luxury delivered straight to your doorstep.</p>
           <div class="hero-cta-row">
             <a class="gold-button" href="#catalog">SHOP COLLECTION <span>↓</span></a>
-            <button type="button" class="hero-ghost-btn" id="hero-open-explore">BROWSE CATEGORIES ☰</button>
+            <a class="hero-ghost-btn" href="categories.html" style="text-decoration:none;">BROWSE ALL CATEGORIES ✦</a>
           </div>
           <div class="hero-perks">
             <span>🚚 Free Delivery above ₹999</span>
@@ -244,7 +243,7 @@
     </div>
   </div>
   <script src="js/api.js?v=21" defer></script>
-  <script src="js/store.js?v=26" defer></script>
+  <script src="js/store.js?v=27" defer></script>
   <script src="js/chat.js?v=21" defer></script>
 </body>
 </html>
