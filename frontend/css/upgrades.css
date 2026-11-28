@@ -2807,3 +2807,22 @@ body [class*="category-card"] a:hover {
     border-bottom: 1px solid rgba(229, 193, 123, 0.3);
   }
 }
+
+/* Full-Width Top Row for 2-Column Patron Desk Card on Feedback Page (v230) */
+.fb-page-layout:has(.arpiares-fb-split) {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 28px !important;
+}
+.arpiares-fb-split {
+  display: grid !important;
+  grid-template-columns: minmax(260px, 0.85fr) minmax(360px, 1.35fr) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+@media (max-width: 860px) {
+  .arpiares-fb-split {
+    grid-template-columns: 1fr !important;
+  }
+}
