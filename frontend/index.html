@@ -7,12 +7,37 @@
   <link rel="preconnect" href="https://googleapis.com">
   <link rel="preconnect" href="https://gstatic.com" crossorigin>
   <link href="https://googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=42">
+  <link rel="stylesheet" href="css/style.css?v=43">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://w3.org' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2306271d'/><text x='50' y='68' font-size='56' text-anchor='middle' fill='%23e5c17b' font-family='Georgia,serif'>A</text></svg>">
 
-  <link rel="stylesheet" href="css/upgrades.css?v=42">
+  <link rel="stylesheet" href="css/upgrades.css?v=43">
 </head>
 <body>
+<!-- ARPIARES Minimal Luxury Welcome Screen -->
+<div id="arpiaresWelcomeGate" role="dialog" aria-label="Welcome to ARPIARES">
+  <div class="awg-frame">
+    <div class="awg-crest">A</div>
+    <span class="awg-kicker">ARPIARES • HOUSE OF TIMELESS FINDS</span>
+    <h1 class="awg-title">Buy less. Keep <em>forever.</em><br>Blame us later.</h1>
+    <p class="awg-sub">Because life is too short for boring things you’ll forget by Tuesday.</p>
+    <button type="button" class="awg-btn" id="awgEnterBtn">Step Inside ✦</button>
+  </div>
+</div>
+<script>
+(function () {
+  var gate = document.getElementById("arpiaresWelcomeGate");
+  var btn = document.getElementById("awgEnterBtn");
+  if (!gate) return;
+  function closeGate() {
+    gate.classList.add("is-hidden");
+  }
+  if (btn) btn.addEventListener("click", closeGate);
+  gate.addEventListener("click", function (e) {
+    if (e.target === gate) closeGate();
+  });
+})();
+</script>
+
 
   </div>
 
@@ -302,10 +327,10 @@
       <div id="profile-content" style="margin-top:14px;"></div>
     </div>
   </div>
-  <script src="js/api.js?v=42" defer></script>
-  <script src="js/store.js?v=42" defer></script>
-  <script src="js/chat.js?v=42" defer></script>
-  <script src="js/icons.js?v=42" defer></script>
+  <script src="js/api.js?v=43" defer></script>
+  <script src="js/store.js?v=43" defer></script>
+  <script src="js/chat.js?v=43" defer></script>
+  <script src="js/icons.js?v=43" defer></script>
 
 
 
@@ -385,6 +410,6 @@
 })();
 </script>
 
-  <script src="js/movable-concierge.js?v=42"></script>
+  <script src="js/movable-concierge.js?v=43"></script>
 </body>
 </html>
