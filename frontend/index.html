@@ -10,14 +10,11 @@
   <link rel="stylesheet" href="css/style.css?v=21">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://w3.org' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2306271d'/><text x='50' y='68' font-size='56' text-anchor='middle' fill='%23e5c17b' font-family='Georgia,serif'>A</text></svg>">
 
-  <link rel="stylesheet" href="css/upgrades.css?v=26">
+  <link rel="stylesheet" href="css/upgrades.css?v=29">
 </head>
 <body>
 
-  <!-- Animated Editorial Welcome Curtain -->
-  <div id="arpiaresWelcomeCurtain" role="dialog" aria-label="Welcome to ARPIARES">
-    <div class="wc-crest">A</div>
-    <span class="wc-kicker">ARPIARES • HOUSE OF CURATED OBJECTS</span>
+  <span class="wc-kicker">ARPIARES • HOUSE OF CURATED OBJECTS</span>
     <h2 class="wc-title">Your cart remembers everything you pretended not to look at twice.</h2>
     <p class="wc-sub">Welcome back to the atelier of quiet flexes—where “I’m just browsing” turns into “Where did you get that?” in under three scrolls.</p>
     <button type="button" class="wc-enter-btn" id="wcEnterBtn">Enter the Boutique ✦</button>
@@ -335,59 +332,81 @@
   <script src="js/chat.js?v=25" defer></script>
   <script src="js/icons.js?v=1" defer></script>
 
+
+
+
 <script>
-(function initArpiaresAnimatedWelcome() {
-  const curtain = document.getElementById("arpiaresWelcomeCurtain");
-  const enterBtn = document.getElementById("wcEnterBtn");
-
-  function dismissCurtain() {
-    if (!curtain || curtain.classList.contains("is-dismissed")) return;
-    curtain.classList.add("is-dismissed");
-    sessionStorage.setItem("arpiares_welcomed", "1");
-  }
-
-  if (curtain) {
-    if (sessionStorage.getItem("arpiares_welcomed") === "1") {
-      curtain.style.display = "none";
-    } else {
-      setTimeout(dismissCurtain, 3200);
-      curtain.addEventListener("click", dismissCurtain);
-      if (enterBtn) enterBtn.addEventListener("click", dismissCurtain);
-    }
-  }
-
-  // Animate Hero Heading word-by-word with witty deep-memory copy
-  const heroH1 = document.querySelector(".hero h1, main h1, header + section h1");
+(function initArpiaresHeroAndFeedback() {
+  // 1. Upgrade Hero Headline & 10-Line Animated Typewriter
+  const heroH1 = document.querySelector(".hero h1, main h1, section h1");
   if (heroH1) {
-    const headline = "Things so unforgettable, even your future self will thank your impulse.";
-    heroH1.innerHTML = headline
-      .split(" ")
-      .map((word, idx) => '<span class="hero-word-anim" style="animation-delay:' + (0.15 + idx * 0.07) + 's">' + word + '</span>')
-      .join(" ");
+    heroH1.innerHTML = 'Crafted for those who <span class="hero-gold-italic">never</span> settle for ordinary.';
   }
 
-  const heroLead = document.querySelector(".hero p, main section:first-of-type p");
-  if (heroLead) {
-    const wittyLines = [
-      "“I’m just looking” — famous last words right before finding your new favorite daily ritual.",
-      "Curated with zero boring fillers and 100% ‘wait, where did you buy this?’ energy.",
-      "Built for people whose taste is expensive even when they swear they are saving money.",
-      "Deep-memory objects: once they land on your shelf, everything else looks like a placeholder."
+  const heroSub = document.querySelector(".hero p, .hero-sub, main section:first-of-type p");
+  if (heroSub) {
+    const lines = [
+      "Curated pieces with main-character energy—no loud logos required.",
+      "Warning: May cause sudden compliments from people who pretend not to notice.",
+      "Objects built to outlive trends, impulse phases, and boring shelves.",
+      "Luxury without the lecture—just pieces that quietly steal the room.",
+      "For people who say ‘I’m just browsing’ and leave with a signature piece.",
+      "Crafted for the version of you that has their life completely together.",
+      "Details so sharp, your everyday routine starts feeling like a cinema scene.",
+      "Zero filler, zero noise—only objects worth keeping for a decade.",
+      "Your future self called—they already approved what’s in your cart.",
+      "Where timeless craft meets a little bit of effortless rebellion."
     ];
-    let i = 0;
-    heroLead.innerHTML = '<span class="hero-wit-rotator" id="heroWitRotator">' + wittyLines + '</span>';
-    const rotator = document.getElementById("heroWitRotator");
-    if (rotator) {
-      setInterval(() => {
-        rotator.classList.add("is-swapping");
-        setTimeout(() => {
-          i = (i + 1) % wittyLines.length;
-          rotator.textContent = wittyLines[i];
-          rotator.classList.remove("is-swapping");
-        }, 420);
-      }, 4200);
+
+    heroSub.innerHTML = [
+      '<div class="hero-type-stage" aria-live="polite">',
+      '  <span class="hero-type-badge">✦ NOTE 01/10</span>',
+      '  <span class="hero-type-text" id="heroTypeText"></span><span class="hero-type-cursor">|</span>',
+      '</div>'
+    ].join("");
+
+    const textEl = document.getElementById("heroTypeText");
+    const badgeEl = heroSub.querySelector(".hero-type-badge");
+    let lineIdx = 0;
+    let charIdx = 0;
+    let deleting = false;
+
+    function tickTypewriter() {
+      if (!textEl) return;
+      const current = lines[lineIdx];
+      if (badgeEl) {
+        badgeEl.textContent = "✦ NOTE " + String(lineIdx + 1).padStart(2, "0") + "/10";
+      }
+
+      if (!deleting) {
+        charIdx++;
+        textEl.textContent = current.slice(0, charIdx);
+        if (charIdx >= current.length) {
+          deleting = true;
+          setTimeout(tickTypewriter, 2200);
+          return;
+        }
+        setTimeout(tickTypewriter, 32);
+      } else {
+        charIdx -= 2;
+        textEl.textContent = current.slice(0, Math.max(0, charIdx));
+        if (charIdx <= 0) {
+          deleting = false;
+          lineIdx = (lineIdx + 1) % lines.length;
+          setTimeout(tickTypewriter, 260);
+          return;
+        }
+        setTimeout(tickTypewriter, 16);
+      }
     }
+    tickTypewriter();
   }
+
+  // 2. Enhance Feedback / Reviews Section Cards with Luxury Editorial Layout
+  const reviewContainers = document.querySelectorAll(
+    "#reviewsList, .reviews-grid, .feedback-grid, [id*='review'] .grid, [id*='feedback'] .grid"
+  );
+  reviewContainers.forEach((grid) => grid.classList.add("arpiares-feedback-grid"));
 })();
 </script>
 
