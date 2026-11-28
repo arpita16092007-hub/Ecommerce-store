@@ -2624,3 +2624,31 @@ body [class*="category-card"] a:hover {
     border-bottom: 1px solid rgba(229, 193, 123, 0.3);
   }
 }
+
+
+/* Clean 2-Column Input Grid & Spacing Inside Feedback Form Body (v46) */
+.arpiares-fb-body form {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+}
+.arpiares-fb-body form > div {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+  gap: 14px !important;
+  align-items: end !important;
+}
+.arpiares-fb-body label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font: 600 12.5px "DM Sans", sans-serif;
+  color: #06271d;
+}
+.arpiares-fb-body input[type="text"],
+.arpiares-fb-body input[type="email"],
+.arpiares-fb-body select,
+.arpiares-fb-body textarea {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}

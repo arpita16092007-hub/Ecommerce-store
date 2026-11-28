@@ -458,7 +458,7 @@
 })();
 
 
-/* Transform Submit Detailed Feedback Card into 2-Column Editorial Split Layout (v44) */
+/* Transform Submit Detailed Feedback Card into 2-Column Editorial Split Layout (v46) */
 (function transformFeedbackFormLayout() {
   function upgradeFormCard() {
     const heading = Array.from(document.querySelectorAll("h1, h2, h3")).find((h) =>
@@ -466,11 +466,14 @@
     );
     if (!heading) return;
 
-    const card = heading.closest("section, .card, .panel, div");
-    if (!card || card.dataset.splitApplied === "1") return;
+    // Walk up from the heading until we find the container that holds BOTH the heading AND the <form>
+    let card = heading.parentElement;
+    while (card && card !== document.body && !card.querySelector("form")) {
+      card = card.parentElement;
+    }
+    if (!card || card === document.body || card.dataset.splitApplied === "1") return;
     card.dataset.splitApplied = "1";
 
-    // Wrap existing inner children into .arpiares-fb-body and prepend .arpiares-fb-aside
     const bodyWrap = document.createElement("div");
     bodyWrap.className = "arpiares-fb-body";
     while (card.firstChild) {
@@ -503,10 +506,10 @@
     card.appendChild(aside);
     card.appendChild(bodyWrap);
 
-    // Quick-fill headline when clicking a highlight tag
     aside.querySelectorAll("[data-tag]").forEach((btn) => {
       btn.addEventListener("click", () => {
-        const headlineInput = bodyWrap.querySelector("input[placeholder*='Summarize'], input[name*='title'], input[name*='headline']") ||
+        const headlineInput =
+          bodyWrap.querySelector("input[placeholder*='Summarize'], input[name*='title'], input[name*='headline']") ||
           Array.from(bodyWrap.querySelectorAll("input[type='text']")).pop();
         if (headlineInput) {
           headlineInput.value = btn.dataset.tag;
@@ -521,5 +524,5 @@
   } else {
     upgradeFormCard();
   }
-  setTimeout(upgradeFormCard, 700);
+  setTimeout(upgradeFormCard, 600);
 })();
