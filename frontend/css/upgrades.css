@@ -1925,3 +1925,45 @@ footer {
 @keyframes heroWordRise {
   to { opacity: 1; transform: translateY(0) rotate(0deg); }
 }
+
+
+/* Customer Dashboard (account.html) Matching Architectural Sidebar & Right-Edge Fix */
+.account-shell,
+body:has(.account-sidebar) .admin-shell,
+main.account-layout {
+  display: grid !important;
+  grid-template-columns: 240px minmax(0, 1fr) !important;
+  width: 100% !important;
+  max-width: 100vw !important;
+  align-items: stretch !important;
+}
+.account-main,
+body:has(.account-sidebar) .admin-main {
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 32px clamp(18px, 3.5vw, 44px) !important;
+  overflow-x: hidden !important;
+}
+.account-main h1,
+body:has(.account-sidebar) h1 {
+  font-size: clamp(26px, 3.4vw, 42px) !important;
+  line-height: 1.15 !important;
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+}
+.account-main *,
+body:has(.account-sidebar) .admin-card * {
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+@media (max-width: 768px) {
+  .account-shell,
+  body:has(.account-sidebar) .admin-shell,
+  main.account-layout {
+    grid-template-columns: 1fr !important;
+  }
+}

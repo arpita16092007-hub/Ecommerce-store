@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://gstatic.com" crossorigin>
   <link href="https://googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css?v=20">
-  <link rel="stylesheet" href="css/upgrades.css?v=2">
+  <link rel="stylesheet" href="css/upgrades.css?v=28">
 </head>
 <body>
   <header class="site-header">
@@ -23,12 +23,23 @@
   </header>
 
   <div class="admin-layout">
-    <aside class="admin-sidebar">
+    <aside class="admin-sidebar account-sidebar">
+      <div class="admin-brand-box">
+        <a class="brand" href="index.html" style="color:#fff4df;">
+          <span class="brand-mark">A</span>
+          <span>ARPIARES <small style="color:#d4af6a;">MEMBER VAULT</small></span>
+        </a>
+      </div>
       <p class="sidebar-heading">MY ACCOUNT</p>
-      <a class="category-link active" href="#overview-section">👤 <span>Profile Overview</span></a>
-      <a class="category-link" href="#orders-section">📦 <span>My Orders &amp; Tracking</span></a>
-      <a class="category-link" href="#addresses-section">📍 <span>Saved Addresses</span></a>
-      <a class="category-link" href="#reviews-section">★ <span>My Ratings &amp; Reviews</span></a>
+      <nav class="admin-nav-list" aria-label="Account sections">
+        <button class="admin-nav active" data-tab="profile" data-section="profile"><span class="nav-ico">👤</span><span>Profile Overview</span></button>
+        <button class="admin-nav" data-tab="orders" data-section="orders"><span class="nav-ico">📦</span><span>Orders &amp; Tracking</span></button>
+        <button class="admin-nav" data-tab="addresses" data-section="addresses"><span class="nav-ico">📍</span><span>Saved Addresses</span></button>
+        <button class="admin-nav" data-tab="reviews" data-section="reviews"><span class="nav-ico">★</span><span>Ratings &amp; Reviews</span></button>
+      </nav>
+      <div class="admin-sidebar-foot">
+        <a href="index.html" class="admin-back-store">← Back to Storefront</a>
+      </div>
     </aside>
 
     <main class="admin-main">
@@ -70,7 +81,7 @@
   </div>
 
   <script src="js/api.js?v=20" defer></script>
-  <script src="js/profile.js?v=24" defer></script>
+  <script src="js/profile.js?v=28" defer></script>
   <script src="js/icons.js?v=1" defer></script>
 </body>
 </html>

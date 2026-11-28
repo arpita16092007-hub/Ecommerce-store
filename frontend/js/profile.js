@@ -235,3 +235,60 @@ window.location.href = "index.html";
 }
 });
 loadUserDashboard();
+
+
+/* Authoritative Account Sidebar Switcher & Gold Glow */
+(function initAccountSidebarSwitcher() {
+  function setup() {
+    const sidebar = document.querySelector(".account-sidebar, .admin-sidebar");
+    const main = document.querySelector(".account-main, .admin-main, main");
+    if (!sidebar || !main) return;
+
+    const panels = Array.from(main.querySelectorAll("section, .admin-card, .account-card, [data-panel]")).filter(
+      (el) => !el.classList.contains("admin-kpis")
+    );
+
+    const keywordsByTab = {
+      profile: ["profile", "overview", "arpita", "account detail"],
+      orders: ["order", "tracking"],
+      addresses: ["address", "shipping", "saved"],
+      reviews: ["rating", "review"]
+    };
+
+    function activate(tab) {
+      Array.from(sidebar.querySelectorAll(".admin-nav")).forEach((b) => {
+        b.classList.toggle("active", b.dataset.tab === tab);
+      });
+      const keys = keywordsByTab[tab] || [tab];
+      const matched = panels.filter((p) => {
+        const idAttr = (p.id || p.dataset.panel || p.dataset.tab || "").toLowerCase();
+        const heading = (p.querySelector("h1, h2, h3")?.textContent || "").toLowerCase();
+        return keys.some((k) => idAttr.includes(k) || heading.includes(k));
+      });
+      if (matched.length > 0) {
+        panels.forEach((p) => {
+          const show = matched.includes(p);
+          p.style.display = show ? "" : "none";
+          p.hidden = !show;
+        });
+      }
+    }
+
+    sidebar.addEventListener("click", (e) => {
+      const btn = e.target.closest(".admin-nav");
+      if (!btn) return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      activate(btn.dataset.tab);
+    }, true);
+
+    const initial = sidebar.querySelector(".admin-nav.active")?.dataset.tab || "profile";
+    activate(initial);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setup);
+  } else {
+    setup();
+  }
+})();
