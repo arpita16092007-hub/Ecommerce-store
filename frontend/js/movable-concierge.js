@@ -1,183 +1,155 @@
-(function () {
-  "use strict";
+(function initMovableArpiaresConcierge() {
+  const LUXURY_AVATAR_SVG = `
+    <svg width="34" height="34" viewBox="0 0 40 40" fill="none" xmlns="http://w3.org" aria-hidden="true">
+      <circle cx="20" cy="20" r="18.5" fill="#06271d" stroke="#e5c17b" stroke-width="1.6"/>
+      <circle cx="20" cy="20" r="15" stroke="#e5c17b" stroke-opacity="0.35" stroke-dasharray="2 2"/>
+      <path d="M20 9.5L22.1 15.9L28.5 18L22.1 20.1L20 26.5L17.9 20.1L11.5 18L17.9 15.9L20 9.5Z" fill="#e5c17b"/>
+      <circle cx="28.5" cy="11.5" r="1.6" fill="#fff4d6"/>
+      <circle cx="12" cy="27.5" r="1.2" fill="#e5c17b"/>
+    </svg>
+  `;
 
-  var AVATAR_SVG =
-    '<svg width="38" height="38" viewBox="0 0 44 44" fill="none" xmlns="http://w3.org">' +
-    '<circle cx="22" cy="22" r="20" fill="#fff9ee" stroke="#c89d5c" stroke-width="2.5"/>' +
-    '<circle cx="22" cy="22" r="15.5" fill="#083326" stroke="#e5c17b" stroke-width="1"/>' +
-    '<path d="M14.5 25.5H29.5L28 17.5L24 20.5L22 15.5L20 20.5L16 17.5L14.5 25.5Z" fill="#e5c17b"/>' +
-    '<rect x="14" y="27" width="16" height="2.2" rx="1.1" fill="#f7dfa8"/>' +
-    '<circle cx="22" cy="12.5" r="1.5" fill="#fff6df"/>' +
-    '</svg>';
+  function makeDraggable(el, handle, storageKey) {
+    if (!el || el.dataset.draggableBound === "1") return;
+    el.dataset.draggableBound = "1";
 
-  function makeMovable(el, handle, storageKey) {
-    if (!el || el.dataset.arpMovable === "1") return;
-    el.dataset.arpMovable = "1";
-    var grip = handle || el;
-    var active = false, moved = false, sx = 0, sy = 0, ol = 0, ot = 0;
+    const dragTarget = handle || el;
+    let down = false, moved = false, startX = 0, startY = 0, origLeft = 0, origTop = 0;
 
-    function restorePos() {
-      try {
-        var saved = JSON.parse(localStorage.getItem(storageKey) || "null");
-        if (saved && typeof saved.left === "number" && typeof saved.top === "number") {
-          var maxL = Math.max(10, window.innerWidth - (el.offsetWidth || 180) - 10);
-          var maxT = Math.max(10, window.innerHeight - (el.offsetHeight || 60) - 10);
-          el.style.setProperty("left", Math.min(Math.max(10, saved.left), maxL) + "px", "important");
-          el.style.setProperty("top", Math.min(Math.max(10, saved.top), maxT) + "px", "important");
-          el.style.setProperty("right", "auto", "important");
-          el.style.setProperty("bottom", "auto", "important");
-        }
-      } catch (e) {}
-    }
+    try {
+      const saved = JSON.parse(localStorage.getItem(storageKey) || "null");
+      if (saved && typeof saved.left === "number" && typeof saved.top === "number") {
+        const maxL = Math.max(8, window.innerWidth - el.offsetWidth - 8);
+        const maxT = Math.max(8, window.innerHeight - el.offsetHeight - 8);
+        el.style.left = Math.min(Math.max(8, saved.left), maxL) + "px";
+        el.style.top = Math.min(Math.max(8, saved.top), maxT) + "px";
+        el.style.right = "auto";
+        el.style.bottom = "auto";
+      }
+    } catch (_) {}
 
-    restorePos();
-    window.addEventListener("resize", restorePos);
-
-    grip.addEventListener("pointerdown", function (e) {
-      if (e.target.closest("[data-close-arp]")) return;
-      active = true;
+    dragTarget.addEventListener("pointerdown", (e) => {
+      if (e.target.closest("button.close, .close-chat, [data-close-chat]")) return;
+      down = true;
       moved = false;
-      var rect = el.getBoundingClientRect();
-      sx = e.clientX; sy = e.clientY; ol = rect.left; ot = rect.top;
-      el.style.setProperty("left", ol + "px", "important");
-      el.style.setProperty("top", ot + "px", "important");
-      el.style.setProperty("right", "auto", "important");
-      el.style.setProperty("bottom", "auto", "important");
+      const rect = el.getBoundingClientRect();
+      startX = e.clientX;
+      startY = e.clientY;
+      origLeft = rect.left;
+      origTop = rect.top;
+      el.style.left = origLeft + "px";
+      el.style.top = origTop + "px";
+      el.style.right = "auto";
+      el.style.bottom = "auto";
     });
 
-    window.addEventListener("pointermove", function (e) {
-      if (!active) return;
-      var dx = e.clientX - sx, dy = e.clientY - sy;
+    window.addEventListener("pointermove", (e) => {
+      if (!down) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
       if (Math.abs(dx) > 5 || Math.abs(dy) > 5) moved = true;
       if (!moved) return;
-      var maxL = Math.max(10, window.innerWidth - el.offsetWidth - 10);
-      var maxT = Math.max(10, window.innerHeight - el.offsetHeight - 10);
-      el.style.setProperty("left", Math.min(Math.max(10, ol + dx), maxL) + "px", "important");
-      el.style.setProperty("top", Math.min(Math.max(10, ot + dy), maxT) + "px", "important");
+
+      const maxL = Math.max(8, window.innerWidth - el.offsetWidth - 8);
+      const maxT = Math.max(8, window.innerHeight - el.offsetHeight - 8);
+      el.style.left = Math.min(Math.max(8, origLeft + dx), maxL) + "px";
+      el.style.top = Math.min(Math.max(8, origTop + dy), maxT) + "px";
     });
 
-    window.addEventListener("pointerup", function () {
-      if (!active) return;
-      active = false;
+    window.addEventListener("pointerup", () => {
+      if (!down) return;
+      down = false;
       if (moved) {
-        var r = el.getBoundingClientRect();
-        try { localStorage.setItem(storageKey, JSON.stringify({ left: r.left, top: r.top })); } catch (e) {}
-        el.addEventListener("click", function (ev) { ev.stopImmediatePropagation(); ev.preventDefault(); }, { capture: true, once: true });
+        const rect = el.getBoundingClientRect();
+        try {
+          localStorage.setItem(storageKey, JSON.stringify({ left: rect.left, top: rect.top }));
+        } catch (_) {}
+        el.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          ev.preventDefault();
+        }, { capture: true, once: true });
       }
     });
   }
 
-  function initBot() {
-    var oldLaunchers = document.querySelectorAll("#supportLauncher, .support-launcher, .chat-launcher");
-    for (var i = 0; i < oldLaunchers.length; i++) oldLaunchers[i].style.setProperty("display", "none", "important");
+  function decorateBotMessages(container) {
+    if (!container) return;
+    const msgs = container.querySelectorAll(".msg.bot, .bot-msg, .bot, [data-role='assistant'], > div:not(.user):not(.is-user)");
+    msgs.forEach((m) => {
+      if (m.dataset.avatarAdded === "1") return;
+      m.dataset.avatarAdded = "1";
+      const tag = document.createElement("div");
+      tag.className = "arpiares-msg-sender";
+      tag.innerHTML = "<span>✦</span> <span>ARPIARES Stylist</span>";
+      m.prepend(tag);
+    });
+  }
 
-    var orb = document.getElementById("arpiaresUniversalOrb");
-    if (!orb) {
-      orb = document.createElement("button");
-      orb.id = "arpiaresUniversalOrb";
-      orb.type = "button";
-      orb.innerHTML =
-        '<span class="arp-orb-avatar">' + AVATAR_SVG + '</span>' +
-        '<span class="arp-orb-copy"><strong>ARPIARES Care</strong><small>Chat &amp; Move ⠿</small></span>';
-      document.body.appendChild(orb);
+  function setupBot() {
+    const launcher = document.querySelector("#supportLauncher, .support-launcher, .chat-launcher, [id*='chatToggle'], [id*='supportBtn']");
+    const widget = document.querySelector("#supportWidget, .support-widget, .chat-widget, .chat-box, [id*='supportPanel'], [id*='chatWindow']");
+
+    if (launcher) {
+      if (!launcher.dataset.styledAvatar) {
+        launcher.dataset.styledAvatar = "1";
+        launcher.classList.add("arpiares-avatar-orb");
+        launcher.innerHTML = `
+          <span class="arpiares-orb-icon">${LUXURY_AVATAR_SVG}</span>
+          <span class="arpiares-orb-label">
+            <strong>Stylist AI</strong>
+            <small>Ask &amp; Drag ⠿</small>
+          </span>
+        `;
+      }
+      makeDraggable(launcher, launcher, "arpiares_bot_launcher_pos");
     }
 
-    var drawer = document.getElementById("arpiaresUniversalDrawer");
-    if (!drawer) {
-      drawer = document.createElement("div");
-      drawer.id = "arpiaresUniversalDrawer";
-      drawer.style.display = "none";
-      drawer.innerHTML =
-        '<div class="arp-drawer-head">' +
-          '<div class="arp-drawer-brand">' + AVATAR_SVG +
-            '<div><strong>ARPIARES Concierge</strong><span><i class="arp-live-dot"></i> Live • Drag anywhere</span></div>' +
-          '</div>' +
-          '<button type="button" data-close-arp class="arp-drawer-close">✕</button>' +
-        '</div>' +
-        '<div id="arpDrawerFeed" class="arp-drawer-feed">' +
-          '<div class="arp-msg-bot"><span class="arp-msg-tag">✦ ARPIARES CONCIERGE</span>Hello! Drag me anywhere on screen—I stay with you across every page of ARPIARES.</div>' +
-        '</div>' +
-        '<div class="arp-drawer-chips">' +
-          '<button type="button" data-q="Signature picks">👑 Signature picks</button>' +
-          '<button type="button" data-q="Track my order">📦 Track order</button>' +
-          '<button type="button" data-q="Delivery & returns">🚚 Delivery &amp; returns</button>' +
-        '</div>' +
-        '<form id="arpDrawerForm" class="arp-drawer-form">' +
-          '<input type="text" placeholder="Ask ARPIARES Care..." required />' +
-          '<button type="submit">Send</button>' +
-        '</form>';
-      document.body.appendChild(drawer);
+    if (widget) {
+      const header = widget.querySelector(".chat-head, .support-head, header, .chat-box-header") || widget.firstElementChild;
+      if (header && !header.querySelector(".arpiares-header-avatar")) {
+        const avatarWrap = document.createElement("div");
+        avatarWrap.className = "arpiares-header-avatar";
+        avatarWrap.innerHTML = `${LUXURY_AVATAR_SVG}<div><strong>ARPIARES Stylist</strong><div class="arpiares-bot-badge"><span class="arpiares-bot-dot"></span> Online • Drag to move</div></div>`;
+        const existingTitle = header.querySelector("h2, h3, h4, strong, span");
+        if (existingTitle) existingTitle.replaceWith(avatarWrap);
+        else header.prepend(avatarWrap);
+      }
+      makeDraggable(widget, header, "arpiares_bot_window_pos");
 
-      var feed = drawer.querySelector("#arpDrawerFeed");
-      var form = drawer.querySelector("#arpDrawerForm");
-      var input = form.querySelector("input");
-
-      function sendMsg(text) {
-        if (!text || !text.trim()) return;
-        var u = document.createElement("div"); u.className = "arp-msg-user"; u.textContent = text; feed.appendChild(u);
-        var low = text.toLowerCase();
-        var ans = "I can help you explore collections, track an order, or check delivery & 7-day returns!";
-        if (low.indexOf("track") !== -1 || low.indexOf("order") !== -1) ans = "Open Account & More → Orders & Tracking at the top right to see live updates for your orders.";
-        else if (low.indexOf("deliver") !== -1 || low.indexOf("return") !== -1) ans = "Free insured delivery across India on orders above ₹999 (3–5 business days) plus 7-day easy returns.";
-        else if (low.indexOf("pick") !== -1 || low.indexOf("signature") !== -1) ans = "Patron favorites include our Artisan Ceramic Pour-Over Set, Woven Cotton Cushion Set, and Heritage Leather Wallet.";
-        var b = document.createElement("div"); b.className = "arp-msg-bot"; b.innerHTML = '<span class="arp-msg-tag">✦ ARPIARES CONCIERGE</span>' + ans; feed.appendChild(b);
-        feed.scrollTop = feed.scrollHeight;
+      const msgBox = widget.querySelector("#supportMessages, .support-messages, .chat-messages, .chat-body");
+      if (msgBox) {
+        decorateBotMessages(msgBox);
+        if (!msgBox.dataset.observerBound) {
+          msgBox.dataset.observerBound = "1";
+          new MutationObserver(() => decorateBotMessages(msgBox)).observe(msgBox, { childList: true });
+        }
       }
 
-      form.addEventListener("submit", function (e) { e.preventDefault(); sendMsg(input.value); input.value = ""; });
-      var chips = drawer.querySelectorAll("[data-q]");
-      for (var c = 0; c < chips.length; c++) chips[c].addEventListener("click", function () { sendMsg(this.getAttribute("data-q")); });
-      drawer.querySelector("[data-close-arp]").addEventListener("click", function () { drawer.style.display = "none"; });
-    }
-
-    if (!orb.dataset.arpClick) {
-      orb.dataset.arpClick = "1";
-      orb.addEventListener("click", function () { drawer.style.display = drawer.style.display === "flex" ? "none" : "flex"; });
-    }
-
-    makeMovable(orb, orb, "arpiares_universal_orb_xy");
-    makeMovable(drawer, drawer.querySelector(".arp-drawer-head"), "arpiares_universal_drawer_xy");
-  }
-
-  function initFeedbackCard() {
-    if (document.querySelector(".arpiares-fb-aside") || window.__arpFeedbackLocked) return;
-    var form = document.querySelector("#reviewForm, form[id*=review], form[id*=feedback]") ||
-      Array.from(document.querySelectorAll("form")).find(function (f) {
-        return /feedback|review|recommend/i.test(f.textContent);
-      });
-    if (!form) return;
-    var card = form.closest("section, .card, .panel") || form.parentElement;
-    if (!card || card === document.body) return;
-    window.__arpFeedbackLocked = true;
-
-    var bodyWrap = document.createElement("div");
-    bodyWrap.className = "arpiares-fb-body";
-    while (card.firstChild) bodyWrap.appendChild(card.firstChild);
-
-    var aside = document.createElement("aside");
-    aside.className = "arpiares-fb-aside";
-    aside.innerHTML =
-      '<div><div class="arpiares-fb-aside-crest">A</div><span style="font:700 10.5px DM Sans,sans-serif;letter-spacing:0.2em;text-transform:uppercase;color:#d4af6a;">PATRON DESK</span><h3>Your voice shapes our <em>next</em> piece.</h3><p>Tell us how your order felt in person—from unboxing finish to everyday use.</p><div class="arpiares-fb-tags"><button type="button" class="arpiares-fb-tag" data-tag="Exceptional craftsmanship">✨ Craftsmanship</button><button type="button" class="arpiares-fb-tag" data-tag="Luxury unboxing experience">🎁 Packaging</button><button type="button" class="arpiares-fb-tag" data-tag="Fast & careful delivery">🚚 Fast Delivery</button><button type="button" class="arpiares-fb-tag" data-tag="Worth every rupee">💎 Value</button></div></div>' +
-      '<div class="arpiares-fb-quote-box"><strong style="color:#e5c17b;display:block;margin-bottom:4px;">★★★★★ 4.9 / 5.0 Patron Score</strong>Every verified note is read directly by the ARPIARES studio team.</div>';
-
-    card.classList.add("arpiares-fb-split");
-    card.style.setProperty("padding", "0", "important");
-    card.appendChild(aside);
-    card.appendChild(bodyWrap);
-
-    var tags = aside.querySelectorAll("[data-tag]");
-    for (var t = 0; t < tags.length; t++) {
-      tags[t].addEventListener("click", function () {
-        var textInputs = bodyWrap.querySelectorAll("input[type='text']");
-        var targetInput = bodyWrap.querySelector("input[placeholder*='Summarize'], input[name*='title'], input[name*='headline']") || (textInputs.length ? textInputs[textInputs.length - 1] : null);
-        if (targetInput) { targetInput.value = this.getAttribute("data-tag"); targetInput.focus(); }
-      });
+      const form = widget.querySelector("form, .chat-form, .support-form");
+      const input = form?.querySelector("input");
+      if (form && input && !widget.querySelector(".arpiares-quick-chips")) {
+        const bar = document.createElement("div");
+        bar.className = "arpiares-quick-chips";
+        ["📦 Track order", "🚚 Delivery info", "✨ Style picks", "🔄 7-day returns"].forEach((q) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "arpiares-quick-chip";
+          btn.textContent = q;
+          btn.addEventListener("click", () => {
+            input.value = q.replace(/^[^\w]+/, "").trim();
+            form.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+          });
+          bar.appendChild(btn);
+        });
+        form.parentNode.insertBefore(bar, form);
+      }
     }
   }
 
-  function boot() { initBot(); initFeedbackCard(); }
-if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
-else boot();
-setTimeout(boot, 500);
-setTimeout(boot, 1500);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupBot);
+  } else {
+    setupBot();
+  }
+  setTimeout(setupBot, 600);
 })();
