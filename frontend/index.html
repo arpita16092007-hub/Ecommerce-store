@@ -11,6 +11,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://w3.org' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2306271d'/><text x='50' y='68' font-size='56' text-anchor='middle' fill='%23e5c17b' font-family='Georgia,serif'>A</text></svg>">
 
   <link rel="stylesheet" href="css/upgrades.css?v=53" />
+  <link rel="stylesheet" href="css/arpiares-luxury.css?v=60" />
 </head>
 <body>
 <!-- ARPIARES Minimal Luxury Welcome Screen -->
@@ -418,5 +419,95 @@
 </script>
 
   <script src="js/movable-concierge.js?v=53"></script>
+
+<script>
+(function buildArpiaresMockupStorefront() {
+  if (document.body.dataset.arpMockupBuilt === "1") return;
+  document.body.dataset.arpMockupBuilt = "1";
+
+  const CREST_SVG = '<svg class="arp-crest-icon" viewBox="0 0 64 64" fill="none" xmlns="http://w3.org"><path d="M32 8L12 54H20L24.5 43H39.5L44 54H52L32 8ZM27.5 36L32 24.5L36.5 36H27.5Z" fill="#d8b373"/><path d="M10 42C20 33 44 25 56 22" stroke="#edd19a" stroke-width="2" stroke-linecap="round"/><path d="M51 12L52.5 16L56.5 17.5L52.5 19L51 23L49.5 19L45.5 17.5L49.5 16L51 12Z" fill="#edd19a"/></svg>';
+
+  // 1. Upgrade Top Header Bar
+  const oldHeader = document.querySelector("header, .site-header, .topbar");
+  if (oldHeader) {
+    oldHeader.className = "arp-topbar";
+    oldHeader.innerHTML =
+      '<a href="index.html" class="arp-crest-lockup">' + CREST_SVG + '<span class="arp-crest-wordmark">ARPIARES</span></a>' +
+      '<div class="arp-search-pill"><span>🔍</span><input type="search" id="arpGlobalSearch" placeholder="Search for products..." /></div>' +
+      '<div class="arp-topbar-actions">' +
+        '<a href="account.html" class="arp-icon-btn" title="Wishlist">♡</a>' +
+        '<a href="cart.html" class="arp-icon-btn" title="Cart">🛒<span class="arp-badge-dot" id="arpCartCount">0</span></a>' +
+        '<a href="login.html" class="arp-icon-btn" title="Account">👤</a>' +
+      '</div>';
+
+    const searchInput = document.getElementById("arpGlobalSearch");
+    if (searchInput) {
+      searchInput.addEventListener("input", function () {
+        const q = this.value.toLowerCase().trim();
+        document.querySelectorAll(".product-card").forEach(function (card) {
+          card.style.display = card.textContent.toLowerCase().includes(q) ? "" : "none";
+        });
+      });
+    }
+  }
+
+  // 2. Wrap Main Content in Left Category Sidebar + Main Canvas
+  const mainEl = document.querySelector("main");
+  if (mainEl && !document.querySelector(".arp-store-layout")) {
+    const shell = document.createElement("div");
+    shell.className = "arp-store-layout";
+
+    const aside = document.createElement("aside");
+    aside.className = "arp-cat-sidebar";
+    const cats = [
+      { icon: "❖", label: "All Categories", val: "all" },
+      { icon: "🎧", label: "Electronics", val: "electronics" },
+      { icon: "👗", label: "Fashion", val: "fashion" },
+      { icon: "🏠", label: "Home & Living", val: "home" },
+      { icon: "🪷", label: "Beauty", val: "beauty" },
+      { icon: "⚽", label: "Sports", val: "sports" },
+      { icon: "📖", label: "Books", val: "books" }
+    ];
+    aside.innerHTML = cats.map(function (c, i) {
+      return '<button type="button" class="arp-cat-btn' + (i === 0 ? ' active' : '') + '" data-cat="' + c.val + '"><span>' + c.icon + '</span><span>' + c.label + '</span></button>';
+    }).join("");
+
+    mainEl.parentNode.insertBefore(shell, mainEl);
+    mainEl.classList.add("arp-store-main");
+    shell.appendChild(aside);
+    shell.appendChild(mainEl);
+
+    aside.querySelectorAll(".arp-cat-btn").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        aside.querySelectorAll(".arp-cat-btn").forEach(function (b) { b.classList.remove("active"); });
+        btn.classList.add("active");
+        const val = btn.dataset.cat;
+        document.querySelectorAll(".product-card").forEach(function (card) {
+          if (val === "all") { card.style.display = ""; return; }
+          card.style.display = card.textContent.toLowerCase().includes(val) ? "" : "none";
+        });
+      });
+    });
+
+    // 3. Upgrade Hero Section to "Explore the Extraordinary"
+    const firstSection = mainEl.querySelector("section, .hero");
+    if (firstSection) {
+      firstSection.className = "arp-hero-card";
+      firstSection.innerHTML =
+        '<div>' +
+          '<h1>Explore<br>the Extraordinary</h1>' +
+          '<p>Shop More. Dream More.</p>' +
+          '<a href="#productsGrid" class="arp-gold-cta">Shop Now →</a>' +
+        '</div>' +
+        '<div style="text-align:center;">' +
+          '<div style="display:inline-grid;place-items:center;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,rgba(216,179,115,0.22),transparent 70%);border:1px solid rgba(216,179,115,0.35);">' +
+            CREST_SVG.replace('class="arp-crest-icon"', 'style="width:110px;height:110px;"') +
+          '</div>' +
+        '</div>';
+    }
+  }
+})();
+</script>
+
 </body>
 </html>
