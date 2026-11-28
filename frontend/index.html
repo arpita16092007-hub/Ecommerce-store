@@ -10,9 +10,19 @@
   <link rel="stylesheet" href="css/style.css?v=21">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://w3.org' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2306271d'/><text x='50' y='68' font-size='56' text-anchor='middle' fill='%23e5c17b' font-family='Georgia,serif'>A</text></svg>">
 
-  <link rel="stylesheet" href="css/upgrades.css?v=25">
+  <link rel="stylesheet" href="css/upgrades.css?v=26">
 </head>
 <body>
+
+  <!-- Animated Editorial Welcome Curtain -->
+  <div id="arpiaresWelcomeCurtain" role="dialog" aria-label="Welcome to ARPIARES">
+    <div class="wc-crest">A</div>
+    <span class="wc-kicker">ARPIARES • HOUSE OF CURATED OBJECTS</span>
+    <h2 class="wc-title">Your cart remembers everything you pretended not to look at twice.</h2>
+    <p class="wc-sub">Welcome back to the atelier of quiet flexes—where “I’m just browsing” turns into “Where did you get that?” in under three scrolls.</p>
+    <button type="button" class="wc-enter-btn" id="wcEnterBtn">Enter the Boutique ✦</button>
+  </div>
+
   <!-- Full-Screen Editorial Welcome Splash -->
     <!-- ARPIARES Emerald & Gold Signature Welcome Screen -->
   <section class="arp-welcome-splash arp-emerald-theme" id="arp-welcome-splash" aria-label="Welcome to ARPIARES">
@@ -324,5 +334,62 @@
   <script src="js/store.js?v=32" defer></script>
   <script src="js/chat.js?v=25" defer></script>
   <script src="js/icons.js?v=1" defer></script>
+
+<script>
+(function initArpiaresAnimatedWelcome() {
+  const curtain = document.getElementById("arpiaresWelcomeCurtain");
+  const enterBtn = document.getElementById("wcEnterBtn");
+
+  function dismissCurtain() {
+    if (!curtain || curtain.classList.contains("is-dismissed")) return;
+    curtain.classList.add("is-dismissed");
+    sessionStorage.setItem("arpiares_welcomed", "1");
+  }
+
+  if (curtain) {
+    if (sessionStorage.getItem("arpiares_welcomed") === "1") {
+      curtain.style.display = "none";
+    } else {
+      setTimeout(dismissCurtain, 3200);
+      curtain.addEventListener("click", dismissCurtain);
+      if (enterBtn) enterBtn.addEventListener("click", dismissCurtain);
+    }
+  }
+
+  // Animate Hero Heading word-by-word with witty deep-memory copy
+  const heroH1 = document.querySelector(".hero h1, main h1, header + section h1");
+  if (heroH1) {
+    const headline = "Things so unforgettable, even your future self will thank your impulse.";
+    heroH1.innerHTML = headline
+      .split(" ")
+      .map((word, idx) => '<span class="hero-word-anim" style="animation-delay:' + (0.15 + idx * 0.07) + 's">' + word + '</span>')
+      .join(" ");
+  }
+
+  const heroLead = document.querySelector(".hero p, main section:first-of-type p");
+  if (heroLead) {
+    const wittyLines = [
+      "“I’m just looking” — famous last words right before finding your new favorite daily ritual.",
+      "Curated with zero boring fillers and 100% ‘wait, where did you buy this?’ energy.",
+      "Built for people whose taste is expensive even when they swear they are saving money.",
+      "Deep-memory objects: once they land on your shelf, everything else looks like a placeholder."
+    ];
+    let i = 0;
+    heroLead.innerHTML = '<span class="hero-wit-rotator" id="heroWitRotator">' + wittyLines + '</span>';
+    const rotator = document.getElementById("heroWitRotator");
+    if (rotator) {
+      setInterval(() => {
+        rotator.classList.add("is-swapping");
+        setTimeout(() => {
+          i = (i + 1) % wittyLines.length;
+          rotator.textContent = wittyLines[i];
+          rotator.classList.remove("is-swapping");
+        }, 420);
+      }, 4200);
+    }
+  }
+})();
+</script>
+
 </body>
 </html>
