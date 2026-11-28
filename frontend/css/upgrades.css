@@ -1724,3 +1724,85 @@ html, body {
   width: 100% !important;
   table-layout: auto !important;
 }
+
+
+/* 1. Fix Admin Sidebar Active Glow, Remove Empty Divider Line & Fix Mobile/Narrow Width */
+.admin-sidebar .admin-nav * {
+  pointer-events: none;
+}
+.admin-sidebar .admin-nav.active {
+  background: linear-gradient(90deg, rgba(229, 193, 123, 0.24) 0%, rgba(229, 193, 123, 0.08) 100%) !important;
+  color: #f7d9a3 !important;
+  border: 1px solid rgba(229, 193, 123, 0.55) !important;
+  box-shadow: inset 4px 0 0 #e5c17b, 0 0 18px rgba(229, 193, 123, 0.16) !important;
+  font-weight: 700 !important;
+}
+.admin-sidebar-foot {
+  border-top: none !important;
+  padding-top: 8px !important;
+  margin-top: 16px !important;
+}
+.admin-sidebar hr {
+  display: none !important;
+}
+@media (max-width: 768px) {
+  .admin-shell {
+    grid-template-columns: 1fr !important;
+  }
+  .admin-sidebar {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: auto !important;
+  }
+  .admin-main {
+    padding: 24px 18px !important;
+  }
+  .admin-main h1 {
+    font-size: 28px !important;
+  }
+}
+
+/* 2. Fix Trust Strip & Footer Empty Gap + Upgrade Trust Strip Typography */
+.trust-strip,
+.features-strip,
+section:has(.trust-item) {
+  margin-bottom: 0 !important;
+  padding-top: 32px !important;
+  padding-bottom: 32px !important;
+  border-top: 1px solid rgba(6, 39, 29, 0.12);
+  border-bottom: 1px solid rgba(6, 39, 29, 0.12);
+  background: rgba(255, 250, 242, 0.65);
+}
+.site-footer,
+footer {
+  margin-top: 0 !important;
+  padding-top: 36px !important;
+  padding-bottom: 36px !important;
+}
+
+/* 3. Fix Beauty / Category Card Pill Button Contrast (Champagne Gold with Deep Forest Text) */
+.category-card .btn,
+.category-card button,
+.category-card a.pill-btn,
+.collection-card .btn,
+.collection-card button,
+.collection-card a,
+[class*="category"] .btn-primary,
+[class*="category"] button {
+  background: linear-gradient(135deg, #e5c17b 0%, #d4af6a 100%) !important;
+  color: #06271d !important;
+  border: 1px solid #b89149 !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  box-shadow: 0 6px 16px rgba(6, 39, 29, 0.12) !important;
+}
+.category-card .btn:hover,
+.category-card button:hover,
+.collection-card .btn:hover,
+.collection-card button:hover {
+  background: linear-gradient(135deg, #f0cf8e 0%, #dfc07f 100%) !important;
+  color: #041912 !important;
+  transform: translateY(-1px);
+}

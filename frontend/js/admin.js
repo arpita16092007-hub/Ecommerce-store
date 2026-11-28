@@ -488,14 +488,15 @@ loadAdmin();
 
 
 
-/* Authoritative Admin Sidebar Panel Switcher */
-(function initAdminSidebarSwitcher() {
-  function setup() {
-    const navBtns = Array.from(document.querySelectorAll(".admin-sidebar .admin-nav"));
-    const main = document.querySelector(".admin-main");
-    if (!navBtns.length || !main) return;
 
-    // Gather top-level section cards inside .admin-main (excluding the KPI strip)
+
+/* Authoritative Admin Sidebar Panel Switcher & Active Glow */
+(function initAdminSidebarSwitcher() {
+  function bindSidebar() {
+    const sidebar = document.querySelector(".admin-sidebar");
+    const main = document.querySelector(".admin-main");
+    if (!sidebar || !main) return;
+
     const allCards = Array.from(main.children).filter(
       (el) => el.matches("section, .admin-card, .admin-panel") && !el.classList.contains("admin-kpis")
     );
@@ -507,52 +508,21 @@ loadAdmin();
       categories: ["categor", "collection"]
     };
 
-    function matchCardsForTab(tab) {
+    function activateTab(tab) {
+      const buttons = Array.from(sidebar.querySelectorAll(".admin-nav"));
+      buttons.forEach((b) => {
+        const isMatch = b.dataset.tab === tab;
+        b.classList.toggle("active", isMatch);
+        b.setAttribute("aria-selected", isMatch ? "true" : "false");
+      });
+
       const keys = keywordsByTab[tab] || [tab];
       const matched = allCards.filter((card) => {
         const attr = (card.dataset.panel || card.dataset.tab || card.id || "").toLowerCase();
         const heading = (card.querySelector("h1, h2, h3")?.textContent || "").toLowerCase();
         return keys.some((k) => attr.includes(k) || heading.includes(k));
       });
-      return matched;
-    }
 
-    function activateTab(tab) {
-      navBtns.forEach((b) => b.classList.toggle("active", b.dataset.tab === tab));
-      const matched = matchCardsForTab(tab);
-
-      if (matched.length > 0) {
-        allCards.forEach((card) => {
-          const show = matched.includes(card);
-          card.style.display = show ? "" : "none";
-          card.hidden = !show;
-        });
-      } else {
-        // Fallback: ensure all cards are visible if custom markup doesn't match keywords
-        allCards.forEach((card) => {
-          card.style.display = "";
-          card.hidden = false;
-        });
-      }
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    navBtns.forEach((btn) => {
-      const clone = btn.cloneNode(true);
-      btn.parentNode.replaceChild(clone, btn);
-      clone.addEventListener("click", (e) => {
-        e.preventDefault();
-        activateTab(clone.dataset.tab);
-      });
-    });
-
-    // Activate the default active tab on load
-    const freshBtns = Array.from(document.querySelectorAll(".admin-sidebar .admin-nav"));
-    const initial = freshBtns.find((b) => b.classList.contains("active"))?.dataset.tab || freshBtns[0]?.dataset.tab;
-    if (initial) {
-      // Re-bind navBtns reference for activateTab
-      freshBtns.forEach((b) => b.classList.toggle("active", b.dataset.tab === initial));
-      const matched = matchCardsForTab(initial);
       if (matched.length > 0) {
         allCards.forEach((card) => {
           const show = matched.includes(card);
@@ -561,11 +531,23 @@ loadAdmin();
         });
       }
     }
+
+    // Event delegation on sidebar so clicking icon, text, or button always triggers glow + switch
+    sidebar.addEventListener("click", (e) => {
+      const btn = e.target.closest(".admin-nav");
+      if (!btn) return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      activateTab(btn.dataset.tab);
+    }, true);
+
+    const initialBtn = sidebar.querySelector(".admin-nav.active") || sidebar.querySelector(".admin-nav");
+    if (initialBtn) activateTab(initialBtn.dataset.tab);
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", setup);
+    document.addEventListener("DOMContentLoaded", bindSidebar);
   } else {
-    setup();
+    bindSidebar();
   }
 })();
