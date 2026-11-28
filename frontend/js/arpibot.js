@@ -1,17 +1,17 @@
 (function () {
   var STATES = {
-    welcome:    { img: "images/arpibot/welcome.png",    pill: "Online • Ready to help",      label: "Welcome" },
-    helping:    { img: "images/arpibot/helping.png",    pill: "Searching • Store catalog",   label: "Helping" },
-    thinking:   { img: "images/arpibot/thinking.png",   pill: "Checking • Store details",    label: "Thinking" },
-    explaining: { img: "images/arpibot/explaining.png", pill: "Guide • Store policies",      label: "Explaining" },
-    happy:      { img: "images/arpibot/happy.png",      pill: "Happy • Glad to assist",      label: "Happy" },
-    excited:    { img: "images/arpibot/excited.png",    pill: "Found • Great picks for you", label: "Excited" },
-    winking:    { img: "images/arpibot/winking.png",    pill: "Tip • Smart shopping pick",   label: "Pro Tip" },
-    working:    { img: "images/arpibot/working.png",    pill: "Checking • Orders & account", label: "Working" },
-    confused:   { img: "images/arpibot/confused.png",   pill: "Clarify • Tell me more",      label: "Clarify" },
-    sorry:      { img: "images/arpibot/sorry.png",      pill: "Care • Easy returns & help",  label: "Sorry" },
-    sad:        { img: "images/arpibot/sad.png",        pill: "Support • Here for you",      label: "Support" },
-    bye:        { img: "images/arpibot/bye.png",        pill: "Goodbye • Come back soon!",   label: "Bye" }
+    welcome:    { img: "images/arpibot/welcome.png",    pill: "Online • Ready to help",       label: "Welcome" },
+    helping:    { img: "images/arpibot/helping.png",    pill: "Searching • Store catalog",    label: "Helping" },
+    thinking:   { img: "images/arpibot/thinking.png",   pill: "Checking • Store details",     label: "Thinking" },
+    explaining: { img: "images/arpibot/explaining.png", pill: "Guide • Store & care info",    label: "Explaining" },
+    happy:      { img: "images/arpibot/happy.png",      pill: "Happy • Glad to assist",       label: "Happy" },
+    excited:    { img: "images/arpibot/excited.png",    pill: "Found • Best picks for you",   label: "Excited" },
+    winking:    { img: "images/arpibot/winking.png",    pill: "Pro Tip • Smart shopping",     label: "Pro Tip" },
+    working:    { img: "images/arpibot/working.png",    pill: "Working • Orders & account",   label: "Working" },
+    confused:   { img: "images/arpibot/confused.png",   pill: "Clarify • Tell me more",       label: "Clarify" },
+    sorry:      { img: "images/arpibot/sorry.png",      pill: "Care • Easy returns & help",   label: "Sorry" },
+    sad:        { img: "images/arpibot/sad.png",        pill: "Support • Here for you",       label: "Support" },
+    bye:        { img: "images/arpibot/bye.png",        pill: "Goodbye • Come back soon!",    label: "Bye" }
   };
 
   var MOODS = ["welcome", "helping", "thinking", "explaining", "happy", "excited", "winking", "working", "confused", "sorry", "sad", "bye"];
@@ -35,46 +35,53 @@
   ];
 
   var INLINE_CSS = [
-    "#arpBotDock{position:fixed!important;bottom:22px!important;right:22px!important;z-index:2147483646!important;display:flex!important;align-items:flex-end!important;gap:12px!important;user-select:none!important;touch-action:none!important;margin:0!important;padding:0!important;background:transparent!important;border:none!important;box-shadow:none!important;}",
-    "#arpChatBubbleTip{position:relative!important;background:linear-gradient(160deg,#fffdf9 0%,#f6ebd5 100%)!important;color:#142820!important;border:1.5px solid #cfa55b!important;border-radius:20px 20px 4px 20px!important;padding:11px 28px 11px 15px!important;box-shadow:0 14px 32px rgba(4,25,18,.24)!important;font:400 12.5px/1.4 'DM Sans',sans-serif!important;cursor:pointer!important;max-width:230px!important;text-align:left!important;}",
-    "#arpChatBubbleTip .arp-tip-eyebrow{display:inline-flex!important;align-items:center!important;gap:5px!important;font:700 9.5px/1 'DM Sans',sans-serif!important;letter-spacing:.12em!important;text-transform:uppercase!important;color:#8f6520!important;margin-bottom:4px!important;}",
-    "#arpChatBubbleTip strong{display:block!important;font:700 15.5px/1.2 'Playfair Display',Georgia,serif!important;color:#07261c!important;margin-bottom:2px!important;}",
-    "#arpTipDismiss{position:absolute!important;top:6px!important;right:7px!important;width:19px!important;height:19px!important;min-width:19px!important;border-radius:50%!important;border:none!important;background:rgba(7,38,28,.1)!important;color:#07261c!important;font-size:13px!important;line-height:1!important;padding:0!important;cursor:pointer!important;display:grid!important;place-items:center!important;}",
-    "#arpUniversalOrb{position:relative!important;width:72px!important;height:72px!important;min-width:72px!important;min-height:72px!important;border-radius:50%!important;padding:0!important;margin:0!important;border:2.5px solid #e2be79!important;background:radial-gradient(circle at 30% 25%,#154c39,#062118)!important;box-shadow:0 14px 32px rgba(4,25,18,.45),0 0 0 4px rgba(226,190,121,.25)!important;cursor:grab!important;overflow:hidden!important;display:grid!important;place-items:center!important;flex-shrink:0!important;}",
-    "#arpUniversalOrb img,#arpStageImg{width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;object-fit:cover!important;display:block!important;pointer-events:none!important;border-radius:50%!important;margin:0!important;}",
-    "#arpUniversalDrawer{position:fixed!important;bottom:106px!important;right:22px!important;z-index:2147483647!important;width:415px!important;max-width:calc(100vw - 24px)!important;border-radius:26px!important;background:#fbf7ef!important;border:2px solid #cfa55b!important;box-shadow:0 28px 68px rgba(4,25,18,.44)!important;overflow:hidden!important;display:none!important;flex-direction:column!important;margin:0!important;padding:0!important;text-align:left!important;}",
+    "#arpBotDock,#arpBotDock *,#arpUniversalDrawer,#arpUniversalDrawer *{box-sizing:border-box!important;letter-spacing:normal;}",
+    "#arpBotDock{position:fixed!important;bottom:22px!important;right:22px!important;left:auto!important;top:auto!important;z-index:2147483646!important;display:flex!important;flex-direction:row!important;align-items:flex-end!important;gap:12px!important;width:auto!important;height:auto!important;margin:0!important;padding:0!important;background:transparent!important;border:none!important;box-shadow:none!important;user-select:none!important;touch-action:none!important;}",
+    "#arpChatBubbleTip{position:relative!important;display:block!important;width:236px!important;background:linear-gradient(160deg,#fffdf9 0%,#f5e9d0 100%)!important;color:#142820!important;border:1.5px solid #cfa55b!important;border-radius:20px 20px 4px 20px!important;padding:12px 30px 12px 15px!important;box-shadow:0 14px 32px rgba(4,25,18,.24)!important;font:400 12.5px/1.45 'DM Sans',sans-serif!important;cursor:pointer!important;text-align:left!important;}",
+    "#arpChatBubbleTip .arp-tip-eyebrow{display:flex!important;align-items:center!important;gap:6px!important;font:700 9.5px/1.2 'DM Sans',sans-serif!important;letter-spacing:.1em!important;text-transform:uppercase!important;color:#8f6520!important;margin:0 0 5px 0!important;}",
+    "#arpChatBubbleTip .arp-tip-eyebrow img{width:15px!important;height:15px!important;min-width:15px!important;max-width:15px!important;object-fit:contain!important;border-radius:0!important;display:inline-block!important;margin:0!important;}",
+    "#arpChatBubbleTip strong{display:block!important;font:700 15.5px/1.25 'Playfair Display',Georgia,serif!important;color:#07261c!important;margin:0 0 3px 0!important;}",
+    "#arpTipDismiss{position:absolute!important;top:7px!important;right:7px!important;width:20px!important;height:20px!important;min-width:20px!important;min-height:20px!important;border-radius:50%!important;border:none!important;background:rgba(7,38,28,.1)!important;color:#07261c!important;font:700 13px/1 sans-serif!important;padding:0!important;margin:0!important;cursor:pointer!important;display:grid!important;place-items:center!important;}",
+    "#arpTipDismiss:hover{background:#07261c!important;color:#edd19a!important;}",
+    "#arpUniversalOrb{position:relative!important;width:72px!important;height:72px!important;min-width:72px!important;min-height:72px!important;max-width:72px!important;max-height:72px!important;border-radius:50%!important;padding:0!important;margin:0!important;border:2.5px solid #e2be79!important;background:radial-gradient(circle at 30% 25%,#154c39,#062118)!important;box-shadow:0 14px 32px rgba(4,25,18,.45),0 0 0 4px rgba(226,190,121,.25)!important;cursor:grab!important;overflow:hidden!important;display:flex!important;align-items:center!important;justify-content:center!important;flex-shrink:0!important;}",
+    "#arpUniversalOrb img,#arpStageImg{width:100%!important;height:100%!important;min-width:100%!important;min-height:100%!important;max-width:100%!important;max-height:100%!important;object-fit:cover!important;object-position:center top!important;display:block!important;pointer-events:none!important;border-radius:50%!important;margin:0!important;padding:0!important;}",
+    "#arpUniversalDrawer{position:fixed!important;bottom:106px!important;right:22px!important;left:auto!important;top:auto!important;z-index:2147483647!important;width:416px!important;max-width:calc(100vw - 24px)!important;height:auto!important;border-radius:26px!important;background:#fbf7ef!important;border:2px solid #cfa55b!important;box-shadow:0 28px 68px rgba(4,25,18,.44)!important;overflow:hidden!important;display:none!important;flex-direction:column!important;margin:0!important;padding:0!important;text-align:left!important;}",
     "#arpUniversalDrawer.is-open{display:flex!important;}",
-    ".arp-ab-head{background:radial-gradient(circle at 85% 15%,#195440 0%,#07261c 75%)!important;color:#fff8eb!important;padding:14px 16px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;border-bottom:1.5px solid rgba(226,190,121,.45)!important;cursor:grab!important;user-select:none!important;touch-action:none!important;margin:0!important;}",
-    ".arp-ab-stage{display:flex!important;align-items:center!important;gap:12px!important;min-width:0!important;}",
-    ".arp-ab-ring{width:64px!important;height:64px!important;min-width:64px!important;min-height:64px!important;border-radius:50%!important;border:2px solid #edd19a!important;background:#062118!important;box-shadow:0 0 20px rgba(237,209,154,.32)!important;overflow:hidden!important;flex-shrink:0!important;}",
-    ".arp-ab-eyebrow{display:block!important;font:700 9.5px/1.1 'DM Sans',sans-serif!important;letter-spacing:.13em!important;text-transform:uppercase!important;color:#d8b373!important;margin-bottom:3px!important;}",
-    ".arp-ab-title{display:block!important;font:700 19px/1.15 'Playfair Display',Georgia,serif!important;color:#fff8eb!important;margin:0!important;}",
-    ".arp-ab-pill{display:inline-flex!important;align-items:center!important;gap:6px!important;margin-top:5px!important;padding:3px 10px!important;border-radius:999px!important;background:rgba(6,33,24,.9)!important;border:1px solid rgba(226,190,121,.6)!important;font:600 10.5px/1.2 'DM Sans',sans-serif!important;color:#f4dca8!important;}",
-    ".arp-ab-pill::before{content:''!important;width:6px!important;height:6px!important;border-radius:50%!important;background:#4ade80!important;display:inline-block!important;}",
-    ".arp-ab-close{width:32px!important;height:32px!important;min-width:32px!important;border-radius:50%!important;border:1px solid rgba(237,209,154,.45)!important;background:rgba(255,255,255,.1)!important;color:#edd19a!important;cursor:pointer!important;font-size:18px!important;line-height:1!important;padding:0!important;display:grid!important;place-items:center!important;flex-shrink:0!important;}",
+    ".arp-ab-head{position:relative!important;width:100%!important;background:radial-gradient(circle at 85% 15%,#195440 0%,#07261c 75%)!important;color:#fff8eb!important;padding:14px 16px!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;border-bottom:1.5px solid rgba(226,190,121,.45)!important;cursor:grab!important;user-select:none!important;touch-action:none!important;margin:0!important;}",
+    ".arp-ab-stage{display:flex!important;flex-direction:row!important;align-items:center!important;gap:12px!important;flex:1!important;min-width:0!important;margin:0!important;padding:0!important;}",
+    ".arp-ab-ring{width:62px!important;height:62px!important;min-width:62px!important;min-height:62px!important;max-width:62px!important;max-height:62px!important;border-radius:50%!important;border:2px solid #edd19a!important;background:#062118!important;box-shadow:0 0 20px rgba(237,209,154,.32)!important;overflow:hidden!important;flex-shrink:0!important;display:flex!important;align-items:center!important;justify-content:center!important;margin:0!important;padding:0!important;}",
+    ".arp-ab-meta{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;gap:4px!important;min-width:0!important;flex:1!important;margin:0!important;padding:0!important;}",
+    ".arp-ab-eyebrow{display:block!important;font:700 9.5px/1.2 'DM Sans',sans-serif!important;letter-spacing:.12em!important;text-transform:uppercase!important;color:#d8b373!important;margin:0!important;padding:0!important;}",
+    ".arp-ab-title{display:block!important;font:700 19px/1.15 'Playfair Display',Georgia,serif!important;color:#fff8eb!important;margin:0!important;padding:0!important;}",
+    ".arp-ab-pill{display:inline-flex!important;align-items:center!important;gap:6px!important;margin:2px 0 0 0!important;padding:3px 10px!important;border-radius:999px!important;background:rgba(6,33,24,.92)!important;border:1px solid rgba(226,190,121,.6)!important;font:600 10.5px/1.2 'DM Sans',sans-serif!important;color:#f4dca8!important;white-space:nowrap!important;}",
+    ".arp-ab-pill::before{content:''!important;width:6px!important;height:6px!important;border-radius:50%!important;background:#4ade80!important;display:inline-block!important;flex-shrink:0!important;}",
+    ".arp-ab-close{width:32px!important;height:32px!important;min-width:32px!important;min-height:32px!important;max-width:32px!important;max-height:32px!important;border-radius:50%!important;border:1px solid rgba(237,209,154,.45)!important;background:rgba(255,255,255,.1)!important;color:#edd19a!important;cursor:pointer!important;font:700 18px/1 sans-serif!important;padding:0!important;margin:0!important;display:grid!important;place-items:center!important;flex-shrink:0!important;}",
     ".arp-ab-close:hover{background:#edd19a!important;color:#07261c!important;}",
-    ".arp-ab-bar{display:flex!important;flex-direction:row!important;gap:6px!important;padding:8px 12px!important;background:#0a3024!important;border-bottom:1px solid rgba(216,179,115,.25)!important;overflow-x:auto!important;margin:0!important;}",
-    ".arp-ab-btn{padding:4px 10px!important;border-radius:999px!important;border:1px solid rgba(237,209,154,.35)!important;background:rgba(255,255,255,.07)!important;color:#f7e7c4!important;font:600 10.5px/1.2 'DM Sans',sans-serif!important;cursor:pointer!important;white-space:nowrap!important;flex-shrink:0!important;}",
-    ".arp-ab-btn.active{background:#edd19a!important;color:#062118!important;border-color:#edd19a!important;}",
-    ".arp-u-feed{padding:14px!important;height:285px!important;max-height:285px!important;overflow-y:auto!important;display:flex!important;flex-direction:column!important;gap:10px!important;background:#faf5eb!important;font:400 13px/1.5 'DM Sans',sans-serif!important;color:#142820!important;}",
-    ".arp-welcome-card{background:linear-gradient(155deg,#fffdf8 0%,#f6ead2 100%)!important;border:1.5px solid #d8b373!important;border-radius:18px!important;padding:13px 14px!important;color:#142820!important;}",
-    ".arp-wc-kicker{display:block!important;font:700 9.5px/1.1 'DM Sans',sans-serif!important;letter-spacing:.12em!important;text-transform:uppercase!important;color:#8f6520!important;margin-bottom:4px!important;}",
-    ".arp-welcome-card h4{margin:0 0 5px!important;font:700 17.5px/1.2 'Playfair Display',Georgia,serif!important;color:#07261c!important;}",
-    ".arp-welcome-card p{margin:0 0 10px!important;font:400 12.5px/1.45 'DM Sans',sans-serif!important;color:#263c33!important;}",
-    ".arp-help-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important;}",
-".arp-help-tile{display:flex!important;align-items:center!important;gap:6px!important;padding:7px 9px!important;border-radius:11px!important;border:1px solid rgba(200,157,92,.6)!important;background:#ffffff!important;color:#07261c!important;font:600 11px/1.25 'DM Sans',sans-serif!important;text-align:left!important;cursor:pointer!important;}",
+    ".arp-ab-bar{display:flex!important;flex-direction:row!important;align-items:center!important;gap:6px!important;width:100%!important;padding:8px 12px!important;background:#0a3024!important;border-bottom:1px solid rgba(216,179,115,.25)!important;overflow-x:auto!important;margin:0!important;}",
+".arp-ab-btn{padding:4px 10px!important;border-radius:999px!important;border:1px solid rgba(237,209,154,.35)!important;background:rgba(255,255,255,.07)!important;color:#f7e7c4!important;font:600 10.5px/1.2 'DM Sans',sans-serif!important;cursor:pointer!important;white-space:nowrap!important;flex-shrink:0!important;margin:0!important;width:auto!important;height:auto!important;}",
+".arp-ab-btn.active{background:#edd19a!important;color:#062118!important;border-color:#edd19a!important;}",
+".arp-u-feed{width:100%!important;padding:14px!important;height:295px!important;max-height:295px!important;overflow-y:auto!important;display:flex!important;flex-direction:column!important;gap:11px!important;background:#faf5eb!important;font:400 13px/1.55 'DM Sans',sans-serif!important;color:#142820!important;margin:0!important;}",
+".arp-welcome-card{background:linear-gradient(155deg,#fffdf8 0%,#f6ead2 100%)!important;border:1.5px solid #d8b373!important;border-radius:18px!important;padding:14px!important;color:#142820!important;margin:0!important;}",
+".arp-wc-kicker{display:block!important;font:700 9.5px/1.2 'DM Sans',sans-serif!important;letter-spacing:.12em!important;text-transform:uppercase!important;color:#8f6520!important;margin:0 0 4px 0!important;}",
+".arp-welcome-card h4{margin:0 0 6px 0!important;font:700 17.5px/1.25 'Playfair Display',Georgia,serif!important;color:#07261c!important;}",
+".arp-welcome-card p{margin:0 0 11px 0!important;font:400 12.5px/1.5 'DM Sans',sans-serif!important;color:#263c33!important;}",
+".arp-help-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important;width:100%!important;margin:0!important;padding:0!important;}",
+".arp-help-tile{display:flex!important;align-items:center!important;gap:6px!important;width:100%!important;padding:7px 9px!important;margin:0!important;border-radius:11px!important;border:1px solid rgba(200,157,92,.6)!important;background:#ffffff!important;color:#07261c!important;font:600 11px/1.25 'DM Sans',sans-serif!important;text-align:left!important;cursor:pointer!important;}",
 ".arp-help-tile:hover{background:#07261c!important;color:#f4dca8!important;}",
-".arp-speech{background:#fffcf5!important;border:1px solid #dec089!important;border-left:3.5px solid #cfa55b!important;border-radius:16px 16px 16px 4px!important;padding:11px 13px!important;color:#142820!important;font:400 13px/1.5 'DM Sans',sans-serif!important;}",
+".arp-speech{background:#fffcf5!important;border:1px solid #dec089!important;border-left:3.5px solid #cfa55b!important;border-radius:16px 16px 16px 4px!important;padding:12px 14px!important;color:#142820!important;font:400 13px/1.55 'DM Sans',sans-serif!important;margin:0!important;}",
+".arp-speech p{margin:0 0 6px 0!important;font:400 13px/1.5 'DM Sans',sans-serif!important;color:#142820!important;}",
+".arp-speech ul{margin:4px 0 0 0!important;padding:0 0 0 16px!important;display:flex!important;flex-direction:column!important;gap:4px!important;}",
+".arp-speech li{font:400 12.5px/1.45 'DM Sans',sans-serif!important;color:#1a3027!important;}",
 ".arp-speech a{color:#07261c!important;font-weight:700!important;text-decoration:underline!important;}",
-".arp-speech-tag{display:block!important;font:700 9.5px/1.1 'DM Sans',sans-serif!important;letter-spacing:.11em!important;text-transform:uppercase!important;color:#8f6520!important;margin-bottom:4px!important;}",
-".arp-user{align-self:flex-end!important;max-width:82%!important;background:#07261c!important;color:#fff8eb!important;border:1px solid rgba(216,179,115,.45)!important;border-radius:16px 16px 4px 16px!important;padding:9px 14px!important;font:400 13px/1.45 'DM Sans',sans-serif!important;}",
-".arp-product-hit{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;padding:8px 11px!important;margin-top:7px!important;border-radius:11px!important;background:#ffffff!important;border:1px solid rgba(200,157,92,.55)!important;text-decoration:none!important;color:#142820!important;}",
-".arp-chips{display:flex!important;flex-direction:row!important;gap:6px!important;padding:8px 12px 6px!important;background:#f8f1e3!important;border-top:1px solid rgba(207,165,91,.28)!important;overflow-x:auto!important;}",
-".arp-chips button{padding:5px 11px!important;border-radius:999px!important;border:1px solid rgba(200,157,92,.65)!important;background:#fffdf9!important;color:#07261c!important;font:600 11px/1.2 'DM Sans',sans-serif!important;cursor:pointer!important;white-space:nowrap!important;flex-shrink:0!important;}",
+".arp-speech-tag{display:block!important;font:700 9.5px/1.2 'DM Sans',sans-serif!important;letter-spacing:.11em!important;text-transform:uppercase!important;color:#8f6520!important;margin:0 0 5px 0!important;}",
+".arp-user{align-self:flex-end!important;max-width:82%!important;background:#07261c!important;color:#fff8eb!important;border:1px solid rgba(216,179,115,.45)!important;border-radius:16px 16px 4px 16px!important;padding:9px 14px!important;font:400 13px/1.45 'DM Sans',sans-serif!important;margin:0!important;}",
+".arp-product-hit{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;padding:8px 11px!important;margin-top:7px!important;border-radius:11px!important;background:#ffffff!important;border:1px solid rgba(200,157,92,.55)!important;text-decoration:none!important;color:#142820!important;font:400 12.5px/1.35 'DM Sans',sans-serif!important;}",
+".arp-chips{display:flex!important;flex-direction:row!important;align-items:center!important;gap:6px!important;width:100%!important;padding:8px 12px 6px!important;background:#f8f1e3!important;border-top:1px solid rgba(207,165,91,.28)!important;overflow-x:auto!important;margin:0!important;}",
+".arp-chips button{padding:5px 11px!important;border-radius:999px!important;border:1px solid rgba(200,157,92,.65)!important;background:#fffdf9!important;color:#07261c!important;font:600 11px/1.2 'DM Sans',sans-serif!important;cursor:pointer!important;white-space:nowrap!important;flex-shrink:0!important;margin:0!important;width:auto!important;height:auto!important;}",
 ".arp-chips button:hover{background:#07261c!important;color:#f3dca8!important;}",
-".arp-form{display:flex!important;flex-direction:row!important;gap:8px!important;padding:10px 12px 12px!important;background:#fffdf9!important;border-top:1px solid rgba(200,157,92,.35)!important;margin:0!important;}",
-".arp-form input{flex:1!important;min-width:0!important;border-radius:999px!important;border:1.5px solid rgba(7,38,28,.2)!important;background:#faf5eb!important;padding:9px 14px!important;font:400 13px/1.2 'DM Sans',sans-serif!important;color:#07261c!important;margin:0!important;}",
-".arp-form button{border-radius:999px!important;padding:9px 16px!important;background:linear-gradient(135deg,#f0d59c 0%,#cfa55b 100%)!important;color:#07261c!important;border:1px solid #b5893f!important;font:700 12px/1.2 'DM Sans',sans-serif!important;cursor:pointer!important;flex-shrink:0!important;margin:0!important;}"
+".arp-form{display:flex!important;flex-direction:row!important;align-items:center!important;gap:8px!important;width:100%!important;padding:10px 12px 12px!important;background:#fffdf9!important;border-top:1px solid rgba(200,157,92,.35)!important;margin:0!important;}",
+".arp-form input{flex:1!important;min-width:0!important;width:auto!important;border-radius:999px!important;border:1.5px solid rgba(7,38,28,.2)!important;background:#faf5eb!important;padding:9px 14px!important;font:400 13px/1.2 'DM Sans',sans-serif!important;color:#07261c!important;margin:0!important;}",
+".arp-form button{border-radius:999px!important;padding:9px 16px!important;background:linear-gradient(135deg,#f0d59c 0%,#cfa55b 100%)!important;color:#07261c!important;border:1px solid #b5893f!important;font:700 12px/1.2 'DM Sans',sans-serif!important;cursor:pointer!important;flex-shrink:0!important;margin:0!important;width:auto!important;height:auto!important;}"
 ].join("\n");
 var catalog = null;
 async function getCatalog() {
@@ -110,7 +117,8 @@ return (
 );
 }
 function injectStyles() {
-if (document.getElementById("arpibot-inline-css")) return;
+var existing = document.getElementById("arpibot-inline-css");
+if (existing) existing.remove();
 var style = document.createElement("style");
 style.id = "arpibot-inline-css";
 style.textContent = INLINE_CSS;
@@ -211,11 +219,11 @@ setTimeout(function () { dragged = false; }, 40);
 handle.addEventListener("pointerup", finishPointer);
 handle.addEventListener("pointercancel", finishPointer);
 }
-restoreSaved(dock, "arpibot_dock_pos");
-restoreSaved(drawer, "arpibot_drawer_pos");
-attachDrag(dock, dock, "arpibot_dock_pos", true);
+restoreSaved(dock, "arpibot_dock_pos_v2");
+restoreSaved(drawer, "arpibot_drawer_pos_v2");
+attachDrag(dock, dock, "arpibot_dock_pos_v2", true);
 var head = drawer.querySelector(".arp-ab-head");
-attachDrag(head, drawer, "arpibot_drawer_pos", false);
+attachDrag(head, drawer, "arpibot_drawer_pos_v2", false);
 }
 function init() {
 if (document.getElementById("arpBotDock")) return;
@@ -229,7 +237,7 @@ dock.innerHTML =
 ' ARPIARES Assistant' +
 '' +
 'Hi! Need any help?' +
-'Ask about products, prices, delivery, orders & returns.' +
+'Ask about products, prices, delivery, COD, orders & returns.' +
 '' +
 '' +
 '' +
@@ -265,7 +273,7 @@ drawer.innerHTML =
 '' +
 '✦ Welcome to ARPIARES' +
 'Hi! I am ArpiBot — how can I help you?' +
-'From finding products or budget deals to checking delivery, COD payments, returns, or your order status—tap any topic below or ask anything:' +
+'Ask me anything from finding products or budget deals to delivery, COD payments, returns, or live order tracking:' +
 '' + tilesHtml + '' +
 '' +
 '' +
@@ -349,39 +357,79 @@ var m = "happy";
 var budgetMatch = l.match(/(?:under|below|less than|within|budget)\s*(?:rs.?|inr|₹)?\s*(\d+)/);
 if (l === "hi" || l === "hello" || l === "hey" || l === "namaste" || l.indexOf("hello ") === 0 || l.indexOf("hi ") === 0) {
 m = "welcome";
-html = "Hello! I am ArpiBot. Ask me anything—from finding products or budget deals (e.g. under 1500) to delivery, COD, returns, or order tracking!";
+html = "Hello! I am ArpiBot. Here is everything I can help you with today:" +
+"" +
+"Find Products & Deals: Search any item, category (like Beauty), or budget (e.g. under 1500)." +
+"Orders & Delivery: Track orders, check free shipping (> ₹999), and COD options." +
+"Returns & Support: 7-day easy returns, 1-year warranty, and direct support contacts." +
+"";
 } else if (l.indexOf("bye") !== -1 || l.indexOf("thank") !== -1) {
 m = l.indexOf("thank") !== -1 ? "happy" : "bye";
 html = l.indexOf("thank") !== -1
-? "You are very welcome! Let me know if you need help with anything else."
-: "Goodbye! Thanks for visiting ARPIARES—come back anytime.";
+? "You are very welcome! Ask me anytime if you need help picking products or checking orders."
+: "Goodbye! Thank you for shopping at ARPIARES—come back soon.";
 } else if (l.indexOf("payment") !== -1 || l.indexOf("cod") !== -1 || l.indexOf("cash on delivery") !== -1 || l.indexOf("upi") !== -1 || l.indexOf("card") !== -1) {
 m = "explaining";
-html = "We accept UPI, Credit & Debit Cards, Net Banking, and Cash on Delivery (COD) across India. Choose your preferred payment method at checkout!";
+html = "We offer flexible, secure payment options across India:" +
+"" +
+"Cash on Delivery (COD): Available on eligible orders across India." +
+"Instant Digital Payments: UPI, Credit Cards, Debit Cards, and Net Banking." +
+"";
 } else if (l.indexOf("ship") !== -1 || l.indexOf("deliver") !== -1 || l.indexOf("free delivery") !== -1) {
 m = "explaining";
-html = 'Enjoy FREE delivery on orders above ₹999 and fast dispatch within 24–48 hours across India. See full details on Shipping Info.';
+html = "Here are our Delivery & Shipping details:" +
+"" +
+"Free Delivery: Complimentary shipping on all orders above ₹999." +
+"Fast Dispatch: Packed and shipped within 24–48 hours across India." +
+"More Info: View full shipping coverage on Shipping Info." +
+"";
 } else if (l.indexOf("return") !== -1 || l.indexOf("refund") !== -1 || l.indexOf("exchange") !== -1 || l.indexOf("warrant") !== -1) {
 m = "sorry";
-html = 'Every order includes our 7-day easy return & refund policy plus a 1-year product warranty. Visit Returns & Warranty for step-by-step help.';
+html = "Your order is protected by our ARPIARES Care promise:" +
+"" +
+"7-Day Easy Returns & Refunds: Hassle-free return pickup for unused items in original packaging." +
+"1-Year Product Warranty: Coverage against manufacturing defects." +
+"Full Policy: Read step-by-step instructions on Returns & Warranty." +
+"";
 } else if (l.indexOf("cancel") !== -1) {
 m = "working";
-html = 'Check your order status in My Orders. If your order has not shipped yet, call +91 8438358104 for immediate cancellation help.';
+html = "Need to cancel or update an order?" +
+"" +
+"Check your current status on My Orders." +
+"If it has not shipped yet, call +91 8438358104 right away for instant cancellation." +
+"";
 } else if (l.indexOf("track") !== -1 || l.indexOf("order") !== -1) {
 m = "working";
-html = 'Track live order progress (Pending → Confirmed → Shipped → Delivered) anytime on your Account & Orders page.';
+html = "Track your order in real time across 4 live stages:" +
+"" +
+"Live Stages: Pending → Confirmed → Shipped → Delivered." +
+"Where to Check: Open Account & Orders anytime." +
+"";
 } else if (l.indexOf("account") !== -1 || l.indexOf("login") !== -1 || l.indexOf("sign") !== -1 || l.indexOf("profile") !== -1 || l.indexOf("password") !== -1) {
 m = "working";
-html = 'Manage your profile, saved address, and past orders on your Account Page, or sign in from the top header on Home.';
+html = "Manage your ARPIARES account easily:" +
+"" +
+"Orders & Address: View past orders and profile details on Account Page." +
+"Sign In / Register: Use the account icon in the top header on Home." +
+"";
 } else if (l.indexOf("wishlist") !== -1 || l.indexOf("saved") !== -1 || l.indexOf("bag") !== -1 || l.indexOf("cart") !== -1) {
 m = "winking";
-html = 'View your saved favorites in Saved Collection (Wishlist) and move items straight to your shopping bag anytime!';
+html = "Keep track of pieces you love:" +
+"" +
+"Saved Items: Open Saved Collection (Wishlist) to view all hearted products." +
+"Quick Checkout: Move any wishlist item straight into your Shopping Bag in one tap." +
+"";
 } else if (l.indexOf("feedback") !== -1 || l.indexOf("review") !== -1 || l.indexOf("rate") !== -1 || l.indexOf("complaint") !== -1) {
 m = "happy";
-html = 'We would love to hear from you! Share your review or suggestion on our Customer Feedback page.';
+html = "We value every customer note! Share a product rating, delivery review, or suggestion on our Customer Feedback page.";
 } else if (l.indexOf("contact") !== -1 || l.indexOf("phone") !== -1 || l.indexOf("email") !== -1 || l.indexOf("hour") !== -1 || l.indexOf("support") !== -1 || l.indexOf("help") !== -1) {
 m = "sad";
-html = 'Our support team is available Mon–Sat, 10:00 AM – 7:00 PM IST: Phone +91 8438358104 · Email arpitagigabyte@gmail.com · Customer Feedback.';
+html = "Reach our Customer Support Team (Mon–Sat, 10:00 AM – 7:00 PM IST):" +
+"" +
+"Phone: +91 8438358104" +
+"Email: arpitagigabyte@gmail.com" +
+"Online Form: Customer Feedback" +
+"";
 } else if (l.indexOf("cheap") !== -1 || l.indexOf("affordable") !== -1 || l.indexOf("lowest") !== -1) {
 setMood("helping");
 var allCheap = await getCatalog();
@@ -389,7 +437,7 @@ var sortedCheap = allCheap.slice().sort(function (a, b) { return Number(a.price 
 m = sortedCheap.length ? "excited" : "winking";
 html = sortedCheap.length
 ? "Here are our most budget-friendly picks:" + sortedCheap.slice(0, 4).map(card).join("")
-: 'Browse all products sorted by price on the Home Catalog.';
+: "Browse all products sorted by price on the Home Catalog.";
 } else if (budgetMatch) {
 setMood("helping");
 var maxPrice = Number(budgetMatch);
@@ -400,7 +448,7 @@ m = "excited";
 html = "Found " + affordable.length + " product(s) under " + inr(maxPrice) + ":" + affordable.slice(0, 4).map(card).join("");
 } else {
 m = "sorry";
-html = "No products are currently listed under " + inr(maxPrice) + ", but explore our full range on All Products!";
+html = "No products are currently listed under " + inr(maxPrice) + ", but you can explore our full catalog on All Products!";
 }
 } else if (l.indexOf("categor") !== -1 || l.indexOf("collection") !== -1) {
 setMood("helping");
@@ -408,15 +456,15 @@ var items = await getCatalog();
 var cats = Array.from(new Set(items.map(function (p) { return p.category; }).filter(Boolean)));
 m = cats.length ? "winking" : "explaining";
 html = cats.length
-? "Available store categories: " + cats.map(esc).join(", ") + '. Explore them all on Browse Categories!'
-: 'Explore all store collections on Browse Categories.';
+? "Available store categories: " + cats.map(esc).join(", ") + ".Explore every collection on Browse Categories!"
+: "Explore all store collections on Browse Categories.";
 } else if (l.indexOf("top") !== -1 || l.indexOf("best") !== -1 || l.indexOf("recommend") !== -1 || l.indexOf("gift") !== -1 || l.indexOf("popular") !== -1) {
 setMood("helping");
 var items2 = await getCatalog();
 m = items2.length ? "excited" : "winking";
 html = items2.length
 ? "Here are our top picks for you:" + items2.slice(0, 4).map(card).join("")
-: 'Explore our featured products on the Home Page.';
+: "Explore our featured products on the Home Page.";
 } else {
 setMood("helping");
 var items3 = await getCatalog();
@@ -430,7 +478,7 @@ m = "excited";
 html = "I found " + hits.length + " matching product(s):" + hits.slice(0, 4).map(card).join("");
 } else {
 m = "confused";
-html = 'I could not find an exact match—try asking about Beauty, under 1500, COD payment, delivery, returns, or track order!';
+html = "I could not find an exact match—try asking about Beauty, under 1500, COD payment, delivery, returns, or track order!";
 }
 }
 setMood(m);
