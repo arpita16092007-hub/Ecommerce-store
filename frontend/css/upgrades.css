@@ -2199,9 +2199,8 @@ main h1 {
 
 
 /* Hide any stray Send button outside the AI Concierge widget & prevent footer right clipping */
-body > button:last-of-type,
-footer ~ button,
-footer ~ form button {
+/* Keep AI Concierge orb visible while hiding only unstyled stray Send buttons */
+footer ~ button:not(#supportLauncher):not(.support-launcher):not(.chat-launcher):not(.arpiares-avatar-orb) {
   display: none !important;
 }
 footer,
