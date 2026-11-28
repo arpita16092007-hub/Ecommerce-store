@@ -2264,3 +2264,127 @@ body [class*="category-card"] a:hover {
   transform: translateY(-2px) !important;
   box-shadow: 0 12px 24px rgba(6, 39, 29, 0.2) !important;
 }
+
+
+/* New Luxury Editorial Customer Feedback Section (v41) */
+.arpiares-fb-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 26px;
+  margin-bottom: 24px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #06271d 0%, #0d3d2e 100%);
+  border: 1.5px solid rgba(229, 193, 123, 0.45);
+  color: #fff8eb;
+  box-shadow: 0 14px 32px rgba(6, 39, 29, 0.16);
+}
+.arpiares-fb-score {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.arpiares-fb-num {
+  font: 700 34px/1 "Cormorant Garamond", Georgia, serif;
+  color: #e5c17b;
+}
+.arpiares-fb-stars {
+  color: #e5c17b;
+  letter-spacing: 2px;
+  font-size: 14px;
+}
+.arpiares-fb-meta {
+  font: 400 12.5px "DM Sans", sans-serif;
+  color: rgba(255, 248, 235, 0.82);
+}
+.arpiares-fb-cta {
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #e5c17b 0%, #d4af6a 100%);
+  color: #06271d;
+  border: 1px solid #b89149;
+  font: 700 12px "DM Sans", sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.arpiares-fb-cards {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+  gap: 22px !important;
+}
+.arpiares-patron-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 26px 24px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, #fffdf9 0%, #f6eddc 100%);
+  border: 1.5px solid rgba(200, 157, 92, 0.4);
+  box-shadow: 0 14px 30px rgba(6, 39, 29, 0.07);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.arpiares-patron-card:hover {
+  transform: translateY(-5px);
+  border-color: #c89d5c;
+  box-shadow: 0 20px 40px rgba(6, 39, 29, 0.13);
+}
+.arpiares-patron-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.arpiares-patron-stars {
+  color: #b88932;
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+.arpiares-verified-pill {
+  font: 700 10.5px "DM Sans", sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(6, 39, 29, 0.08);
+  color: #06271d;
+  border: 1px solid rgba(6, 39, 29, 0.15);
+}
+.arpiares-patron-quote {
+  font: 500 18px/1.45 "Cormorant Garamond", Georgia, serif;
+  color: #0c261d;
+  margin: 0;
+}
+.arpiares-patron-foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(200, 157, 92, 0.28);
+}
+.arpiares-patron-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #06271d;
+  color: #e5c17b;
+  border: 1.5px solid #e5c17b;
+  display: grid;
+  place-items: center;
+  font: 700 15px "Cormorant Garamond", Georgia, serif;
+  flex-shrink: 0;
+}
+.arpiares-patron-name {
+  font: 700 13.5px "DM Sans", sans-serif;
+  color: #06271d;
+}
+.arpiares-patron-sub {
+  font: 400 11.5px "DM Sans", sans-serif;
+  color: #5c6b64;
+}
