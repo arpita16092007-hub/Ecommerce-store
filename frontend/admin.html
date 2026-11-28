@@ -1,4 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ARPIARES — Admin Dashboard</title>
+  <link rel="preconnect" href="https://googleapis.com">
+  <link rel="preconnect" href="https://gstatic.com" crossorigin>
+  <link href="https://googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=44">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://w3.org' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2306271d'/><text x='50' y='68' font-size='56' text-anchor='middle' fill='%23e5c17b' font-family='Georgia,serif'>A</text></svg>">
 
-  <script src="js/arpibot.js?v=140"></script>
+  <link rel="stylesheet" href="css/upgrades.css?v=44">
+  <link rel="stylesheet" href="css/arpibot.css?v=145" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">A</span>
+      <span>ARPIARES <small>ADMIN CONSOLE</small></span>
+    </a>
+    <div class="header-actions">
+      <a class="account-button" href="index.html" style="text-decoration:none;">← Back to Home</a>
+      <button class="account-button" id="admin-logout" type="button">Logout</button>
+    </div>
+  </header>
+
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <div class="admin-brand-box">
+        <a class="brand" href="index.html" style="color:#fff4df;">
+          <span class="brand-mark">A</span>
+          <span>ARPIARES <small style="color:#d4af6a;">CONTROL ROOM</small></span>
+        </a>
+      </div>
+      <p class="sidebar-heading">MANAGEMENT</p>
+      <nav class="admin-nav-list" aria-label="Admin sections">
+        <button class="admin-nav active" data-tab="orders"><span class="nav-ico">📦</span><span>Orders</span></button>
+        <button class="admin-nav" data-tab="support"><span class="nav-ico">💬</span><span>AI Care &amp; FAQs</span></button>
+        <button class="admin-nav" data-tab="products"><span class="nav-ico">✦</span><span>Products</span></button>
+        <button class="admin-nav" data-tab="categories"><span class="nav-ico">❖</span><span>Categories</span></button>
+      </nav>
+      <div class="admin-sidebar-foot">
+        <a href="index.html" class="admin-back-store">← Back to Home</a>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <p class="eyebrow">STORE ADMINISTRATION</p>
+      <h1>ARPIARES Control Room</h1>
+      <p class="notice" id="admin-message"></p>
+
+      <div class="stat-grid">
+        <div class="stat-card"><span>✦</span><small>Active Products</small><strong id="stat-products">0</strong></div>
+        <div class="stat-card"><span>◇</span><small>Categories</small><strong id="stat-categories">0</strong></div>
+        <div class="stat-card"><span>📦</span><small>Total Stock Units</small><strong id="stat-stock">0</strong></div>
+      </div>
+
+      <section class="admin-panel" id="orders-section">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+          <h2>Customer Orders &amp; Delivery Status</h2>
+          <button type="button" class="add-button" id="refresh-orders-btn">↻ Refresh Orders</button>
+        </div>
+        <div class="admin-product-list" id="admin-orders-list" style="margin-top:14px;"></div>
+      </section>
+
+      <section class="admin-panel" id="support-section">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+          <h2>AI Support Knowledge Base &amp; Escalations</h2>
+          <button type="button" class="add-button" id="refresh-support-btn">↻ Refresh Support</button>
+        </div>
+
+        <form class="admin-form" id="faq-form">
+          <input name="title" placeholder="FAQ Topic / Document Title (e.g., Return & Refund Policy)" required>
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:#06271d;background:#fffaf2;border:1px solid #e7d8c2;border-radius:10px;padding:10px 12px;cursor:pointer;">
+            📄 Or upload a .txt / .md help file:
+            <input type="file" id="faq-file-input" accept=".txt,.md,text/plain" style="padding:0;border:0;background:transparent;">
+          </label>
+          <textarea name="content" id="faq-content-input" placeholder="Paste FAQ answer or help document text here. Longer documents are automatically chunked and embedded into vectors." required></textarea>
+          <button class="primary-button" type="submit">UPLOAD TO KNOWLEDGE BASE →</button>
+        </form>
+
+        <h3 style="font:19px 'Playfair Display';margin:22px 0 10px;">Unanswered / Escalated Customer Questions</h3>
+        <div class="admin-product-list" id="admin-unanswered-list"></div>
+
+        <h3 style="font:19px 'Playfair Display';margin:22px 0 10px;">All Customer Chat Sessions</h3>
+        <div class="admin-product-list" id="admin-chats-list"></div>
+
+        <h3 style="font:19px 'Playfair Display';margin:22px 0 10px;">Indexed FAQ Documents (<span id="stat-faqs">0</span>)</h3>
+        <div class="admin-product-list" id="admin-faq-list"></div>
+      </section>
+
+      <section class="admin-panel" id="product-section">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+          <h2 id="product-form-heading">Add a product</h2>
+          <button type="button" class="text-button hidden" id="cancel-edit-btn">✕ Cancel editing</button>
+        </div>
+
+        <form class="admin-form" id="product-form">
+          <input type="hidden" name="productId" id="edit-product-id">
+          <input name="name" placeholder="Product name" required>
+          <input name="price" type="number" min="1" step="1" placeholder="Price (INR)" required>
+          <input name="stock" type="number" min="0" step="1" placeholder="Stock quantity" required>
+          <select name="categoryId" id="admin-category-select" required><option value="">Choose category</option></select>
+
+          <div style="grid-column: 1 / -1; display: grid; gap: 10px; background: #fffaf2; border: 1px dashed #c89d5c; border-radius: 12px; padding: 14px;">
+            <label style="font-size: 12px; font-weight: 600; color: #06271d; cursor: pointer;">
+              📷 Upload Product Photos from Mac / Android (select one or multiple angles):
+              <input type="file" id="product-file-input" accept="image/*" multiple style="margin-top: 8px; padding: 8px; background: #fff;">
+            </label>
+            <input name="imageUrl" id="product-url-input" placeholder="Or enter image path / URL (e.g., images/watch-1.png or https://...)">
+            <div id="admin-image-preview" style="display: flex; gap: 10px; flex-wrap: wrap;"></div>
+          </div>
+
+          <textarea name="description" placeholder="Product description" required></textarea>
+          <button class="primary-button" id="product-submit-btn" type="submit">ADD PRODUCT →</button>
+        </form>
+
+        <h2>Current catalogue</h2>
+        <div class="admin-product-list" id="admin-product-list"></div>
+      </section>
+
+      <section class="admin-panel" id="category-section">
+        <h2>Categories</h2>
+        <form class="inline-form" id="category-form">
+          <input name="name" placeholder="New category name" required>
+          <input name="description" placeholder="Short description">
+          <button class="primary-button" type="submit">ADD CATEGORY →</button>
+        </form>
+        <div class="category-chips" id="admin-category-list"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/api.js?v=44" defer></script>
+  <script src="js/admin.js?v=44" defer></script>
+  <script src="js/icons.js?v=44" defer></script>
+  <script src="js/movable-concierge.js?v=44"></script>
+  <script src="js/arpibot.js?v=145"></script>
 </body>
 </html>

@@ -1,4 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ARPIARES — Customer Feedback &amp; Reviews</title>
+  <link rel="preconnect" href="https://googleapis.com">
+  <link rel="preconnect" href="https://gstatic.com" crossorigin>
+  <link href="https://googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=44">
+  <link rel="stylesheet" href="css/upgrades.css?v=44">
+  <link rel="stylesheet" href="css/arpibot.css?v=145" />
+</head>
+<body>
+  <div class="announcement">YOUR VOICE SHAPES ARPIARES <span>✦</span> SHARE YOUR EXPERIENCE</div>
 
-  <script src="js/arpibot.js?v=140"></script>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">A</span>
+      <span>ARPIARES <small>CUSTOMER FEEDBACK</small></span>
+    </a>
+    <div class="header-actions">
+      <a class="menu-drawer-btn" href="index.html" style="text-decoration:none;">← Back to Home</a>
+    </div>
+  </header>
+
+  <main class="cat-page-wrap">
+    <section class="cat-page-hero reveal-card is-visible">
+      <p class="eyebrow" style="color:#e5c17b;">CUSTOMER VOICE</p>
+      <h1>We value your <em>Feedback.</em></h1>
+      <p>Tell us about a product you purchased, our delivery experience, website design, or how ARPIARES Care assisted you.</p>
+    </section>
+
+    <div class="fb-page-layout">
+      <section class="admin-panel" style="margin:0;">
+        <p class="eyebrow">WRITE A REVIEW</p>
+        <h2 style="margin-top:4px;">Submit Detailed Feedback</h2>
+
+        <form id="full-feedback-form" class="stack-form" style="margin-top:14px;">
+          <div class="checkout-grid">
+            <label>Your Name
+              <input type="text" id="fb-name" required placeholder="Aarav Sharma">
+            </label>
+            <label>Email Address
+              <input type="email" id="fb-email" placeholder="you@example.com">
+            </label>
+          </div>
+
+          <div class="checkout-grid">
+            <label>Feedback Topic
+              <select id="fb-category">
+                <option value="Product">Product Quality &amp; Review</option>
+                <option value="Website">Website &amp; Shopping Experience</option>
+                <option value="Delivery">Delivery &amp; Packaging</option>
+                <option value="Support">ARPIARES Care &amp; Support</option>
+                <option value="Suggestion">New Product / Feature Suggestion</option>
+              </select>
+            </label>
+            <label>Order ID (Optional)
+              <input type="text" id="fb-order-id" placeholder="e.g. #691A58">
+            </label>
+          </div>
+
+          <label id="fb-product-wrap">Select Product (Optional)
+            <select id="fb-product-select">
+              <option value="">— General / Not specific to one product —</option>
+            </select>
+          </label>
+
+          <div>
+            <span style="display:block;font-size:12px;font-weight:700;color:var(--ink);margin-bottom:4px;">Overall Experience Rating</span>
+            <div class="star-picker" id="fb-star-picker">
+              <button type="button" class="star-btn active" data-fb-star="1">★</button>
+              <button type="button" class="star-btn active" data-fb-star="2">★</button>
+              <button type="button" class="star-btn active" data-fb-star="3">★</button>
+              <button type="button" class="star-btn active" data-fb-star="4">★</button>
+              <button type="button" class="star-btn active" data-fb-star="5">★</button>
+              <span class="star-score-label" id="fb-star-label">5 / 5</span>
+            </div>
+            <input type="hidden" id="fb-rating" value="5">
+          </div>
+
+          <label>Review Headline
+            <input type="text" id="fb-headline" placeholder="Summarize your experience in a few words…">
+          </label>
+
+          <label>Detailed Review / Feedback
+            <textarea id="fb-comment" rows="4" required placeholder="Share what you loved, product performance, delivery speed, or suggestions for improvement…"></textarea>
+          </label>
+
+          <div class="payment-options">
+            <label class="pay-option"><input type="radio" name="fbRecommend" value="yes" checked><span>✓ Yes, I recommend ARPIARES</span></label>
+            <label class="pay-option"><input type="radio" name="fbRecommend" value="no"><span>Needs improvement</span></label>
+          </div>
+
+          <button type="submit" class="primary-button">SUBMIT FEEDBACK →</button>
+          <p class="form-message" id="fb-form-message"></p>
+        </form>
+      </section>
+
+      <section class="admin-panel" style="margin:0;">
+        <p class="eyebrow">COMMUNITY REVIEWS</p>
+        <h2 style="margin-top:4px;">Recent Customer Feedback</h2>
+        <div id="community-feedback-list" style="display:grid;gap:12px;margin-top:14px;">
+          <p class="muted">Loading recent customer feedback…</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="arp-clean-footer">
+    <div class="arp-clean-footer-inner">
+      <div class="arp-clean-footer-grid">
+        <div class="arp-clean-col">
+          <a class="brand footer-brand" href="index.html">
+            <span class="brand-mark">A</span>
+            <span>ARPIARES <small>SHOP · EXPLORE · CONQUER</small></span>
+          </a>
+          <p class="arp-clean-desc">A little luxury, every day. Thoughtfully handpicked essentials and timeless lifestyle pieces delivered across India.</p>
+        </div>
+
+        <div class="arp-clean-col">
+          <h4>EXPLORE</h4>
+          <ul>
+            <li><a href="index.html#catalog">All Products</a></li>
+            <li><a href="categories.html">Browse Categories</a></li>
+            <li><a href="wishlist.html">Saved Collection</a></li>
+            <li><a href="feedback.html">Customer Feedback</a></li>
+          </ul>
+        </div>
+
+        <div class="arp-clean-col">
+          <h4>CUSTOMER CARE</h4>
+          <ul>
+            <li><a href="#" data-footer-care="">24/7 AI Store Assistant</a></li>
+            <li><a href="care.html#shipping">Shipping &amp; Free Delivery (&gt; ₹999)</a></li>
+            <li><a href="care.html#returns">7-Day Easy Returns &amp; Refunds</a></li>
+            <li><a href="care.html#warranty">1-Year Product Warranty</a></li>
+          </ul>
+        </div>
+
+        <div class="arp-clean-col">
+          <h4>CONTACT US</h4>
+          <ul>
+            <li><a href="tel:+918438358104">+91 8438358104</a></li>
+            <li><a href="mailto:arpitagigabyte@gmail.com">arpitagigabyte@gmail.com</a></li>
+            <li class="arp-clean-muted">Mon – Sat · 10:00 AM – 7:00 PM IST</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="arp-clean-bottom">
+        <span>© 2026 ARPIARES. All rights reserved.</span>
+        <span>UPI · Cards · Net Banking · Cash on Delivery</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/api.js?v=44" defer></script>
+  <script src="js/feedback.js?v=44" defer></script>
+  <script src="js/icons.js?v=44" defer></script>
+  <script src="js/movable-concierge.js?v=44"></script>
+  <script src="js/arpibot.js?v=145"></script>
 </body>
 </html>
