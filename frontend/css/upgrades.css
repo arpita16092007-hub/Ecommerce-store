@@ -1553,3 +1553,77 @@ footer.arp-clean-footer {
 .arp-toast-close:hover {
   color: #ffffff;
 }
+
+/* Redesigned Architectural Admin Sidebar (admin.html) */
+.admin-sidebar {
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #06271d 0%, #041912 100%) !important;
+  border-right: 1px solid rgba(200, 157, 92, 0.35);
+  padding: 26px 18px !important;
+}
+.admin-brand-box {
+  padding-bottom: 18px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid rgba(229, 193, 123, 0.18);
+}
+.admin-nav-list {
+  display: grid;
+  gap: 6px;
+}
+.admin-sidebar .admin-nav {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 11px !important;
+  width: 100%;
+  text-align: left !important;
+  padding: 11px 14px !important;
+  margin: 0 !important;
+  border-radius: 12px !important;
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  color: #e6d7be !important;
+  font: 500 13.5px "DM Sans", sans-serif !important;
+  white-space: nowrap;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+.admin-sidebar .admin-nav .nav-ico {
+  width: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #d4af6a;
+  flex-shrink: 0;
+}
+.admin-sidebar .admin-nav:hover {
+  background: rgba(255, 250, 242, 0.07) !important;
+  color: #ffffff !important;
+  transform: translateX(2px);
+}
+.admin-sidebar .admin-nav.active {
+  background: linear-gradient(90deg, rgba(229, 193, 123, 0.2) 0%, rgba(229, 193, 123, 0.08) 100%) !important;
+  color: #f7d9a3 !important;
+  border-color: rgba(229, 193, 123, 0.45) !important;
+  box-shadow: inset 3px 0 0 #e5c17b;
+  font-weight: 700 !important;
+}
+.admin-sidebar-foot {
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid rgba(229, 193, 123, 0.18);
+}
+.admin-back-store {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(229, 193, 123, 0.35);
+  color: #f4d399;
+  font: 600 12px "DM Sans", sans-serif;
+  transition: background 0.2s;
+}
+.admin-back-store:hover {
+  background: rgba(229, 193, 123, 0.14);
+}
