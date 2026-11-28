@@ -2196,3 +2196,21 @@ main h1 {
   opacity: 0 !important;
   pointer-events: none !important;
 }
+
+
+/* Hide any stray Send button outside the AI Concierge widget & prevent footer right clipping */
+body > button:last-of-type,
+footer ~ button,
+footer ~ form button {
+  display: none !important;
+}
+footer,
+.site-footer {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow-x: hidden !important;
+}
+footer * {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
