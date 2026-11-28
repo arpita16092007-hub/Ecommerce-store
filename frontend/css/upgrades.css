@@ -2624,3 +2624,45 @@ body [class*="category-card"] a:hover {
     border-bottom: 1px solid rgba(229, 193, 123, 0.3);
   }
 }
+
+/* Clean 2-Column Input Grid & Spacing Inside Feedback Form Body (v54) */
+.arpiares-fb-body form {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+}
+.arpiares-fb-body form > div {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+  gap: 14px !important;
+  align-items: end !important;
+}
+.arpiares-fb-body label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font: 600 12.5px "DM Sans", sans-serif;
+  color: #06271d;
+}
+.arpiares-fb-body input[type="text"],
+.arpiares-fb-body input[type="email"],
+.arpiares-fb-body select,
+.arpiares-fb-body textarea {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Strictly 1 Patron Desk + 1 Form Column (v54) */
+.arpiares-fb-split {
+  display: grid !important;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+.arpiares-fb-aside { min-width: 0 !important; }
+.arpiares-fb-body { min-width: 0 !important; }
+@media (max-width: 860px) {
+  .arpiares-fb-split { grid-template-columns: 1fr !important; }
+}
