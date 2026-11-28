@@ -484,3 +484,43 @@ window.location.href = "index.html";
 });
 checkAdminAccess();
 loadAdmin();
+
+
+/* Bulletproof Admin Sidebar Navigation Fix */
+document.addEventListener("DOMContentLoaded", () => {
+  const navBtns = Array.from(document.querySelectorAll(".admin-sidebar .admin-nav"));
+  const sectionMap = {
+    orders: ["adminOrdersBody", "ordersTable", "Customer Orders"],
+    support: ["adminSupportBody", "supportFaqList", "AI Support", "AI Care"],
+    products: ["adminProductsBody", "productForm", "Products"],
+    categories: ["adminCategoriesBody", "categoryForm", "Categories"]
+  };
+
+  function findSectionElement(tab) {
+    const hints = sectionMap[tab] || [];
+    for (const hint of hints) {
+      const byId = document.getElementById(hint);
+      if (byId) return byId.closest(".admin-card, section") || byId;
+      const headings = Array.from(document.querySelectorAll(".admin-main h2, .admin-main h3"));
+      const match = headings.find((h) => h.textContent.toLowerCase().includes(hint.toLowerCase()));
+      if (match) return match.closest(".admin-card, section") || match;
+    }
+    return null;
+  }
+
+  navBtns.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      navBtns.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      const tab = btn.dataset.tab;
+      const target = findSectionElement(tab);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+        target.style.transition = "box-shadow 0.35s ease";
+        target.style.boxShadow = "0 0 0 2px #d4af6a, 0 18px 36px rgba(6, 39, 29, 0.12)";
+        setTimeout(() => { target.style.boxShadow = ""; }, 1400);
+      }
+    });
+  });
+});
