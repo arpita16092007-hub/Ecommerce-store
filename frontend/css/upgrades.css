@@ -2213,3 +2213,54 @@ footer * {
   max-width: 100%;
   overflow-wrap: anywhere;
 }
+
+
+/* High-Specificity Fix for Category Card Bottom Pill Button & Text */
+body #categoryShowcase button,
+body #categoryShowcase a,
+body .category-grid button,
+body .category-grid a,
+body .categories-grid button,
+body .categories-grid a,
+body [id*="category"] article button,
+body [id*="category"] article a,
+body [class*="category-card"] button,
+body [class*="category-card"] a,
+body [class*="collection-card"] button,
+body [class*="collection-card"] a {
+  background: linear-gradient(135deg, #e5c17b 0%, #d4af6a 100%) !important;
+  background-color: #e5c17b !important;
+  color: #06271d !important;
+  border: 1.5px solid #b89149 !important;
+  font: 700 13.5px/1.2 "DM Sans", sans-serif !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  min-height: 46px !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  box-shadow: 0 8px 20px rgba(6, 39, 29, 0.14) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease !important;
+}
+body #categoryShowcase button *,
+body #categoryShowcase a *,
+body .category-grid button *,
+body .category-grid a *,
+body [class*="category-card"] button *,
+body [class*="category-card"] a * {
+  color: #06271d !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  font-size: 13.5px !important;
+}
+body #categoryShowcase button:hover,
+body #categoryShowcase a:hover,
+body [class*="category-card"] button:hover,
+body [class*="category-card"] a:hover {
+  background: linear-gradient(135deg, #f2d497 0%, #e0be7c 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 12px 24px rgba(6, 39, 29, 0.2) !important;
+}

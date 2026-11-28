@@ -147,3 +147,34 @@
   }
   setTimeout(setupBot, 500);
 })();
+
+
+/* Ensure Category Card Bottom Buttons Always Have Clear Gold Styling & Label Text */
+(function fixCategoryCardButtons() {
+  function applyFix() {
+    const cards = document.querySelectorAll(
+      "#categoryShowcase > *, .category-grid > *, .categories-grid > *, [class*='category-card'], [class*='collection-card']"
+    );
+    cards.forEach((card) => {
+      const title = (card.querySelector("h2, h3, h4")?.textContent || "Collection").trim();
+      const btns = card.querySelectorAll("button, a[role='button'], a.btn, a:last-of-type");
+      btns.forEach((btn) => {
+        btn.style.setProperty("background", "linear-gradient(135deg, #e5c17b 0%, #d4af6a 100%)", "important");
+        btn.style.setProperty("color", "#06271d", "important");
+        btn.style.setProperty("border", "1.5px solid #b89149", "important");
+        btn.style.setProperty("font-weight", "700", "important");
+        btn.style.setProperty("opacity", "1", "important");
+        btn.style.setProperty("visibility", "visible", "important");
+        if (!btn.textContent.trim()) {
+          btn.textContent = "Explore " + title + " →";
+        }
+      });
+    });
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", applyFix);
+  } else {
+    applyFix();
+  }
+  setTimeout(applyFix, 700);
+})();
