@@ -1952,3 +1952,178 @@ main h1 {
   color: rgba(200, 157, 92, 0.28);
   pointer-events: none;
 }
+
+/* Modern Movable ARPIARES AI Concierge Widget */
+#supportLauncher,
+.support-launcher,
+.chat-launcher,
+[id*="chatToggle"],
+[id*="supportBtn"] {
+  position: fixed !important;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9998 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 13px 20px !important;
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, #06271d 0%, #0d3d2e 100%) !important;
+  color: #fff6e5 !important;
+  border: 1.5px solid #e5c17b !important;
+  box-shadow: 0 14px 34px rgba(6, 39, 29, 0.34), 0 0 0 1px rgba(229, 193, 123, 0.2) !important;
+  font: 600 13px "DM Sans", sans-serif !important;
+  letter-spacing: 0.04em !important;
+  cursor: grab !important;
+  user-select: none !important;
+  touch-action: none !important;
+}
+#supportLauncher:active,
+.support-launcher:active,
+.chat-launcher:active {
+  cursor: grabbing !important;
+}
+
+#supportWidget,
+.support-widget,
+.chat-widget,
+.chat-box,
+[id*="supportPanel"],
+[id*="chatWindow"] {
+  position: fixed !important;
+  bottom: 88px;
+  right: 24px;
+  z-index: 9999 !important;
+  width: min(390px, calc(100vw - 28px)) !important;
+  max-height: min(560px, calc(100vh - 110px)) !important;
+  border-radius: 24px !important;
+  background: #faf5eb !important;
+  border: 1.5px solid rgba(200, 157, 92, 0.55) !important;
+  box-shadow: 0 26px 60px rgba(4, 25, 18, 0.32) !important;
+  overflow: hidden !important;
+  display: flex;
+  flex-direction: column;
+}
+
+#supportWidget .chat-head,
+#supportWidget .support-head,
+#supportWidget header,
+.support-widget header,
+.chat-widget header,
+.chat-box-header {
+  background: linear-gradient(135deg, #06271d 0%, #0c3b2c 100%) !important;
+  color: #fff6e5 !important;
+  padding: 16px 18px !important;
+  border-bottom: 1px solid rgba(229, 193, 123, 0.35) !important;
+  cursor: grab !important;
+  user-select: none !important;
+  touch-action: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+.arpiares-bot-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 600 10.5px "DM Sans", sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #e5c17b;
+}
+.arpiares-bot-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 8px #4ade80;
+}
+
+#supportMessages,
+.support-messages,
+.chat-messages,
+.chat-body {
+  background: #faf5eb !important;
+  padding: 16px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  overflow-y: auto !important;
+  font: 400 13.5px/1.55 "DM Sans", sans-serif !important;
+}
+#supportMessages .msg.bot,
+#supportMessages .bot-msg,
+.chat-messages .bot,
+.support-messages > div:not(.user):not(.is-user) {
+  align-self: flex-start !important;
+  max-width: 86% !important;
+  background: #fffdf9 !important;
+  color: #162620 !important;
+  border: 1px solid rgba(200, 157, 92, 0.38) !important;
+  border-radius: 18px 18px 18px 4px !important;
+  padding: 12px 15px !important;
+}
+#supportMessages .msg.user,
+#supportMessages .user-msg,
+.chat-messages .user,
+.support-messages > div.user,
+.support-messages > div.is-user {
+  align-self: flex-end !important;
+  max-width: 82% !important;
+  background: linear-gradient(135deg, #06271d 0%, #0d3d2e 100%) !important;
+  color: #fff8eb !important;
+  border: 1px solid rgba(229, 193, 123, 0.4) !important;
+  border-radius: 18px 18px 4px 18px !important;
+  padding: 11px 15px !important;
+}
+
+.arpiares-quick-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 14px 4px;
+  background: #faf5eb;
+  border-top: 1px solid rgba(6, 39, 29, 0.07);
+}
+.arpiares-quick-chip {
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid rgba(200, 157, 92, 0.45);
+  background: #fffdf8;
+  color: #06271d;
+  font: 600 11.5px "DM Sans", sans-serif;
+  cursor: pointer;
+}
+.arpiares-quick-chip:hover {
+  background: #06271d;
+  color: #f7d9a3;
+}
+#supportForm,
+.support-form,
+.chat-form {
+  background: #fffdf9 !important;
+  border-top: 1px solid rgba(200, 157, 92, 0.3) !important;
+  padding: 10px 12px !important;
+  display: flex !important;
+  gap: 8px !important;
+}
+#supportForm input,
+.support-form input,
+.chat-form input {
+  flex: 1 !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(6, 39, 29, 0.18) !important;
+  background: #faf5eb !important;
+  padding: 10px 14px !important;
+  color: #06271d !important;
+}
+#supportForm button[type="submit"],
+.support-form button,
+.chat-form button[type="submit"] {
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, #e5c17b 0%, #d4af6a 100%) !important;
+  color: #06271d !important;
+  border: 1px solid #b89149 !important;
+  font: 700 12.5px "DM Sans", sans-serif !important;
+  padding: 9px 16px !important;
+}
