@@ -1690,3 +1690,37 @@ html, body {
     position: static !important;
   }
 }
+
+
+/* Fix Sidebar Empty Gap & Order Card Right-Edge Text Clipping */
+.admin-shell {
+  align-items: stretch !important;
+}
+.admin-sidebar {
+  position: relative !important;
+  height: auto !important;
+  min-height: 100vh !important;
+  align-self: stretch !important;
+  justify-content: flex-start !important;
+}
+.admin-sidebar-foot {
+  margin-top: 24px !important;
+  padding-top: 18px !important;
+  border-top: 1px solid rgba(229, 193, 123, 0.22);
+}
+.admin-card,
+.admin-card > div,
+.order-item,
+.order-row,
+[id*="Orders"] > div {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+}
+.admin-card table {
+  min-width: 0 !important;
+  width: 100% !important;
+  table-layout: auto !important;
+}
