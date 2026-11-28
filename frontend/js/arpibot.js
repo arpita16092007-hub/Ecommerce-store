@@ -1,29 +1,37 @@
 (function () {
   var STATES = {
-    welcome:    { img: "images/arpibot/welcome.png",    pill: "Online - Atelier Concierge",   label: "Welcome" },
-    helping:    { img: "images/arpibot/helping.png",    pill: "Curating - Searching catalog", label: "Helping" },
-    thinking:   { img: "images/arpibot/thinking.png",   pill: "Checking - Atelier archive",   label: "Thinking" },
-    explaining: { img: "images/arpibot/explaining.png", pill: "Guidance - Store & care",      label: "Explaining" },
-    happy:      { img: "images/arpibot/happy.png",      pill: "Delighted - At your service",  label: "Happy" },
-    excited:    { img: "images/arpibot/excited.png",    pill: "Curated - Standout pieces",    label: "Excited" },
-    winking:    { img: "images/arpibot/winking.png",    pill: "Stylist Note - Insider pick",  label: "Pro Tip" },
-    working:    { img: "images/arpibot/working.png",    pill: "Tracking - Order & bag desk",  label: "Working" },
-    confused:   { img: "images/arpibot/confused.png",   pill: "Clarify - Tell me more",       label: "Clarify" },
-    sorry:      { img: "images/arpibot/sorry.png",      pill: "Care - 14-day guarantee",      label: "Sorry" },
-    sad:        { img: "images/arpibot/sad.png",        pill: "Patron Care - Here for you",   label: "Support" },
-    bye:        { img: "images/arpibot/bye.png",        pill: "Farewell - Until next time",   label: "Bye" }
+    welcome:    { img: "images/arpibot/welcome.png",    pill: "Online • Ready to help",      label: "Welcome" },
+    helping:    { img: "images/arpibot/helping.png",    pill: "Searching • Store catalog",   label: "Helping" },
+    thinking:   { img: "images/arpibot/thinking.png",   pill: "Checking • Store details",    label: "Thinking" },
+    explaining: { img: "images/arpibot/explaining.png", pill: "Guide • Store policies",      label: "Explaining" },
+    happy:      { img: "images/arpibot/happy.png",      pill: "Happy • Glad to assist",      label: "Happy" },
+    excited:    { img: "images/arpibot/excited.png",    pill: "Found • Great picks for you", label: "Excited" },
+    winking:    { img: "images/arpibot/winking.png",    pill: "Tip • Smart shopping pick",   label: "Pro Tip" },
+    working:    { img: "images/arpibot/working.png",    pill: "Checking • Orders & account", label: "Working" },
+    confused:   { img: "images/arpibot/confused.png",   pill: "Clarify • Tell me more",      label: "Clarify" },
+    sorry:      { img: "images/arpibot/sorry.png",      pill: "Care • Easy returns & help",  label: "Sorry" },
+    sad:        { img: "images/arpibot/sad.png",        pill: "Support • Here for you",      label: "Support" },
+    bye:        { img: "images/arpibot/bye.png",        pill: "Goodbye • Come back soon!",   label: "Bye" }
   };
 
   var MOODS = ["welcome", "helping", "thinking", "explaining", "happy", "excited", "winking", "working", "confused", "sorry", "sad", "bye"];
 
+  var HELP_TILES = [
+    { label: "🛍️ Top Products",    q: "Show me your top products" },
+    { label: "📂 All Categories",  q: "What categories do you have?" },
+    { label: "💰 Under ₹1500",     q: "Show products under 1500" },
+    { label: "📦 Track My Order",  q: "How do I track my order?" },
+    { label: "🚚 Shipping & COD",  q: "Tell me about shipping, delivery, and COD payment" },
+    { label: "🔄 Returns & Care",  q: "What is your return, refund, and warranty policy?" }
+  ];
+
   var PROMPTS = [
-    { label: "✦ Bestsellers",     q: "Show me your top products" },
-    { label: "◈ Collections",     q: "What categories do you have?" },
-    { label: "🎁 Gift Ideas",     q: "Suggest a luxury gift under 2000" },
-    { label: "✧ Express Delivery",q: "Tell me about shipping and delivery" },
-    { label: "↺ 14-Day Care",     q: "What is your return and warranty policy?" },
-    { label: "⌖ Track Order",     q: "How do I track my order?" },
-    { label: "☎ Contact & Hours", q: "How can I contact ARPIARES support?" }
+    { label: "💳 Payment & COD",   q: "What payment methods and COD options do you accept?" },
+    { label: "🎁 Gift Ideas",      q: "Suggest nice gift ideas" },
+    { label: "❤️ My Wishlist",     q: "How do I view my saved wishlist items?" },
+    { label: "👤 Account & Login", q: "How do I sign up, login, or check my profile?" },
+    { label: "📝 Give Feedback",   q: "Where can I submit a product review or feedback?" },
+    { label: "📞 Contact Support", q: "How can I contact customer support?" }
   ];
 
   var catalog = null;
@@ -55,10 +63,11 @@
 
   function card(p) {
     var href = p._id ? "index.html?product=" + encodeURIComponent(p._id) + "#catalog" : "index.html#catalog";
+    var stockTxt = typeof p.stock === "number" ? (p.stock > 0 ? "In stock (" + p.stock + ")" : "Out of stock") : "Available";
     return (
       '<a class="arp-product-hit" href="' + href + '" style="text-decoration:none;color:inherit;">' +
         '<span><strong>' + esc(p.name) + '</strong><br>' +
-        '<small style="color:#6b7a72;">' + esc(p.category || "ARPIARES") + ' · Tap to view →</small></span>' +
+        '<small style="color:#6b7a72;">' + esc(p.category || "ARPIARES") + ' · ' + stockTxt + '</small></span>' +
         '<strong style="color:#07261c;">' + inr(p.price) + '</strong>' +
       '</a>'
     );
@@ -141,7 +150,7 @@
         target.style.top = c.top + "px";
       });
 
-      function finishPointer(e) {
+      function finishPointer() {
         if (activeEl !== target) return;
         var wasDrag = dragged;
         if (captured && activeHandle && activeHandle.releasePointerCapture) {
@@ -196,11 +205,11 @@
     dock.innerHTML =
       '<div id="arpChatBubbleTip">' +
         '<button id="arpTipDismiss" type="button" aria-label="Dismiss tip">&times;</button>' +
-        '<span class="arp-tip-eyebrow" style="display:inline-flex;align-items:center;gap:5px;">' +
-          '<img src="images/arpibot/chat-bubble.png" alt="" style="width:14px;height:14px;object-fit:contain;" /> Atelier Concierge' +
+        '<span class="arp-tip-eyebrow">' +
+          '<img src="images/arpibot/chat-bubble.png" alt="" style="width:14px;height:14px;object-fit:contain;" /> ARPIARES Assistant' +
         '</span>' +
-        '<strong>Tap to open ArpiBot</strong>' +
-        'Personal shopping, gifts, tracking &amp; store care.' +
+        '<strong>Hi! Need any help?</strong>' +
+        'Ask about products, prices, delivery, orders &amp; returns.' +
       '</div>' +
       '<button id="arpUniversalOrb" type="button" aria-label="Open ArpiBot">' +
         '<img src="images/arpibot/chat-icon.png" alt="ArpiBot" />' +
@@ -209,6 +218,10 @@
     var moodBtns = MOODS.map(function (k) {
       var cls = k === "welcome" ? "arp-ab-btn active" : "arp-ab-btn";
       return '<button type="button" class="' + cls + '" data-mood="' + k + '">' + STATES[k].label + '</button>';
+    }).join("");
+
+    var tilesHtml = HELP_TILES.map(function (t) {
+      return '<button type="button" class="arp-help-tile" data-q="' + esc(t.q) + '">' + esc(t.label) + '</button>';
     }).join("");
 
     var chipBtns = PROMPTS.map(function (p) {
@@ -220,27 +233,28 @@
     drawer.innerHTML =
       '<div class="arp-ab-head">' +
         '<div class="arp-ab-stage">' +
-          '<div class="arp-ab-ring"><img id="arpStageImg" src="images/arpibot/welcome.png" alt="ArpiBot" /></div>' +
-          '<div>' +
-            '<span class="arp-ab-eyebrow">✦ ARPIARES Private Client</span>' +
-            '<span class="arp-ab-title">ArpiBot Concierge</span>' +
-            '<span id="arpStagePill" class="arp-ab-pill">Online - Atelier Concierge</span>' +
-          '</div>' +
-        '</div>' +
-        '<button id="arpDrawerClose" class="arp-ab-close" type="button" aria-label="Close">&times;</button>' +
-      '</div>' +
-      '<div class="arp-ab-bar" id="arpMoodBar">' + moodBtns + '</div>' +
-      '<div id="arpFeed" class="arp-u-feed">' +
-        '<div class="arp-welcome-card">' +
-'✦ Welcome to the Atelier' +
-'How may I assist your visit today?' +
-'I can help you find products, filter by budget, explore Beauty & curated collections, check your Wishlist & Orders, or answer delivery & return questions.' +
+'' +
+'' +
+'✦ ARPIARES Store Assistant' +
+'ArpiBot' +
+'Online • Ready to help' +
+'' +
+'' +
+'×' +
+'' +
+'' + moodBtns + '' +
+'' +
+'' +
+'✦ Welcome to ARPIARES' +
+'Hi! I am ArpiBot — how can I help you?' +
+'From finding the right product or budget deal to checking delivery, payments, returns, or your order status—tap any topic below or type your question:' +
+'' + tilesHtml + '' +
 '' +
 '' +
 '' + chipBtns + '' +
 '' +
 '' +
-'Ask' +
+'Send' +
 '';
 document.body.appendChild(dock);
 document.body.appendChild(drawer);
@@ -314,30 +328,50 @@ setMood("thinking");
 var l = q.toLowerCase();
 var html = "";
 var m = "happy";
-var budgetMatch = l.match(/(?:under|below|less than)\s*(?:rs.?|inr|₹)?\s*(\d+)/);
+var budgetMatch = l.match(/(?:under|below|less than|within|budget)\s*(?:rs.?|inr|₹)?\s*(\d+)/);
 if (l === "hi" || l === "hello" || l === "hey" || l === "namaste" || l.indexOf("hello ") === 0 || l.indexOf("hi ") === 0) {
 m = "welcome";
-html = "Welcome to ARPIARES! Ask me for product picks, items under a budget (e.g. under 1500), categories, or order help.";
+html = "Hello! I am ArpiBot. Ask me anything—from finding products or budget deals (e.g. under 1500) to delivery, COD, returns, or order tracking!";
 } else if (l.indexOf("bye") !== -1 || l.indexOf("thank") !== -1) {
 m = l.indexOf("thank") !== -1 ? "happy" : "bye";
 html = l.indexOf("thank") !== -1
-? "Always a pleasure—let me know whenever you would like another curated recommendation!"
-: "Farewell! The ARPIARES Atelier is always here whenever you return.";
-} else if (l.indexOf("contact") !== -1 || l.indexOf("phone") !== -1 || l.indexOf("email") !== -1 || l.indexOf("hour") !== -1 || l.indexOf("support") !== -1) {
-m = "sad";
-html = 'Reach our Patron Care team Mon–Sat (10 AM – 7 PM IST) at +91 8438358104, arpitagigabyte@gmail.com, or via Customer Feedback.';
-} else if (l.indexOf("wishlist") !== -1 || l.indexOf("saved") !== -1) {
-m = "winking";
-html = 'Your saved pieces are waiting in your Saved Collection (Wishlist)—you can move any item straight to your shopping bag there.';
-} else if (l.indexOf("ship") !== -1 || l.indexOf("deliver") !== -1) {
+? "You are very welcome! Let me know if you need help with anything else."
+: "Goodbye! Thanks for visiting ARPIARES—come back anytime.";
+} else if (l.indexOf("payment") !== -1 || l.indexOf("cod") !== -1 || l.indexOf("cash on delivery") !== -1 || l.indexOf("upi") !== -1 || l.indexOf("card") !== -1) {
 m = "explaining";
-html = 'Enjoy free insured delivery on orders above ₹999, dispatched within 24–48 hours across India. See full details on Shipping Care.';
+html = "We support UPI, Credit & Debit Cards, Net Banking, and Cash on Delivery (COD) across India. Just choose your preferred method at checkout!";
+} else if (l.indexOf("ship") !== -1 || l.indexOf("deliver") !== -1 || l.indexOf("free delivery") !== -1) {
+m = "explaining";
+html = 'We offer FREE delivery on orders above ₹999 and fast dispatch within 24–48 hours across India. Full details are on Shipping Info.';
 } else if (l.indexOf("return") !== -1 || l.indexOf("refund") !== -1 || l.indexOf("exchange") !== -1 || l.indexOf("warrant") !== -1) {
 m = "sorry";
-html = 'Every ARPIARES order includes our 7-day easy return & refund policy plus a 1-year product warranty. Read more on ARPIARES Care.';
-} else if (l.indexOf("track") !== -1 || l.indexOf("order") !== -1 || l.indexOf("account") !== -1) {
+html = 'Every purchase is backed by our 7-day easy return & refund policy and a 1-year product warranty. Visit Returns & Warranty for step-by-step help.';
+} else if (l.indexOf("cancel") !== -1) {
 m = "working";
-html = 'Track live order stages (Pending → Confirmed → Shipped → Delivered) anytime on your Account & Orders page.';
+html = 'You can check your order status in My Orders. If your order has not shipped yet, contact us at +91 8438358104 for immediate cancellation help.';
+} else if (l.indexOf("track") !== -1 || l.indexOf("order") !== -1) {
+m = "working";
+html = 'Check live order progress (Pending → Confirmed → Shipped → Delivered) anytime on your Account & Orders page.';
+} else if (l.indexOf("account") !== -1 || l.indexOf("login") !== -1 || l.indexOf("sign") !== -1 || l.indexOf("profile") !== -1 || l.indexOf("password") !== -1) {
+m = "working";
+html = 'Manage your profile, saved address, and past orders on your Account Page, or use the Sign In button in the top header on Home.';
+} else if (l.indexOf("wishlist") !== -1 || l.indexOf("saved") !== -1 || l.indexOf("bag") !== -1 || l.indexOf("cart") !== -1) {
+m = "winking";
+html = 'View your saved favorites in Saved Collection (Wishlist) and move items straight to your shopping bag anytime!';
+} else if (l.indexOf("feedback") !== -1 || l.indexOf("review") !== -1 || l.indexOf("rate") !== -1 || l.indexOf("complaint") !== -1) {
+m = "happy";
+html = 'We would love to hear from you! Share your review or suggestion on our Customer Feedback page.';
+} else if (l.indexOf("contact") !== -1 || l.indexOf("phone") !== -1 || l.indexOf("email") !== -1 || l.indexOf("hour") !== -1 || l.indexOf("support") !== -1 || l.indexOf("help") !== -1) {
+m = "sad";
+        html = "Our support team is available Mon-Sat (10 AM - 7 PM IST): +91 8438358104 or arpitagigabyte@gmail.com";
+} else if (l.indexOf("cheap") !== -1 || l.indexOf("affordable") !== -1 || l.indexOf("lowest") !== -1) {
+setMood("helping");
+var allCheap = await getCatalog();
+var sortedCheap = allCheap.slice().sort(function (a, b) { return Number(a.price || 0) - Number(b.price || 0); });
+m = sortedCheap.length ? "excited" : "winking";
+html = sortedCheap.length
+? "Here are our most budget-friendly picks:" + sortedCheap.slice(0, 4).map(card).join("")
+: 'Browse all products sorted by price on the Home Catalog.';
 } else if (budgetMatch) {
 setMood("helping");
 var maxPrice = Number(budgetMatch);
@@ -345,10 +379,10 @@ var allItems = await getCatalog();
 var affordable = allItems.filter(function (p) { return Number(p.price || 0) <= maxPrice; });
 if (affordable.length) {
 m = "excited";
-html = "Here are curated ARPIARES pieces under " + inr(maxPrice) + ":" + affordable.slice(0, 4).map(card).join("");
+html = "Found " + affordable.length + " product(s) under " + inr(maxPrice) + ":" + affordable.slice(0, 4).map(card).join("");
 } else {
 m = "sorry";
-html = "We do not currently have items under <strong>" + inr(maxPrice) + "</strong>, but explore our full collection on <a href='index.html#catalog'>All Products</a>!";
+html = "No products are currently listed under " + inr(maxPrice) + ", but you can explore our full range on All Products!";
 }
 } else if (l.indexOf("categor") !== -1 || l.indexOf("collection") !== -1) {
 setMood("helping");
@@ -356,15 +390,15 @@ var items = await getCatalog();
 var cats = Array.from(new Set(items.map(function (p) { return p.category; }).filter(Boolean)));
 m = cats.length ? "winking" : "explaining";
 html = cats.length
-? "Our live Atelier collections: " + cats.map(esc).join(", ") + '. Explore them all on Browse Categories!'
-: 'Explore all curated collections on Browse Categories.';
-} else if (l.indexOf("top") !== -1 || l.indexOf("best") !== -1 || l.indexOf("recommend") !== -1 || l.indexOf("gift") !== -1) {
+? "Available store categories: " + cats.map(esc).join(", ") + '. Explore them all on Browse Categories!'
+: 'Explore all store collections on Browse Categories.';
+} else if (l.indexOf("top") !== -1 || l.indexOf("best") !== -1 || l.indexOf("recommend") !== -1 || l.indexOf("gift") !== -1 || l.indexOf("popular") !== -1) {
 setMood("helping");
 var items2 = await getCatalog();
 m = items2.length ? "excited" : "winking";
 html = items2.length
-? "Here are our standout Atelier picks right now:" + items2.slice(0, 4).map(card).join("")
-: 'Explore our featured collection on the Home Gallery.';
+? "Here are our top picks for you:" + items2.slice(0, 4).map(card).join("")
+: 'Explore our featured products on the Home Page.';
 } else {
 setMood("helping");
 var items3 = await getCatalog();
@@ -375,10 +409,10 @@ return terms.some(function (t) { return h.indexOf(t) !== -1; });
 });
 if (hits.length) {
 m = "excited";
-html = "I found " + hits.length + " matching piece(s) in our Atelier:" + hits.slice(0, 4).map(card).join("");
+html = "I found " + hits.length + " matching product(s):" + hits.slice(0, 4).map(card).join("");
 } else {
 m = "confused";
-html = 'I could not find an exact match for that keyword—try searching a category like Beauty, a budget like under 2000, or tap a quick action below!';
+html = 'I could not find an exact match for that—try asking about Beauty, under 1500, COD payment, delivery, returns, or track order!';
 }
 }
 setMood(m);

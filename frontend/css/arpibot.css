@@ -1,4 +1,4 @@
-/* ArpiBot Luxury Atelier Concierge Stylesheet */
+/* ArpiBot Friendly Store Assistant Stylesheet */
 #arpBotDock {
   position: fixed;
   bottom: 24px;
@@ -13,15 +13,15 @@
 
 #arpChatBubbleTip {
   position: relative;
-  background: linear-gradient(160deg, #fffcf5 0%, #f7ebd4 100%);
+  background: linear-gradient(160deg, #fffdf9 0%, #f6ebd5 100%);
   color: #142820;
   border: 1.5px solid #cfa55b;
   border-radius: 22px 22px 4px 22px;
-  padding: 12px 28px 12px 16px;
+  padding: 12px 30px 12px 16px;
   box-shadow: 0 16px 36px rgba(4, 25, 18, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.85);
   font: 400 12.5px/1.4 "DM Sans", sans-serif;
   cursor: pointer;
-  max-width: 228px;
+  max-width: 235px;
   transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
 
@@ -31,17 +31,19 @@
 }
 
 #arpChatBubbleTip .arp-tip-eyebrow {
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   font: 700 9.5px/1 "DM Sans", sans-serif;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #9a6f28;
+  color: #8f6520;
   margin-bottom: 4px;
 }
 
 #arpChatBubbleTip strong {
   display: block;
-  font: italic 700 16.5px/1.15 "Cormorant Garamond", Georgia, serif;
+  font: 700 16px/1.2 "Cormorant Garamond", Georgia, serif;
   color: #07261c;
   margin-bottom: 3px;
 }
@@ -50,13 +52,13 @@
   position: absolute;
   top: 7px;
   right: 8px;
-  width: 18px;
-  height: 18px;
+  width: 19px;
+  height: 19px;
   border-radius: 50%;
   border: none;
   background: rgba(7, 38, 28, 0.08);
   color: #07261c;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1;
   cursor: pointer;
   display: grid;
@@ -76,7 +78,7 @@
   padding: 0;
   border: 2.5px solid #e2be79;
   background: radial-gradient(circle at 30% 25%, #154c39, #062118);
-  box-shadow: 0 16px 36px rgba(4, 25, 18, 0.45), 0 0 0 4px rgba(226, 190, 121, 0.22);
+  box-shadow: 0 16px 36px rgba(4, 25, 18, 0.45), 0 0 0 4px rgba(226, 190, 121, 0.24);
   cursor: grab;
   overflow: hidden;
   display: grid;
@@ -86,8 +88,8 @@
 }
 
 #arpUniversalOrb:hover {
-  transform: scale(1.04);
-  box-shadow: 0 20px 42px rgba(4, 25, 18, 0.52), 0 0 0 6px rgba(226, 190, 121, 0.34);
+  transform: scale(1.05);
+  box-shadow: 0 20px 42px rgba(4, 25, 18, 0.52), 0 0 0 6px rgba(226, 190, 121, 0.36);
 }
 
 #arpUniversalOrb:active {
@@ -108,7 +110,7 @@
   bottom: 110px;
   right: 24px;
   z-index: 99999;
-  width: min(410px, calc(100vw - 24px));
+  width: min(420px, calc(100vw - 24px));
   border-radius: 28px;
   background: #fbf7ef;
   border: 1.5px solid #cfa55b;
@@ -131,7 +133,7 @@
 .arp-ab-head {
   background: radial-gradient(circle at 85% 15%, #195440 0%, #07261c 75%);
   color: #fff8eb;
-  padding: 16px 18px;
+  padding: 15px 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -153,8 +155,8 @@
 }
 
 .arp-ab-ring {
-  width: 70px;
-  height: 70px;
+  width: 68px;
+  height: 68px;
   border-radius: 50%;
   border: 2px solid #edd19a;
   background: #062118;
@@ -166,14 +168,14 @@
 .arp-ab-eyebrow {
   display: block;
   font: 700 9.5px/1 "DM Sans", sans-serif;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #d8b373;
   margin-bottom: 3px;
 }
 
 .arp-ab-title {
-  font: italic 700 20px/1.1 "Cormorant Garamond", Georgia, serif;
+  font: 700 20px/1.1 "Cormorant Garamond", Georgia, serif;
   display: block;
   color: #fff8eb;
 }
@@ -258,8 +260,8 @@
 }
 
 .arp-u-feed {
-  padding: 16px;
-  max-height: 270px;
+  padding: 15px;
+  max-height: 295px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -269,11 +271,10 @@
 }
 
 .arp-welcome-card {
-  background: linear-gradient(145deg, #fffdf8 0%, #f5e8cf 100%);
+  background: linear-gradient(155deg, #fffdf8 0%, #f6ead2 100%);
   border: 1.5px solid #d8b373;
-  border-left: 4px solid #07261c;
-  border-radius: 18px;
-  padding: 14px 16px;
+  border-radius: 20px;
+  padding: 14px 15px;
   color: #142820;
   box-shadow: 0 8px 20px rgba(7, 38, 28, 0.06);
 }
@@ -281,22 +282,50 @@
 .arp-welcome-card .arp-wc-kicker {
   display: block;
   font: 700 10px/1 "DM Sans", sans-serif;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
-  color: #9a6f28;
+  color: #8f6520;
   margin-bottom: 5px;
 }
 
 .arp-welcome-card h4 {
   margin: 0 0 6px;
-  font: italic 700 19px/1.2 "Cormorant Garamond", Georgia, serif;
+  font: 700 18.5px/1.2 "Cormorant Garamond", Georgia, serif;
   color: #07261c;
 }
 
 .arp-welcome-card p {
-  margin: 0;
-  font: 400 13px/1.5 "DM Sans", sans-serif;
+  margin: 0 0 11px;
+  font: 400 12.5px/1.5 "DM Sans", sans-serif;
   color: #263c33;
+}
+
+.arp-help-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.arp-help-tile {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(200, 157, 92, 0.55);
+  background: #ffffff;
+  color: #07261c;
+  font: 600 11.5px/1.25 "DM Sans", sans-serif;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.arp-help-tile:hover {
+  background: #07261c;
+  color: #f4dca8;
+  border-color: #07261c;
+  transform: translateY(-1px);
 }
 
 .arp-speech {
@@ -319,9 +348,9 @@
 .arp-speech-tag {
   display: block;
   font: 700 9.5px/1 "DM Sans", sans-serif;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.11em;
   text-transform: uppercase;
-  color: #9a6f28;
+  color: #8f6520;
   margin-bottom: 5px;
 }
 
@@ -347,15 +376,27 @@
   background: #ffffff;
   border: 1px solid rgba(200, 157, 92, 0.55);
   box-shadow: 0 3px 10px rgba(7, 38, 28, 0.05);
+  transition: transform 0.16s ease, border-color 0.16s ease;
+}
+
+.arp-product-hit:hover {
+  transform: translateY(-1px);
+  border-color: #07261c;
 }
 
 .arp-chips {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 6px;
-  padding: 10px 14px 6px;
+  padding: 9px 12px 7px;
   background: #f8f1e3;
   border-top: 1px solid rgba(207, 165, 91, 0.25);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.arp-chips::-webkit-scrollbar {
+  display: none;
 }
 
 .arp-chips button {
@@ -366,6 +407,7 @@
   color: #07261c;
   font: 600 11.5px "DM Sans", sans-serif;
   cursor: pointer;
+  white-space: nowrap;
   transition: all 0.18s ease;
 }
 
@@ -373,13 +415,12 @@
   background: #07261c;
   color: #f3dca8;
   border-color: #07261c;
-  transform: translateY(-1px);
 }
 
 .arp-form {
   display: flex;
   gap: 8px;
-  padding: 11px 14px 13px;
+  padding: 10px 14px 13px;
   background: #fffdf9;
   border-top: 1px solid rgba(200, 157, 92, 0.35);
 }
