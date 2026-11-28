@@ -136,8 +136,8 @@ var startY = 0;
 var origLeft = 0;
 var origTop = 0;
 function clampPosition(el, left, top) {
-var maxLeft = Math.max(8, window.innerWidth - el.offsetWidth - 8);
-var maxTop = Math.max(8, window.innerHeight - el.offsetHeight - 8);
+var w = el.offsetWidth > 20 ? el.offsetWidth : (el.id === "arpUniversalDrawer" ? 416 : 320); var maxLeft = Math.max(8, window.innerWidth - w - 16);
+var h = el.offsetHeight > 20 ? el.offsetHeight : (el.id === "arpUniversalDrawer" ? 520 : 80); var maxTop = Math.max(8, window.innerHeight - h - 16);
 return {
 left: Math.min(Math.max(8, left), maxLeft),
 top: Math.min(Math.max(8, top), maxTop)
@@ -220,11 +220,11 @@ setTimeout(function () { dragged = false; }, 40);
 handle.addEventListener("pointerup", finishPointer);
 handle.addEventListener("pointercancel", finishPointer);
 }
-restoreSaved(dock, "arpibot_dock_pos_v2");
-restoreSaved(drawer, "arpibot_drawer_pos_v2");
-attachDrag(dock, dock, "arpibot_dock_pos_v2", true);
+restoreSaved(dock, "arpibot_dock_pos_v3");
+restoreSaved(drawer, "arpibot_drawer_pos_v3");
+attachDrag(dock, dock, "arpibot_dock_pos_v3", true);
 var head = drawer.querySelector(".arp-ab-head");
-attachDrag(head, drawer, "arpibot_drawer_pos_v2", false);
+attachDrag(head, drawer, "arpibot_drawer_pos_v3", false);
 }
 function init() {
 if (document.getElementById("arpBotDock")) return;
