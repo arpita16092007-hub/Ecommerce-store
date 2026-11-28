@@ -486,41 +486,86 @@ checkAdminAccess();
 loadAdmin();
 
 
-/* Bulletproof Admin Sidebar Navigation Fix */
-document.addEventListener("DOMContentLoaded", () => {
-  const navBtns = Array.from(document.querySelectorAll(".admin-sidebar .admin-nav"));
-  const sectionMap = {
-    orders: ["adminOrdersBody", "ordersTable", "Customer Orders"],
-    support: ["adminSupportBody", "supportFaqList", "AI Support", "AI Care"],
-    products: ["adminProductsBody", "productForm", "Products"],
-    categories: ["adminCategoriesBody", "categoryForm", "Categories"]
-  };
 
-  function findSectionElement(tab) {
-    const hints = sectionMap[tab] || [];
-    for (const hint of hints) {
-      const byId = document.getElementById(hint);
-      if (byId) return byId.closest(".admin-card, section") || byId;
-      const headings = Array.from(document.querySelectorAll(".admin-main h2, .admin-main h3"));
-      const match = headings.find((h) => h.textContent.toLowerCase().includes(hint.toLowerCase()));
-      if (match) return match.closest(".admin-card, section") || match;
+
+/* Authoritative Admin Sidebar Panel Switcher */
+(function initAdminSidebarSwitcher() {
+  function setup() {
+    const navBtns = Array.from(document.querySelectorAll(".admin-sidebar .admin-nav"));
+    const main = document.querySelector(".admin-main");
+    if (!navBtns.length || !main) return;
+
+    // Gather top-level section cards inside .admin-main (excluding the KPI strip)
+    const allCards = Array.from(main.children).filter(
+      (el) => el.matches("section, .admin-card, .admin-panel") && !el.classList.contains("admin-kpis")
+    );
+
+    const keywordsByTab = {
+      orders: ["order", "customer order"],
+      support: ["support", "faq", "ai care", "inquiry", "message"],
+      products: ["product", "catalog", "inventory", "add new product"],
+      categories: ["categor", "collection"]
+    };
+
+    function matchCardsForTab(tab) {
+      const keys = keywordsByTab[tab] || [tab];
+      const matched = allCards.filter((card) => {
+        const attr = (card.dataset.panel || card.dataset.tab || card.id || "").toLowerCase();
+        const heading = (card.querySelector("h1, h2, h3")?.textContent || "").toLowerCase();
+        return keys.some((k) => attr.includes(k) || heading.includes(k));
+      });
+      return matched;
     }
-    return null;
+
+    function activateTab(tab) {
+      navBtns.forEach((b) => b.classList.toggle("active", b.dataset.tab === tab));
+      const matched = matchCardsForTab(tab);
+
+      if (matched.length > 0) {
+        allCards.forEach((card) => {
+          const show = matched.includes(card);
+          card.style.display = show ? "" : "none";
+          card.hidden = !show;
+        });
+      } else {
+        // Fallback: ensure all cards are visible if custom markup doesn't match keywords
+        allCards.forEach((card) => {
+          card.style.display = "";
+          card.hidden = false;
+        });
+      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    navBtns.forEach((btn) => {
+      const clone = btn.cloneNode(true);
+      btn.parentNode.replaceChild(clone, btn);
+      clone.addEventListener("click", (e) => {
+        e.preventDefault();
+        activateTab(clone.dataset.tab);
+      });
+    });
+
+    // Activate the default active tab on load
+    const freshBtns = Array.from(document.querySelectorAll(".admin-sidebar .admin-nav"));
+    const initial = freshBtns.find((b) => b.classList.contains("active"))?.dataset.tab || freshBtns[0]?.dataset.tab;
+    if (initial) {
+      // Re-bind navBtns reference for activateTab
+      freshBtns.forEach((b) => b.classList.toggle("active", b.dataset.tab === initial));
+      const matched = matchCardsForTab(initial);
+      if (matched.length > 0) {
+        allCards.forEach((card) => {
+          const show = matched.includes(card);
+          card.style.display = show ? "" : "none";
+          card.hidden = !show;
+        });
+      }
+    }
   }
 
-  navBtns.forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.preventDefault();
-      navBtns.forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      const tab = btn.dataset.tab;
-      const target = findSectionElement(tab);
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
-        target.style.transition = "box-shadow 0.35s ease";
-        target.style.boxShadow = "0 0 0 2px #d4af6a, 0 18px 36px rgba(6, 39, 29, 0.12)";
-        setTimeout(() => { target.style.boxShadow = ""; }, 1400);
-      }
-    });
-  });
-});
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setup);
+  } else {
+    setup();
+  }
+})();
