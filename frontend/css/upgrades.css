@@ -2181,3 +2181,18 @@ main h1 {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-4px); }
 }
+
+
+/* Permanently hide any legacy welcome gate overlay */
+#welcomeGate,
+#welcomeOverlay,
+.welcome-gate,
+.welcome-overlay,
+.splash-gate,
+[id*="welcomeScreen"],
+[class*="welcome-screen"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
