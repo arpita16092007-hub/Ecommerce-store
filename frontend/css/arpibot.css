@@ -1,0 +1,271 @@
+/* ArpiBot Luxury Storefront Assistant Stylesheet */
+#arpBotDock {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  z-index: 99999;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  user-select: none;
+  touch-action: none;
+}
+
+#arpChatBubbleTip {
+  background: #faf0dc;
+  color: #142820;
+  border: 1.5px solid #d8b373;
+  border-radius: 20px 20px 4px 20px;
+  padding: 10px 15px;
+  box-shadow: 0 12px 28px rgba(4, 25, 18, 0.24);
+  font: 500 12.5px/1.35 "DM Sans", sans-serif;
+  cursor: pointer;
+  max-width: 195px;
+  transition: transform 0.2s ease;
+}
+
+#arpChatBubbleTip:hover {
+  transform: translateY(-2px);
+}
+
+#arpChatBubbleTip strong {
+  display: block;
+  font: italic 700 15px "Cormorant Garamond", Georgia, serif;
+  color: #07261c;
+  margin-bottom: 2px;
+}
+
+#arpUniversalOrb {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  padding: 0;
+  border: 2.5px solid #4ade80;
+  background: #07261c;
+  box-shadow: 0 14px 32px rgba(4, 25, 18, 0.45), 0 0 20px rgba(74, 222, 128, 0.35);
+  cursor: grab;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+#arpUniversalOrb:active {
+  cursor: grabbing;
+}
+
+#arpUniversalOrb img,
+#arpStageImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+
+#arpUniversalDrawer {
+  position: fixed;
+  bottom: 104px;
+  right: 22px;
+  z-index: 99999;
+  width: min(395px, calc(100vw - 24px));
+  border-radius: 26px;
+  background: #faf5eb;
+  border: 2px solid #c89d5c;
+  box-shadow: 0 28px 64px rgba(4, 25, 18, 0.38);
+  overflow: hidden;
+  display: none;
+  flex-direction: column;
+}
+
+#arpUniversalDrawer.is-open {
+  display: flex;
+}
+
+.arp-ab-head {
+  background: radial-gradient(circle at 80% 20%, #164b39 0%, #07261c 78%);
+  color: #fff8eb;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-bottom: 1.5px solid rgba(216, 179, 115, 0.45);
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.arp-ab-stage {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.arp-ab-ring {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  border: 2px solid #edd19a;
+  background: #062118;
+  box-shadow: 0 0 22px rgba(237, 209, 154, 0.3);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.arp-ab-title {
+  font: 700 17px "Cormorant Garamond", Georgia, serif;
+  display: block;
+  color: #fff8eb;
+}
+
+.arp-ab-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 5px;
+  padding: 3px 11px;
+  border-radius: 999px;
+  background: #07261c;
+  border: 1px solid #d8b373;
+  font: 700 10.5px "DM Sans", sans-serif;
+  color: #edd19a;
+}
+
+.arp-ab-close {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid rgba(237, 209, 154, 0.45);
+  background: rgba(255, 255, 255, 0.08);
+  color: #edd19a;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.arp-ab-bar {
+  display: flex;
+  gap: 5px;
+  padding: 7px 10px;
+  background: #0a3024;
+  border-bottom: 1px solid rgba(216, 179, 115, 0.25);
+  overflow-x: auto;
+}
+
+.arp-ab-btn {
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(237, 209, 154, 0.35);
+  background: rgba(255, 255, 255, 0.06);
+  color: #f7e7c4;
+  font: 600 10.5px "DM Sans", sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.arp-ab-btn.active {
+  background: #edd19a;
+  color: #062118;
+  border-color: #edd19a;
+}
+
+.arp-u-feed {
+  padding: 14px;
+  max-height: 255px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #faf5eb;
+  font: 400 13px/1.5 "DM Sans", sans-serif;
+}
+
+.arp-speech {
+  background: #faf0dc;
+  border: 1.5px solid #d8b373;
+  border-radius: 18px 18px 18px 4px;
+  padding: 12px 14px;
+  color: #142820;
+}
+
+.arp-speech-tag {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8c6628;
+  margin-bottom: 3px;
+}
+
+.arp-user {
+  align-self: flex-end;
+  max-width: 82%;
+  background: #07261c;
+  color: #fff8eb;
+  border: 1px solid rgba(216, 179, 115, 0.4);
+  border-radius: 18px 18px 4px 18px;
+  padding: 10px 14px;
+}
+
+.arp-product-hit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 10px;
+  margin-top: 6px;
+  border-radius: 10px;
+  background: #fffdf8;
+  border: 1px solid rgba(200, 157, 92, 0.45);
+}
+
+.arp-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 12px 4px;
+  background: #faf5eb;
+}
+
+.arp-chips button {
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid rgba(200, 157, 92, 0.55);
+  background: #fffdf8;
+  color: #07261c;
+  font: 600 11px "DM Sans", sans-serif;
+  cursor: pointer;
+}
+
+.arp-chips button:hover {
+  background: #07261c;
+  color: #edd19a;
+}
+
+.arp-form {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #fffdf9;
+  border-top: 1px solid rgba(200, 157, 92, 0.35);
+}
+
+.arp-form input {
+  flex: 1;
+  border-radius: 999px;
+  border: 1px solid rgba(7, 38, 28, 0.2);
+  background: #faf5eb;
+  padding: 9px 14px;
+  font: 400 13px "DM Sans", sans-serif;
+  color: #07261c;
+}
+
+.arp-form button {
+  border-radius: 999px;
+  padding: 9px 16px;
+  background: linear-gradient(135deg, #edd19a 0%, #d8b373 100%);
+  color: #07261c;
+  border: 1px solid #b89149;
+  font: 700 12px "DM Sans", sans-serif;
+  cursor: pointer;
+}
