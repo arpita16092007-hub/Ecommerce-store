@@ -1,3 +1,4 @@
+
 (function initMovableArpiaresConcierge() {
   const LUXURY_AVATAR_SVG = `
     <svg width="34" height="34" viewBox="0 0 40 40" fill="none" xmlns="http://w3.org" aria-hidden="true">
@@ -19,8 +20,8 @@
     try {
       const saved = JSON.parse(localStorage.getItem(storageKey) || "null");
       if (saved && typeof saved.left === "number" && typeof saved.top === "number") {
-        const maxL = Math.max(8, window.innerWidth - el.offsetWidth - 8);
-        const maxT = Math.max(8, window.innerHeight - el.offsetHeight - 8);
+        const maxL = Math.max(8, window.innerWidth - Math.max(150, el.offsetWidth) - 8);
+        const maxT = Math.max(8, window.innerHeight - Math.max(56, el.offsetHeight) - 8);
         el.style.left = Math.min(Math.max(8, saved.left), maxL) + "px";
         el.style.top = Math.min(Math.max(8, saved.top), maxT) + "px";
         el.style.right = "auto";
@@ -72,24 +73,45 @@
     });
   }
 
-  function decorateBotMessages(container) {
-    if (!container) return;
-    const msgs = container.querySelectorAll(".msg.bot, .bot-msg, .bot, [data-role='assistant'], > div:not(.user):not(.is-user)");
-    msgs.forEach((m) => {
-      if (m.dataset.avatarAdded === "1") return;
-      m.dataset.avatarAdded = "1";
-      const tag = document.createElement("div");
-      tag.className = "arpiares-msg-sender";
-      tag.innerHTML = "<span>✦</span> <span>ARPIARES Stylist</span>";
-      m.prepend(tag);
-    });
+  function findLauncher() {
+    const direct = document.querySelector(
+      "#supportLauncher, #chatLauncher, .support-launcher, .chat-launcher, .chat-fab, [id*='chatToggle'], [id*='supportBtn'], [id*='chatBtn'], [class*='chat-toggle'], [class*='support-toggle']"
+    );
+    if (direct) return direct;
+
+    // Fallback: match any button mentioning Support, Concierge, Chat, or Help
+    const allBtns = Array.from(document.querySelectorAll("button"));
+    return allBtns.find((b) => /support|concierge|chat|assistant|stylist/i.test(b.id + " " + b.className + " " + b.textContent));
+  }
+
+  function findWidget() {
+    return document.querySelector(
+      "#supportWidget, #chatWidget, .support-widget, .chat-widget, .chat-box, .support-drawer, [id*='supportPanel'], [id*='chatWindow'], [id*='supportBox']"
+    );
   }
 
   function setupBot() {
-    const launcher = document.querySelector("#supportLauncher, .support-launcher, .chat-launcher, [id*='chatToggle'], [id*='supportBtn']");
-    const widget = document.querySelector("#supportWidget, .support-widget, .chat-widget, .chat-box, [id*='supportPanel'], [id*='chatWindow']");
+    const widget = findWidget();
+    let launcher = findLauncher();
+
+    if (!launcher && widget) {
+      launcher = document.createElement("button");
+      launcher.id = "supportLauncher";
+      launcher.type = "button";
+      document.body.appendChild(launcher);
+      launcher.addEventListener("click", () => {
+        const isHidden = widget.hidden || widget.style.display === "none" || getComputedStyle(widget).display === "none";
+        widget.hidden = !isHidden;
+        widget.style.display = isHidden ? "flex" : "none";
+      });
+    }
 
     if (launcher) {
+      launcher.style.setProperty("display", "inline-flex", "important");
+      launcher.style.setProperty("visibility", "visible", "important");
+      launcher.style.setProperty("opacity", "1", "important");
+      launcher.style.setProperty("z-index", "99999", "important");
+
       if (!launcher.dataset.styledAvatar) {
         launcher.dataset.styledAvatar = "1";
         launcher.classList.add("arpiares-avatar-orb");
@@ -115,34 +137,6 @@
         else header.prepend(avatarWrap);
       }
       makeDraggable(widget, header, "arpiares_bot_window_pos");
-
-      const msgBox = widget.querySelector("#supportMessages, .support-messages, .chat-messages, .chat-body");
-      if (msgBox) {
-        decorateBotMessages(msgBox);
-        if (!msgBox.dataset.observerBound) {
-          msgBox.dataset.observerBound = "1";
-          new MutationObserver(() => decorateBotMessages(msgBox)).observe(msgBox, { childList: true });
-        }
-      }
-
-      const form = widget.querySelector("form, .chat-form, .support-form");
-      const input = form?.querySelector("input");
-      if (form && input && !widget.querySelector(".arpiares-quick-chips")) {
-        const bar = document.createElement("div");
-        bar.className = "arpiares-quick-chips";
-        ["📦 Track order", "🚚 Delivery info", "✨ Style picks", "🔄 7-day returns"].forEach((q) => {
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.className = "arpiares-quick-chip";
-          btn.textContent = q;
-          btn.addEventListener("click", () => {
-            input.value = q.replace(/^[^\w]+/, "").trim();
-            form.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
-          });
-          bar.appendChild(btn);
-        });
-        form.parentNode.insertBefore(bar, form);
-      }
     }
   }
 
@@ -151,5 +145,36 @@
   } else {
     setupBot();
   }
-  setTimeout(setupBot, 600);
+  setTimeout(setupBot, 500);
+})();
+
+
+/* Ensure Category Card Bottom Buttons Always Have Clear Gold Styling & Label Text */
+(function fixCategoryCardButtons() {
+  function applyFix() {
+    const cards = document.querySelectorAll(
+      "#categoryShowcase > *, .category-grid > *, .categories-grid > *, [class*='category-card'], [class*='collection-card']"
+    );
+    cards.forEach((card) => {
+      const title = (card.querySelector("h2, h3, h4")?.textContent || "Collection").trim();
+      const btns = card.querySelectorAll("button, a[role='button'], a.btn, a:last-of-type");
+      btns.forEach((btn) => {
+        btn.style.setProperty("background", "linear-gradient(135deg, #e5c17b 0%, #d4af6a 100%)", "important");
+        btn.style.setProperty("color", "#06271d", "important");
+        btn.style.setProperty("border", "1.5px solid #b89149", "important");
+        btn.style.setProperty("font-weight", "700", "important");
+        btn.style.setProperty("opacity", "1", "important");
+        btn.style.setProperty("visibility", "visible", "important");
+        if (!btn.textContent.trim()) {
+          btn.textContent = "Explore " + title + " →";
+        }
+      });
+    });
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", applyFix);
+  } else {
+    applyFix();
+  }
+  setTimeout(applyFix, 700);
 })();
