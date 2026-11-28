@@ -2481,3 +2481,146 @@ body [class*="category-card"] a:hover {
   from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+
+/* Redesigned 2-Column Editorial Feedback Form Layout (v44) */
+.arpiares-fb-split {
+  display: grid !important;
+  grid-template-columns: minmax(250px, 0.85fr) minmax(320px, 1.35fr) !important;
+  border-radius: 26px !important;
+  overflow: hidden !important;
+  background: #fffdf9 !important;
+  border: 1.5px solid rgba(200, 157, 92, 0.45) !important;
+  box-shadow: 0 22px 48px rgba(6, 39, 29, 0.1) !important;
+}
+.arpiares-fb-aside {
+  background: radial-gradient(circle at 20% 20%, #0d3d2e 0%, #06271d 75%) !important;
+  color: #fff8eb !important;
+  padding: 34px 28px !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+  border-right: 1px solid rgba(229, 193, 123, 0.3);
+}
+.arpiares-fb-aside-crest {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1.5px solid #e5c17b;
+  display: grid;
+  place-items: center;
+  font: 700 22px "Cormorant Garamond", Georgia, serif;
+  color: #e5c17b;
+  margin-bottom: 14px;
+}
+.arpiares-fb-aside h3 {
+  font: 600 30px/1.15 "Cormorant Garamond", Georgia, serif !important;
+  color: #fff8eb !important;
+  margin: 6px 0 12px !important;
+}
+.arpiares-fb-aside h3 em {
+  color: #e5c17b;
+  font-style: italic;
+}
+.arpiares-fb-aside p {
+  font: 400 13.5px/1.6 "DM Sans", sans-serif !important;
+  color: rgba(255, 248, 235, 0.8) !important;
+  margin: 0 !important;
+}
+.arpiares-fb-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+.arpiares-fb-tag {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(229, 193, 123, 0.4);
+  background: rgba(255, 250, 240, 0.06);
+  color: #f6dca4;
+  font: 600 11.5px "DM Sans", sans-serif;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.arpiares-fb-tag:hover {
+  background: #e5c17b;
+  color: #06271d;
+}
+.arpiares-fb-quote-box {
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(255, 250, 240, 0.05);
+  border: 1px solid rgba(229, 193, 123, 0.24);
+  font: 400 12px/1.5 "DM Sans", sans-serif;
+  color: rgba(255, 248, 235, 0.84);
+}
+.arpiares-fb-body {
+  padding: 32px 30px !important;
+  background: linear-gradient(180deg, #fffdf9 0%, #faf3e6 100%) !important;
+}
+.arpiares-fb-body input,
+.arpiares-fb-body select,
+.arpiares-fb-body textarea {
+  border-radius: 12px !important;
+  border: 1px solid rgba(6, 39, 29, 0.16) !important;
+  background: #ffffff !important;
+  padding: 11px 14px !important;
+  font: 400 13.5px "DM Sans", sans-serif !important;
+  color: #06271d !important;
+  transition: border-color 0.2s, box-shadow 0.2s !important;
+}
+.arpiares-fb-body input:focus,
+.arpiares-fb-body select:focus,
+.arpiares-fb-body textarea:focus {
+  outline: none !important;
+  border-color: #c89d5c !important;
+  box-shadow: 0 0 0 3px rgba(229, 193, 123, 0.22) !important;
+}
+/* Clean Pill Radio Cards without awkward stacked circle above text */
+.arpiares-fb-body label:has(input[type="radio"]) {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 11px 16px !important;
+  border-radius: 999px !important;
+  border: 1.5px solid rgba(6, 39, 29, 0.18) !important;
+  background: #ffffff !important;
+  font: 600 13px "DM Sans", sans-serif !important;
+  color: #06271d !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+.arpiares-fb-body label:has(input[type="radio"]:checked) {
+  background: #06271d !important;
+  color: #f7d9a3 !important;
+  border-color: #06271d !important;
+  box-shadow: 0 8px 18px rgba(6, 39, 29, 0.16) !important;
+}
+.arpiares-fb-body button[type="submit"] {
+  background: linear-gradient(135deg, #e5c17b 0%, #d4af6a 100%) !important;
+  color: #06271d !important;
+  border: 1.5px solid #b89149 !important;
+  border-radius: 999px !important;
+  font: 700 13px "DM Sans", sans-serif !important;
+  letter-spacing: 0.08em !important;
+  padding: 14px 24px !important;
+  box-shadow: 0 10px 24px rgba(6, 39, 29, 0.14) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+.arpiares-fb-body button[type="submit"]:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 14px 28px rgba(6, 39, 29, 0.2) !important;
+}
+@media (max-width: 860px) {
+  .arpiares-fb-split {
+    grid-template-columns: 1fr !important;
+  }
+  .arpiares-fb-aside {
+    border-right: none;
+    border-bottom: 1px solid rgba(229, 193, 123, 0.3);
+  }
+}
