@@ -103,3 +103,66 @@ byId("full-feedback-form")?.addEventListener("submit", async e => {
 });
 
 initFeedbackPage();
+
+/* Transform Submit Detailed Feedback Card into 2-Column Editorial Split Layout (v195) */
+(function transformFeedbackFormLayout() {
+  function upgradeFormCard() {
+    var heading = Array.from(document.querySelectorAll("h1, h2, h3")).find(function (h) {
+      return h.textContent.toLowerCase().indexOf("submit detailed feedback") !== -1;
+    });
+    if (!heading) return;
+
+    var card = heading.closest("section, .card, .panel, div");
+    if (!card || card.dataset.splitApplied === "1") return;
+    card.dataset.splitApplied = "1";
+
+    var bodyWrap = document.createElement("div");
+    bodyWrap.className = "arpiares-fb-body";
+    while (card.firstChild) {
+      bodyWrap.appendChild(card.firstChild);
+    }
+
+    var aside = document.createElement("aside");
+    aside.className = "arpiares-fb-aside";
+    aside.innerHTML =
+      '<div>' +
+        '<div class="arpiares-fb-aside-crest">A</div>' +
+        '<span style="font:700 10.5px \'DM Sans\',sans-serif;letter-spacing:0.2em;text-transform:uppercase;color:#d4af6a;">PATRON DESK</span>' +
+        '<h3>Your voice shapes our <em>next</em> piece.</h3>' +
+        '<p>Tell us how your order felt in person—from unboxing finish to everyday use.</p>' +
+        '<div class="arpiares-fb-tags">' +
+          '<button type="button" class="arpiares-fb-tag" data-tag="Exceptional craftsmanship">✨ Craftsmanship</button>' +
+          '<button type="button" class="arpiares-fb-tag" data-tag="Luxury unboxing experience">🎁 Packaging</button>' +
+          '<button type="button" class="arpiares-fb-tag" data-tag="Fast &amp; careful delivery">🚚 Fast Delivery</button>' +
+          '<button type="button" class="arpiares-fb-tag" data-tag="Worth every rupee">💎 Value</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="arpiares-fb-quote-box">' +
+        '<strong style="color:#e5c17b;display:block;margin-bottom:4px;">★★★★★ 4.9 / 5.0 Patron Score</strong>' +
+        'Every verified note is read directly by the ARPIARES studio team.' +
+      '</div>';
+
+    card.classList.add("arpiares-fb-split");
+    card.style.padding = "0";
+    card.appendChild(aside);
+    card.appendChild(bodyWrap);
+
+    aside.querySelectorAll("[data-tag]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var headlineInput = bodyWrap.querySelector("#fb-headline") ||
+          Array.from(bodyWrap.querySelectorAll("input[type='text']")).pop();
+        if (headlineInput) {
+          headlineInput.value = btn.dataset.tag;
+          headlineInput.focus();
+        }
+      });
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", upgradeFormCard);
+  } else {
+    upgradeFormCard();
+  }
+  setTimeout(upgradeFormCard, 500);
+})();
