@@ -2127,3 +2127,57 @@ main h1 {
   font: 700 12.5px "DM Sans", sans-serif !important;
   padding: 9px 16px !important;
 }
+
+/* Luxury Avatar Orb & Message Sender Styling */
+.arpiares-avatar-orb {
+  padding: 8px 16px 8px 9px !important;
+  border-radius: 999px !important;
+  gap: 10px !important;
+  animation: arpiaresOrbFloat 3.6s ease-in-out infinite;
+}
+.arpiares-orb-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.arpiares-orb-label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.15;
+  text-align: left;
+}
+.arpiares-orb-label strong {
+  font: 700 13px "DM Sans", sans-serif;
+  color: #fff6e5;
+}
+.arpiares-orb-label small {
+  font: 500 10.5px "DM Sans", sans-serif;
+  color: #e5c17b;
+}
+.arpiares-header-avatar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.arpiares-header-avatar strong {
+  display: block;
+  font: 700 15px "Cormorant Garamond", Georgia, serif;
+  letter-spacing: 0.03em;
+  color: #fff6e5;
+}
+.arpiares-msg-sender {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font: 700 10px "DM Sans", sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #9e7832;
+  margin-bottom: 4px;
+}
+@keyframes arpiaresOrbFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
