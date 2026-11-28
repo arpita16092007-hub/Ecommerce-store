@@ -229,7 +229,8 @@ attachDrag(head, drawer, "arpibot_drawer_pos_v3", false);
 function init() {
 if (document.getElementById("arpBotDock")) return;
 
-var dock = document.createElement("div");
+if (!document.querySelector("link[href*=arpibot]")) { var lk = document.createElement("link"); lk.rel = "stylesheet"; lk.href = "css/arpibot.css?v=280"; document.head.appendChild(lk); }
+    var dock = document.createElement("div");
 dock.id = "arpBotDock";
 dock.innerHTML =
 '' +
