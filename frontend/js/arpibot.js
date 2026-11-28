@@ -1,27 +1,27 @@
 (function () {
   var STATES = {
-    welcome: { img: "images/arpibot/welcome.png", pill: "Welcome - Ready to help", label: "Welcome" },
-    helping: { img: "images/arpibot/helping.png", pill: "Helping - Searching catalog", label: "Helping" },
-    thinking: { img: "images/arpibot/thinking.png", pill: "Thinking - Checking details", label: "Thinking" },
-    explaining: { img: "images/arpibot/explaining.png", pill: "Explaining - Store guidance", label: "Explaining" },
-    happy: { img: "images/arpibot/happy.png", pill: "Happy - Glad to assist", label: "Happy" },
-    excited: { img: "images/arpibot/excited.png", pill: "Excited - Great finds!", label: "Excited" },
-    winking: { img: "images/arpibot/winking.png", pill: "Pro Tip - Curated pick", label: "Pro Tip" },
-    working: { img: "images/arpibot/working.png", pill: "Working - Checking store", label: "Working" },
+    welcome: { img: "images/arpibot/welcome.png", pill: "Online - Atelier Concierge", label: "Welcome" },
+    helping: { img: "images/arpibot/helping.png", pill: "Curating - Searching catalog", label: "Helping" },
+    thinking: { img: "images/arpibot/thinking.png", pill: "Checking - Atelier archive", label: "Thinking" },
+    explaining: { img: "images/arpibot/explaining.png", pill: "Guidance - Store & care", label: "Explaining" },
+    happy: { img: "images/arpibot/happy.png", pill: "Delighted - At your service", label: "Happy" },
+    excited: { img: "images/arpibot/excited.png", pill: "Curated - Standout pieces", label: "Excited" },
+    winking: { img: "images/arpibot/winking.png", pill: "Stylist Note - Insider pick", label: "Pro Tip" },
+    working: { img: "images/arpibot/working.png", pill: "Tracking - Order desk", label: "Working" },
     confused: { img: "images/arpibot/confused.png", pill: "Clarify - Tell me more", label: "Clarify" },
-    sorry: { img: "images/arpibot/sorry.png", pill: "Apologies - Let us fix that", label: "Sorry" },
-    sad: { img: "images/arpibot/sad.png", pill: "Here for you - Support", label: "Support" },
-    bye: { img: "images/arpibot/bye.png", pill: "Goodbye - Come back soon!", label: "Bye" }
+    sorry: { img: "images/arpibot/sorry.png", pill: "Care - 14-day guarantee", label: "Sorry" },
+    sad: { img: "images/arpibot/sad.png", pill: "Patron Care - Here for you", label: "Support" },
+    bye: { img: "images/arpibot/bye.png", pill: "Farewell - Until next time", label: "Bye" }
   };
 
   var MOODS = ["welcome", "helping", "thinking", "explaining", "happy", "excited", "winking", "working", "confused", "sorry", "sad", "bye"];
 
   var PROMPTS = [
-    { label: "Top products", q: "Show me your top products" },
-    { label: "Categories", q: "What categories do you have?" },
-    { label: "Shipping", q: "Tell me about shipping and delivery" },
-    { label: "Returns", q: "What is your return policy?" },
-    { label: "Track order", q: "How do I track my order?" }
+    { label: "✦ Bestsellers", q: "Show me your top products" },
+    { label: "◈ Collections", q: "What categories do you have?" },
+    { label: "✧ Express Delivery", q: "Tell me about shipping and delivery" },
+    { label: "↺ 14-Day Care", q: "What is your return policy?" },
+    { label: "⌖ Track Order", q: "How do I track my order?" }
   ];
 
   var catalog = null;
@@ -90,7 +90,7 @@
     function attachDrag(handle, target, storageKey) {
       if (!handle || !target) return;
       handle.addEventListener("pointerdown", function (e) {
-        if (e.target && e.target.closest("button.arp-ab-close")) return;
+        if (e.target && e.target.closest("button.arp-ab-close, button#arpTipDismiss")) return;
         activeEl = target;
         dragged = false;
         var rect = target.getBoundingClientRect();
@@ -165,7 +165,16 @@
 
     var dock = document.createElement("div");
     dock.id = "arpBotDock";
-    dock.innerHTML = '<div id="arpChatBubbleTip"><strong>ArpiBot Concierge</strong>Drag me anywhere or tap to chat!</div><button id="arpUniversalOrb" type="button" aria-label="Open ArpiBot"><img src="images/arpibot/chat-icon.png" alt="ArpiBot" /></button>';
+    dock.innerHTML =
+      '<div id="arpChatBubbleTip">' +
+        '<button id="arpTipDismiss" type="button" aria-label="Dismiss tip">&times;</button>' +
+        '<span class="arp-tip-eyebrow">✦ Atelier Concierge</span>' +
+        '<strong>Your personal guide to ARPIARES</strong>' +
+        'Curated picks, gifting &amp; live order care.' +
+      '</div>' +
+      '<button id="arpUniversalOrb" type="button" aria-label="Open ArpiBot">' +
+        '<img src="images/arpibot/chat-icon.png" alt="ArpiBot" />' +
+      '</button>';
 
     var moodBtns = MOODS.map(function (k) {
       var cls = k === "welcome" ? "arp-ab-btn active" : "arp-ab-btn";
@@ -178,7 +187,31 @@
 
     var drawer = document.createElement("aside");
     drawer.id = "arpUniversalDrawer";
-    drawer.innerHTML = '<div class="arp-ab-head"><div class="arp-ab-stage"><div class="arp-ab-ring"><img id="arpStageImg" src="images/arpibot/welcome.png" alt="ArpiBot" /></div><div><span class="arp-ab-title">ArpiBot Concierge</span><span id="arpStagePill" class="arp-ab-pill">Welcome - Ready to help</span></div></div><button id="arpDrawerClose" class="arp-ab-close" type="button">&times;</button></div><div class="arp-ab-bar" id="arpMoodBar">' + moodBtns + '</div><div id="arpFeed" class="arp-u-feed"><div class="arp-speech"><strong class="arp-speech-tag">ArpiBot - Welcome</strong>Welcome to <strong>ARPIARES</strong>! Drag my header anywhere on screen, or ask me about products, categories, gifting, shipping, or your orders.</div></div><div class="arp-chips">' + chipBtns + '</div><form id="arpForm" class="arp-form"><input id="arpInput" type="text" placeholder="Ask ArpiBot anything..." autocomplete="off" /><button type="submit">Send</button></form>';
+    drawer.innerHTML =
+      '<div class="arp-ab-head">' +
+        '<div class="arp-ab-stage">' +
+          '<div class="arp-ab-ring"><img id="arpStageImg" src="images/arpibot/welcome.png" alt="ArpiBot" /></div>' +
+          '<div>' +
+            '<span class="arp-ab-eyebrow">✦ ARPIARES Private Client</span>' +
+            '<span class="arp-ab-title">ArpiBot Concierge</span>' +
+            '<span id="arpStagePill" class="arp-ab-pill">Online - Atelier Concierge</span>' +
+          '</div>' +
+        '</div>' +
+        '<button id="arpDrawerClose" class="arp-ab-close" type="button" aria-label="Close">&times;</button>' +
+      '</div>' +
+      '<div class="arp-ab-bar" id="arpMoodBar">' + moodBtns + '</div>' +
+      '<div id="arpFeed" class="arp-u-feed">' +
+        '<div class="arp-welcome-card">' +
+          '<span class="arp-wc-kicker">✦ Welcome to the Atelier</span>' +
+          '<h4>Crafted around your taste.</h4>' +
+          '<p>Step inside <strong>ARPIARES</strong>. Ask me to curate a signature piece, explore collections, or check your order status—or drag my header anywhere on screen.</p>' +
+        '</div>' +
+      '</div>' +
+      '<div class="arp-chips">' + chipBtns + '</div>' +
+      '<form id="arpForm" class="arp-form">' +
+        '<input id="arpInput" type="text" placeholder="Ask for a piece, gift, or order update..." autocomplete="off" />' +
+        '<button type="submit">Ask</button>' +
+      '</form>';
 
     document.body.appendChild(dock);
     document.body.appendChild(drawer);
@@ -187,6 +220,7 @@
 
     var orb = document.getElementById("arpUniversalOrb");
     var tip = document.getElementById("arpChatBubbleTip");
+    var tipDismiss = document.getElementById("arpTipDismiss");
     var closeBtn = document.getElementById("arpDrawerClose");
     var img = document.getElementById("arpStageImg");
     var pill = document.getElementById("arpStagePill");
@@ -201,35 +235,37 @@
       if (pill) pill.textContent = s.pill;
       if (bar) {
         bar.querySelectorAll(".arp-ab-btn").forEach(function (b) {
-          b.classList.toggle("active", b.dataset.mood === k);
-        });
-      }
-    }
-
-    function toggle(open) {
-      if (dragCtrl.wasDragged()) return;
-      var show = typeof open === "boolean" ? open : !drawer.classList.contains("is-open");
-      drawer.classList.toggle("is-open", show);
-      if (show) {
-        if (tip) tip.style.display = "none";
-        setMood("welcome");
-        input.focus();
-      }
-    }
-
-    orb.addEventListener("click", function () { toggle(); });
-    if (tip) tip.addEventListener("click", function () { toggle(true); });
-    closeBtn.addEventListener("click", function () {
-      setMood("bye");
-      setTimeout(function () { drawer.classList.remove("is-open"); }, 350);
-    });
-
-    if (bar) {
-      bar.querySelectorAll(".arp-ab-btn").forEach(function (b) {
-        b.addEventListener("click", function () { setMood(b.dataset.mood); });
-      });
-    }
-
+b.classList.toggle("active", b.dataset.mood === k);
+});
+}
+}
+function toggle(open) {
+if (dragCtrl.wasDragged()) return;
+var show = typeof open === "boolean" ? open : !drawer.classList.contains("is-open");
+drawer.classList.toggle("is-open", show);
+if (show) {
+if (tip) tip.style.display = "none";
+setMood("welcome");
+input.focus();
+}
+}
+if (tipDismiss) {
+tipDismiss.addEventListener("click", function (e) {
+e.stopPropagation();
+if (tip) tip.style.display = "none";
+});
+}
+orb.addEventListener("click", function () { toggle(); });
+if (tip) tip.addEventListener("click", function () { toggle(true); });
+closeBtn.addEventListener("click", function () {
+setMood("bye");
+setTimeout(function () { drawer.classList.remove("is-open"); }, 350);
+});
+if (bar) {
+bar.querySelectorAll(".arp-ab-btn").forEach(function (b) {
+b.addEventListener("click", function () { setMood(b.dataset.mood); });
+});
+}
 function say(tag, html) {
 var d = document.createElement("div");
 d.className = "arp-speech";
@@ -251,30 +287,30 @@ var html = "";
 var m = "happy";
 if (l === "hi" || l === "hello" || l === "hey" || l.indexOf("hello ") === 0 || l.indexOf("hi ") === 0) {
 m = "welcome";
-html = "Hello! I am ArpiBot. How can I assist your shopping today?";
+html = "Welcome to ARPIARES. Tell me what mood, room, or signature piece you are curating today.";
 } else if (l.indexOf("bye") !== -1 || l.indexOf("thank") !== -1) {
 m = l.indexOf("thank") !== -1 ? "happy" : "bye";
-html = l.indexOf("thank") !== -1 ? "Always a pleasure!" : "Goodbye! Come back soon.";
+html = l.indexOf("thank") !== -1 ? "Always a pleasure—let me know whenever you would like another curated recommendation." : "Until next time. The ARPIARES Atelier is always open for you.";
 } else if (l.indexOf("ship") !== -1 || l.indexOf("deliver") !== -1) {
 m = "explaining";
-html = "We offer insured express dispatch across India within 24-48 hours.";
+html = "Every order receives insured express dispatch across India within 24–48 hours, wrapped in our signature presentation packaging.";
 } else if (l.indexOf("return") !== -1 || l.indexOf("refund") !== -1 || l.indexOf("exchange") !== -1) {
 m = "sorry";
-html = "Every piece is covered by our 14-day return & exchange guarantee.";
+html = "Peace of mind is built in—every piece is protected by our 14-day effortless return & exchange guarantee in unused condition.";
 } else if (l.indexOf("track") !== -1 || l.indexOf("order") !== -1) {
 m = "working";
-html = 'View live order status in Account & Orders.';
+html = 'Follow your parcel in real time inside Account & Orders, or message our Patron Desk.';
 } else if (l.indexOf("categor") !== -1) {
 setMood("helping");
 var items = await getCatalog();
 var cats = Array.from(new Set(items.map(function (p) { return p.category; }).filter(Boolean)));
 m = cats.length ? "winking" : "explaining";
-html = cats.length ? "Live categories: " + cats.map(esc).join(", ") + "." : 'Explore all collections on Categories.';
+html = cats.length ? "Our current Atelier collections: " + cats.map(esc).join(", ") + '. Explore every piece on Browse Categories.' : 'Explore all curated collections on Browse Categories.';
 } else if (l.indexOf("top") !== -1 || l.indexOf("best") !== -1 || l.indexOf("recommend") !== -1) {
 setMood("helping");
 var items2 = await getCatalog();
 m = items2.length ? "excited" : "winking";
-html = items2.length ? "Our standout pieces:" + items2.slice(0, 3).map(card).join("") : "Explore our featured collection on the home page.";
+html = items2.length ? "Here are our most-coveted Atelier pieces right now:" + items2.slice(0, 3).map(card).join("") : "Explore our featured selection right on the home gallery.";
 } else {
 setMood("helping");
 var items3 = await getCatalog();
@@ -285,14 +321,14 @@ return terms.some(function (t) { return h.indexOf(t) !== -1; });
 });
 if (hits.length) {
 m = "excited";
-html = "Found " + hits.length + " matching item(s):" + hits.slice(0, 3).map(card).join("");
+html = "I curated " + hits.length + " matching piece(s) from our collection:" + hits.slice(0, 3).map(card).join("");
 } else {
 m = "confused";
-html = "Share a product name or tap Top products or Categories below.";
+html = "Tell me a style, material, or product name—or tap ✦ Bestsellers or ◈ Collections below.";
 }
 }
 setMood(m);
-say("ArpiBot - " + STATES[m].label, html);
+say("ArpiBot • " + STATES[m].label, html);
 }
 form.addEventListener("submit", function (e) {
 e.preventDefault();
