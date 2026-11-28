@@ -2388,3 +2388,16 @@ body [class*="category-card"] a:hover {
   font: 400 11.5px "DM Sans", sans-serif;
   color: #5c6b64;
 }
+
+#arpiaresStylistDrawer {
+  position: fixed !important;
+  bottom: 92px;
+  right: 24px;
+  width: min(385px, calc(100vw - 28px)) !important;
+  border-radius: 24px !important;
+  background: #faf5eb !important;
+  border: 1.5px solid rgba(200, 157, 92, 0.6) !important;
+  box-shadow: 0 26px 60px rgba(4, 25, 18, 0.34) !important;
+  overflow: hidden !important;
+  flex-direction: column;
+}

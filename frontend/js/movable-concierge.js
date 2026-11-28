@@ -285,3 +285,174 @@
   }
   setTimeout(renderFeedbackVersion, 900);
 })();
+
+
+/* Guaranteed Visible & Movable ARPIARES Stylist AI Avatar Orb on Home & All Pages (v42) */
+(function guaranteeArpiaresStylistOrb() {
+  const AVATAR_SVG = `
+    <svg width="36" height="36" viewBox="0 0 40 40" fill="none" xmlns="http://w3.org" aria-hidden="true">
+      <circle cx="20" cy="20" r="18.5" fill="#06271d" stroke="#e5c17b" stroke-width="1.8"/>
+      <circle cx="20" cy="20" r="14.5" stroke="#e5c17b" stroke-opacity="0.4" stroke-dasharray="2 2"/>
+      <path d="M20 9L22.3 15.7L29 18L22.3 20.3L20 27L17.7 20.3L11 18L17.7 15.7L20 9Z" fill="#e5c17b"/>
+      <circle cx="28.5" cy="11.5" r="1.7" fill="#fff6df"/>
+    </svg>
+  `;
+
+  function bindDrag(el, handle, key) {
+    if (!el || el.dataset.dragReady === "1") return;
+    el.dataset.dragReady = "1";
+    const grip = handle || el;
+    let active = false, moved = false, sx = 0, sy = 0, ol = 0, ot = 0;
+
+    try {
+      const pos = JSON.parse(localStorage.getItem(key) || "null");
+      if (pos && typeof pos.left === "number" && typeof pos.top === "number") {
+        el.style.left = Math.min(Math.max(8, pos.left), Math.max(8, window.innerWidth - 180)) + "px";
+        el.style.top = Math.min(Math.max(8, pos.top), Math.max(8, window.innerHeight - 64)) + "px";
+        el.style.right = "auto";
+        el.style.bottom = "auto";
+      }
+    } catch (_) {}
+
+    grip.addEventListener("pointerdown", (e) => {
+      if (e.target.closest("[data-close-orb-chat]")) return;
+      active = true;
+      moved = false;
+      const r = el.getBoundingClientRect();
+      sx = e.clientX; sy = e.clientY; ol = r.left; ot = r.top;
+      el.style.left = ol + "px";
+      el.style.top = ot + "px";
+      el.style.right = "auto";
+      el.style.bottom = "auto";
+    });
+
+    window.addEventListener("pointermove", (e) => {
+      if (!active) return;
+      const dx = e.clientX - sx, dy = e.clientY - sy;
+      if (Math.abs(dx) > 5 || Math.abs(dy) > 5) moved = true;
+      if (!moved) return;
+      el.style.left = Math.min(Math.max(8, ol + dx), Math.max(8, window.innerWidth - el.offsetWidth - 8)) + "px";
+      el.style.top = Math.min(Math.max(8, ot + dy), Math.max(8, window.innerHeight - el.offsetHeight - 8)) + "px";
+    });
+
+    window.addEventListener("pointerup", () => {
+      if (!active) return;
+      active = false;
+      if (moved) {
+        const r = el.getBoundingClientRect();
+        try { localStorage.setItem(key, JSON.stringify({ left: r.left, top: r.top })); } catch (_) {}
+        el.addEventListener("click", (ev) => { ev.stopImmediatePropagation(); ev.preventDefault(); }, { capture: true, once: true });
+      }
+    });
+  }
+
+  function mountOrb() {
+    let orb = document.getElementById("arpiaresFloatingBotBtn") ||
+      document.querySelector("#supportLauncher, #chatLauncher, .support-launcher, .chat-launcher, .arpiares-avatar-orb");
+
+    if (!orb) {
+      orb = document.createElement("button");
+      orb.id = "arpiaresFloatingBotBtn";
+      orb.type = "button";
+      orb.setAttribute("aria-label", "Open ARPIARES Stylist AI");
+      document.body.appendChild(orb);
+    }
+
+    orb.classList.add("arpiares-avatar-orb");
+    orb.style.cssText += ";position:fixed!important;bottom:24px;right:24px;z-index:2147483000!important;display:inline-flex!important;visibility:visible!important;opacity:1!important;";
+    orb.innerHTML = `
+      <span class="arpiares-orb-icon">${AVATAR_SVG}</span>
+      <span class="arpiares-orb-label">
+        <strong>Stylist AI</strong>
+        <small>Ask &amp; Drag ⠿</small>
+      </span>
+    `;
+
+    let drawer = document.querySelector("#supportWidget, #chatWidget, .support-widget, .chat-widget, #arpiaresStylistDrawer");
+    if (!drawer) {
+      drawer = document.createElement("div");
+      drawer.id = "arpiaresStylistDrawer";
+      drawer.style.display = "none";
+      drawer.innerHTML = `
+        <div class="chat-head" style="background:linear-gradient(135deg,#06271d,#0c3b2c);color:#fff6e5;padding:15px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(229,193,123,0.35);cursor:grab;">
+          <div class="arpiares-header-avatar">${AVATAR_SVG}<div><strong>ARPIARES Stylist</strong><div class="arpiares-bot-badge"><span class="arpiares-bot-dot"></span> Online • Drag to move</div></div></div>
+          <button type="button" data-close-orb-chat style="background:transparent;border:1px solid rgba(229,193,123,0.45);color:#e5c17b;border-radius:999px;width:30px;height:30px;cursor:pointer;">✕</button>
+        </div>
+        <div id="arpiaresOrbMsgs" class="support-messages" style="padding:16px;display:flex;flex-direction:column;gap:12px;max-height:310px;overflow-y:auto;background:#faf5eb;">
+          <div class="msg bot"><div class="arpiares-msg-sender"><span>✦</span> <span>ARPIARES Stylist</span></div>Welcome to ARPIARES. Ask me about product recommendations, order tracking, shipping across India, or 7-day returns.</div>
+        </div>
+        <div class="arpiares-quick-chips">
+          <button type="button" class="arpiares-quick-chip" data-q="What are your top handpicked pieces?">✨ Top picks</button>
+          <button type="button" class="arpiares-quick-chip" data-q="How fast is delivery across India?">🚚 Delivery</button>
+          <button type="button" class="arpiares-quick-chip" data-q="What is your return policy?">🔄 Returns</button>
+        </div>
+        <form id="arpiaresOrbForm" class="support-form" style="display:flex;gap:8px;padding:10px 12px;background:#fffdf9;border-top:1px solid rgba(200,157,92,0.3);">
+          <input type="text" placeholder="Ask ARPIARES Stylist..." required style="flex:1;border-radius:999px;border:1px solid rgba(6,39,29,0.2);background:#faf5eb;padding:10px 14px;color:#06271d;" />
+          <button type="submit">Send</button>
+        </form>
+      `;
+      document.body.appendChild(drawer);
+
+      const replies = {
+        delivery: "We offer complimentary insured delivery across India on orders above ₹999, typically arriving within 3–5 business days.",
+        return: "Every ARPIARES order includes a 7-day effortless return and exchange window in original packaging.",
+        pick: "Our patrons love the Artisan Ceramic Pour-Over Set, Woven Cotton Cushion Set, and Heritage Leather Wallet."
+      };
+
+      const msgs = drawer.querySelector("#arpiaresOrbMsgs");
+      const form = drawer.querySelector("#arpiaresOrbForm");
+      const input = form.querySelector("input");
+
+      function sendPrompt(text) {
+        if (!text.trim()) return;
+        const u = document.createElement("div");
+        u.className = "msg user";
+        u.textContent = text;
+        msgs.appendChild(u);
+
+        const b = document.createElement("div");
+        b.className = "msg bot";
+        const lower = text.toLowerCase();
+        const ans = lower.includes("deliver") || lower.includes("ship") ? replies.delivery
+          : lower.includes("return") ? replies.return
+          : lower.includes("pick") || lower.includes("top") ? replies.pick
+          : "I'd love to help with that! You can browse all collections above or check live order status in Account & More.";
+        b.innerHTML = '<div class="arpiares-msg-sender"><span>✦</span> <span>ARPIARES Stylist</span></div>' + ans;
+        msgs.appendChild(b);
+        msgs.scrollTop = msgs.scrollHeight;
+      }
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        sendPrompt(input.value);
+        input.value = "";
+      });
+      drawer.querySelectorAll("[data-q]").forEach((chip) => {
+        chip.addEventListener("click", () => sendPrompt(chip.dataset.q));
+      });
+      drawer.querySelector("[data-close-orb-chat]").addEventListener("click", () => {
+        drawer.style.display = "none";
+      });
+    }
+
+    if (!orb.dataset.toggleBound) {
+      orb.dataset.toggleBound = "1";
+      orb.addEventListener("click", () => {
+        const open = drawer.style.display !== "none" && !drawer.hidden;
+        drawer.hidden = open;
+        drawer.style.display = open ? "none" : "flex";
+        drawer.style.setProperty("z-index", "2147483001", "important");
+      });
+    }
+
+    bindDrag(orb, orb, "arpiares_orb_pos_v42");
+    bindDrag(drawer, drawer.firstElementChild, "arpiares_drawer_pos_v42");
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", mountOrb);
+  } else {
+    mountOrb();
+  }
+  setTimeout(mountOrb, 400);
+})();
