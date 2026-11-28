@@ -72,7 +72,7 @@ async function loadUniqueCategories() {
           '</div>'
         : '<div class="cat-empty-art">' + theme.icon + '</div>';
 
-      const desc = escapeHTML(cat.description || ("Explore our curated " + cat.name + " selection."));
+      const desc = escapeHTML(cat.description || ("Explore our handpicked " + cat.name + " selection."));
 
       return '<article class="unique-cat-card reveal-card" style="background:' + theme.bg + ';color:' + theme.text + ';animation-delay:' + (idx * 90) + 'ms;">' +
         '<div class="cat-card-header">' +

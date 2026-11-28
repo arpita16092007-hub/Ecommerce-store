@@ -18,8 +18,8 @@ function toggleSavedProduct(productId) {
   localStorage.setItem(getWishlistKey(), JSON.stringify(next));
   refreshWishlistUI();
   const prod = allProducts.find(p => String(p._id) === id);
-  const pName = prod ? prod.name : "Curated item";
-  const msg = exists ? "Removed from Saved Collection." : "Saved to your Curated Collection!";
+  const pName = prod ? prod.name : "Handpicked item";
+  const msg = exists ? "Removed from Saved Collection." : "Saved to your Handpicked Collection!";
   showNotice(msg);
   showLuxuryToast({
     title: exists ? "Removed from Saved" : "Saved to Collection",
@@ -759,7 +759,7 @@ function initHeroTypewriter() {
   if (!wordEl || !quoteEl) return;
   const slides = [
     { word: "extraordinary.", quote: "Because ordinary never made anyone smile when the delivery bell rang." },
-    { word: "unforgettable.", quote: "Curated pieces so good, guests ask where you found them before saying hello." },
+    { word: "unforgettable.", quote: "Handpicked pieces so good, guests ask where you found them before saying hello." },
     { word: "effortless luxury.", quote: "Small everyday upgrades that quietly turn a regular Tuesday into a celebration." },
     { word: "soulful craft.", quote: "Made to outlive trends, spark joy on your shelf, and steal your heart." }
   ];
@@ -821,7 +821,7 @@ function startWelcomeHumor() {
   if (!lineEl) return;
   const jokes = [
     "Warning: Entering may cause spontaneous \"Add to Bag\" decisions.",
-    "Curated so well, even your wallet will say \"worth it.\"",
+    "Handpicked so well, even your wallet will say \"worth it.\"",
     "Life is too short for boring shelves and ordinary gifts.",
     "Step inside—your future favorite thing is already waiting."
   ];
