@@ -140,16 +140,15 @@
   }
 
   function initFeedbackCard() {
-    var headings = document.querySelectorAll("h1, h2, h3");
-    var heading = null;
-    for (var i = 0; i < headings.length; i++) {
-      if (headings[i].textContent.toLowerCase().indexOf("submit detailed feedback") !== -1) { heading = headings[i]; break; }
-    }
-    if (!heading) return;
-    var card = heading.parentElement;
-    while (card && card !== document.body && !card.querySelector("form")) card = card.parentElement;
-    if (!card || card === document.body || card.dataset.arpSplit === "1") return;
-    card.dataset.arpSplit = "1";
+    if (document.querySelector(".arpiares-fb-aside") || window.__arpFeedbackLocked) return;
+    var form = document.querySelector("#reviewForm, form[id*=review], form[id*=feedback]") ||
+      Array.from(document.querySelectorAll("form")).find(function (f) {
+        return /feedback|review|recommend/i.test(f.textContent);
+      });
+    if (!form) return;
+    var card = form.closest("section, .card, .panel") || form.parentElement;
+    if (!card || card === document.body) return;
+    window.__arpFeedbackLocked = true;
 
     var bodyWrap = document.createElement("div");
     bodyWrap.className = "arpiares-fb-body";
@@ -171,11 +170,12 @@
       tags[t].addEventListener("click", function () {
         var textInputs = bodyWrap.querySelectorAll("input[type='text']");
         var targetInput = bodyWrap.querySelector("input[placeholder*='Summarize'], input[name*='title'], input[name*='headline']") || (textInputs.length ? textInputs[textInputs.length - 1] : null);
-if (targetInput) { targetInput.value = this.getAttribute("data-tag"); targetInput.focus(); }
-});
-}
-}
-function boot() { initBot(); initFeedbackCard(); }
+        if (targetInput) { targetInput.value = this.getAttribute("data-tag"); targetInput.focus(); }
+      });
+    }
+  }
+
+  function boot() { initBot(); initFeedbackCard(); }
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
 else boot();
 setTimeout(boot, 500);
